@@ -1,4 +1,4 @@
-# FPO-SETU Shared Contract (v1.0.0)
+# FPO-SETU Shared Contract (v1.0.1)
 
 **Every Claude Code chat reads this file first.** It is the single source of truth that keeps the seven folders consistent. Only the **00-core-ledger** chat may change it, and every change must bump `CONTRACT_VERSION` in `shared/contract.ts` and add a line to the changelog at the bottom of this file. The portal chats never edit `shared/`. To request a change, a portal chat writes the request in its own `CONTRACT_REQUESTS.md` and tells the human.
 
@@ -50,6 +50,8 @@ FPO-SETU is an academic prototype for **RD61003, Financial Technology for Rural 
 | Plot ID | `PL-` + 10 chars | `PL-7Q2M9X4K1A` | The polygon lives off-chain; only `sha256(GeoJSON)` goes on-chain. |
 | e-NWR reference | `ENWR-{REPO}-{YYYY}-{6 digits}` | `ENWR-NERL-2026-004211` | REPO is `NERL` or `CCRL`. Issued by the simulated adapter. |
 | Order ID | `ORD-{YYYY}-{5 digits}` | `ORD-2026-00087` | |
+| Deposit ID | `DEP-{YYYY}-{5 digits}` | `DEP-2026-00201` | Added in 1.0.1. Needed by `POST /storage/deposits/:id/enwr`. |
+| Lien ID | `LIEN-{YYYY}-{5 digits}`, same number as the loan | `LIEN-2026-00041` | Added in 1.0.1. |
 | Loan ID | `LN-{YYYY}-{5 digits}` | | |
 | Patronage run ID | `PR-{YYYY}-{MM}-{3 digits}` | | |
 | UPI reference | 12 digits, prefixed `SIM` in the UI | `SIM 604512339876` | Always shown as simulated. |
@@ -73,7 +75,9 @@ Side states: TRANSFORMED (graded out to processing), REJECTED, UNVERIFIABLE (ori
 A lot that is `PLEDGED` **cannot** move to `IN_TRANSIT` until its lien is released. Chaincode error: `ERR_LOT_PLEDGED`.
 
 ### 3.3 Event names (chaincode events; GS1 EPCIS 2.0-shaped payloads, no PII, no price)
-`FarmerOnboarded, PlotRegistered, ConsentGranted, InputApplied, LotCommissioned, LotGraded, QualityCredentialIssued, LotTransformed, DepositRecorded, ENWRIssued, LienMarked, LoanDisbursed, LoanRepaid, LienReleased, OrderCreated, PriceAgreed, CustodyProposed, CustodyAccepted, ConditionDigestAnchored, QualityAccepted, SettlementExecuted, PatronageDistributed, PersonalDataErased`
+`FarmerOnboarded, PlotRegistered, ConsentGranted, InputApplied, LotCommissioned, LotGraded, QualityCredentialIssued, LotTransformed, DepositRecorded, ENWRIssued, LienMarked, LoanDisbursed, LoanRepaid, LienReleased, OrderCreated, PriceAgreed, CustodyProposed, CustodyAccepted, ConditionDigestAnchored, QualityAccepted, SettlementExecuted, PatronageDistributed, PersonalDataErased, LotStatusChanged`
+
+`LotStatusChanged` (added in 1.0.1) is emitted by the lot-status mirror calls described in Section 7: the lot status lives on trace-channel, so when a finance or trade transaction changes it, the gateway follows up with a trace-channel transaction. Portals may hide it from toasts; the explorer shows it.
 
 The payload shape is `{eventType, eventTime, bizStep, disposition, epcList:[sscc], bizLocation, readPoint, refs:{...}}`. The off-chain views `MemberStatementViewed` and `ProvenanceQueried` are logged in Postgres as telemetry. They are not on-chain.
 
@@ -162,6 +166,7 @@ Demo logins (password for all: `Setu@2026`; the farmer uses OTP `123456`, shown 
 | `anima.das` / phone `9000000001` | Anima Das, 42, member farmer, Changual, 0.8 ha potato + aman paddy | 01 farmer | FpoOrgMSP `role=member` (submits only through the FPO identity; signs with a device key) |
 | `subhankar.vle` | Subhankar Maity, 27, VLE at the Changual centre | 01 farmer (VLE mode), 02 | FpoOrgMSP `role=vle` |
 | `sujata.ceo` | Sujata Jana, 39, FPO CEO | 02 | FpoOrgMSP `role=ceo` |
+| `debasis.ops` | Debasis Mondal, FPO operator (weighbridge, grading, labels, dispatch). Added in 1.0.1: steps 4 and 8 name an operator but the table had no login for one. | 02 | FpoOrgMSP `role=operator` |
 | `ratan.store` | Ratan Pal, cold storage / warehouse clerk | 02 | FpoOrgMSP `role=warehouse` |
 | `arindam.bank` | Arindam Ghosh, branch credit officer | 03 | BankOrgMSP `role=credit_officer` |
 | `rahul.buyer` | Rahul Agarwal, procurement manager | 04 | BuyerOrgMSP `role=buyer_manager` |
@@ -210,6 +215,9 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 - **Private data:** `tradePricePDC` (FPO, Buyer) on trade-channel; `loanTermsPDC` (FPO, Bank) on finance-channel.
 - **Dual attestation (F2):** the farmer's device signs `canonicalJSON({sscc, farmerToken, plotId, commodity, bagCount, estWeightKg, harvestOrUnloadDate})` with ECDSA P-256 / SHA-256. The chaincode verifies the signature against the public key registered in F1. Canonical JSON = keys sorted, no whitespace, UTF-8. `shared/contract.ts` exports `canonicalJson()` so every app signs **exactly** the same bytes.
 - **Device attestation (F3):** the simulated weighbridge and quality meter sign `canonicalJSON(reading)` with their registered device keys.
+- **Wire formats (1.0.1):** `signatureHex` is 128 lowercase hex chars = `r || s`, 32 bytes each, big-endian (IEEE P1363, what Web Crypto produces; not DER). `publicKeyHex` and `devicePublicKeyHex` are 130 hex chars = the uncompressed SEC1 point `04 || X || Y` (Web Crypto `exportKey('raw')`). The message is the UTF-8 bytes of `canonicalJson(payload)`; SHA-256 is part of the signature algorithm. `canonicalJson` throws on NaN, Infinity, undefined array items and non-plain objects. Prefer integers in signed payloads. Test vectors for the Go verifier: `shared/testvectors/canonical-json.json`.
+- **Price hash (1.0.1):** `priceHash = sha256Hex(canonicalJson({orderId, pricePerQtl, salt}))`. If the request has no `salt`, the gateway derives it as the first 32 hex chars of HMAC-SHA256(`PRICE_SALT_SECRET`, orderId), so that the FPO and Buyer submissions agree without sharing a salt out of band.
+- **Lot status mirror calls (1.0.1):** the lot status lives in `lot-lifecycle` on trace-channel, but some transitions are caused by finance or trade transactions. After those commit, the gateway submits a follow-up `lot-lifecycle` call that moves the status and emits `LotStatusChanged`: `setInStorage` (after `recordDeposit`), `setPledged(sscc, true|false)` (after `markLien` and `releaseLien`), `setListed` (after `createOrder`), `setSold` (after the second `agreePrice`), `setSettled` (after `recordSettlement`). `proposeTransfer` and `acceptTransfer` set IN_TRANSIT and DELIVERED, and `distributePatronage` sets CLOSED. A failed mirror call must never be hidden: the gateway reports it and the indexer shows the gap.
 - **Who sees what:** the Regulator is not on trade-channel, so it **never sees prices**. The Bank never sees the crop diary. The Buyer never sees loan terms.
 
 ---
@@ -217,6 +225,7 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 ## 8. Gateway API (base URL in env `API_URL`; read-only fallback in env `READ_API_URL`)
 
 **Common rules:**
+- **Lot reads and lists never include a farmer name or phone.** Names appear only in `FarmerPrivate` and the patronage preview.
 - JSON only. Auth is `Authorization: Bearer <JWT>`. JWT claims: `{sub, username, role, org, displayName, portal}`.
 - **Every successful write returns** `LedgerReceipt & {resource}`:
   ```ts
@@ -227,6 +236,8 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 - **Ledger mode:** every response has header `X-Ledger-Mode: live | index-only`. In `index-only` mode (served by the read-API while the Fabric host sleeps), writes return `503 ERR_LEDGER_UNAVAILABLE`. **All portals must show the offline banner (Section 9.3) and disable write actions.**
 - Paginated lists use `?cursor=&limit=` and return `{items, nextCursor}`.
 - **Live updates:** `GET /events/stream` is Server-Sent Events of `{event, sscc?, orderId?, enwr?, txId, blockNumber, channel, at}` for every indexed chaincode event, with no PII. Portals subscribe to it so that actions in one portal appear in the others within ~3 seconds.
+
+**Machine-readable form (1.0.1):** `shared/openapi.yaml` (OpenAPI 3.1) is generated from `shared/mock/endpoints.mjs` and the types in `contract.ts`. Where this list and `openapi.yaml` disagree, `openapi.yaml` wins and the disagreement is a bug to report. Error HTTP statuses are in `ERROR_HTTP_STATUS` in `contract.ts`. Roles written `authenticated` accept any signed-in role.
 
 **Endpoints** (role in brackets; `public` means no auth):
 
@@ -271,16 +282,19 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 
 **Storage and finance**
 - `POST /storage/deposits` [warehouse] {sscc, facility:'COLD_STORAGE'|'WAREHOUSE', facilityName, bags, depositedAt}
+- `GET /storage/deposits?facility=` [warehouse, ceo] (added in 1.0.1)
 - `POST /storage/deposits/:id/enwr` [warehouse] → {enwr, repository} (simulated adapter + ledger ref)
 - `GET /collateral?enwr=&sscc=` [credit_officer, ceo, observer] → {lot summary, quantityQtl, assessedValue, priceBasis:{source, market, date, modalPerQtl}, haircutPct, ltvPct:70, eligibleLoan, lien:{status, lienId?, bank?, proof?}, storageConditionHistory[], attestorReputation, cgsNpfEligible, cgsNpfReason}
 - `POST /collateral/:enwr/lien` (F5) [credit_officer] {loanId, amount, tenureDays, ratePct} (loan terms → `loanTermsPDC`)
 - `POST /loans/:loanId/disburse` [credit_officer]; `POST /loans/:loanId/repay` [credit_officer] {amount}; `POST /loans/:loanId/release` [credit_officer]
 - `GET /loans?status=` [credit_officer, ceo]
+- `GET /loans/:loanId` [credit_officer, ceo] (added in 1.0.1, for the `/loans/{loanId}` deep link)
 
 **Trade**
 - `GET /catalogue?commodity=&grade=&minQtl=&village=` [buyer_manager] → lots in GRADED/IN_STORAGE, never pledged ones
 - `POST /orders` [buyer_manager or ceo] {ssccs[], channel:'DIRECT'|'ONDC'|'ENAM', deliveryBy}
 - `GET /orders?status=` [ceo, buyer_manager]
+- `GET /orders/:orderId` [ceo, buyer_manager] (added in 1.0.1, for the `/orders/{orderId}` deep link)
 - `POST /orders/:id/agree-price` (F6) [ceo and buyer_manager, two-step: each submits; it commits when both match] {pricePerQtl, salt?} → the public response carries only `priceHash`
 - `GET /orders/:id/price` [ceo, buyer_manager] → reads the PDC. Any other role gets `ERR_FORBIDDEN_ORG`.
 - `POST /orders/:id/accept-quality` [buyer_manager] {accepted, notes}
@@ -289,13 +303,14 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 **Patronage and statements**
 - `POST /patronage/preview` [ceo] {orderId} → per member {farmerToken, name (off-chain join), kg, gross, deductions[{type, amount}], net}
 - `POST /patronage/runs` (F7) [ceo] {orderId}
+- `GET /patronage/runs` [ceo, board] (added in 1.0.1)
 - `GET /statements/me` [member] → per-lot statement {sscc, humanRef, kg, grade, buyerType, gross, deductions[], net, upiRef, paidOn, proofs[]}
 
 **Analytics**
 - `GET /kpis` [board, observer, ceo] → the KPI set in Section 9.5, each with `{value, unit, numerator, denominator, computedFrom, asOf}`
 - `GET /prices?commodity=&market=&from=&to=` [any] → AGMARKNET series {date, market, min, max, modal, source}
 - `GET /prices/msp?crop=paddy` [any] → MSP by season, with a PIB citation
-- `GET /villages` [public] → `shared/fixtures/villages.json`
+- `GET /villages` [public] → `Village[]`, the `villages` example in `shared/fixtures/villages.json`
 - `GET /audit/sample` [ceo, observer] → the 5% random re-inspection list + divergence rate
 - `GET /reputation/attestors` [credit_officer, ceo, observer]
 
@@ -421,3 +436,13 @@ fpo-setu/                      (one GitHub repo)
 
 ## 12. Changelog
 - 1.0.0: initial contract (Kharagpur cluster, potato/paddy, 7 folders).
+- 1.0.1 (additive; portals that have not started are unaffected, portals that have started must re-sync `contract.ts`):
+  - `contract.ts`: named request and response types for every endpoint; `ERROR_HTTP_STATUS`; `Receipted<T>`; `SignatureHex` and `PublicKeyHex` wire formats; `LotCommissionPayload`.
+  - `canonicalJson` now throws on NaN, Infinity, `undefined` array items and non-plain objects instead of signing different bytes than a verifier sees. Output for valid input is unchanged.
+  - `Village` gains `precision` (`LANDMARK` or `BLOCK_CENTROID`) and `note`. Golgram and Gopalpur are not in OpenStreetMap, so they carry the block centre until the human supplies coordinates.
+  - `Loan` gains optional `sscc`, `tenureDays`, `ratePct`, `repaidAmount`. `Collateral` valuation formula documented.
+  - New event `LotStatusChanged`; new ids `DEP-` and `LIEN-`; new persona `debasis.ops` (operator).
+  - New endpoints: `GET /loans/:loanId`, `GET /orders/:orderId`, `GET /storage/deposits`, `GET /patronage/runs`.
+  - New in Section 7: wire formats, price-hash definition, lot status mirror calls.
+  - Patronage reconciliation stated precisely: sum(gross) = settlement amount and, per line, gross = net + sum(deductions), so sum(net) + sum(all deductions, FPO_MARGIN included) = settlement amount, within INR 1.
+  - Portals affected: all six must re-sync `contract.ts`. 02 gains the operator login, `GET /storage/deposits` and `GET /patronage/runs`. 03 gains `GET /loans/:loanId`. 04 gains `GET /orders/:orderId`. 06 should expect `LotStatusChanged` in the explorer and SSE.

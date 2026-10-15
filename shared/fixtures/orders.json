@@ -1,0 +1,819 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "orders.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "note": "Prices (pricePerQtl, totalAmount) are fixture placeholders. In the live system they are readable only through GET /orders/{id}/price by FPO and Buyer roles; the public order carries priceHash only. priceHash = sha256(canonicalJson({orderId, pricePerQtl, salt}))."
+  },
+  "examples": [
+    {
+      "endpoint": "listOrders",
+      "body": {
+        "items": [
+          {
+            "orderId": "ORD-2026-00087",
+            "ssccs": [
+              "089012340000004517",
+              "089012340000004555",
+              "089012340000004562"
+            ],
+            "channel": "DIRECT",
+            "status": "SETTLED",
+            "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+            "deliveryBy": "2026-11-12",
+            "proofs": [
+              {
+                "txId": "FIXTURE-9bea49010ff7",
+                "blockNumber": 187,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-48425466165a",
+                "blockNumber": 188,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-1bb7bf657b23",
+                "blockNumber": 189,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-13909a0c4ae7",
+                "blockNumber": 202,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-5ed3ab8b05e0",
+                "blockNumber": 203,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-624955d053cb",
+                "blockNumber": 1278,
+                "channel": "trace-channel"
+              }
+            ]
+          },
+          {
+            "orderId": "ORD-2026-00088",
+            "ssccs": [
+              "089012340000004609"
+            ],
+            "channel": "DIRECT",
+            "status": "PRICE_AGREED",
+            "priceHash": "6756b8cf73caa51e716240609620fd6e3a7874961b28c859fae0c0962f5a2436",
+            "deliveryBy": "2026-11-18",
+            "proofs": [
+              {
+                "txId": "FIXTURE-2bc18965dac2",
+                "blockNumber": 199,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-a5e55eeb76f4",
+                "blockNumber": 200,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-41ab81ad3783",
+                "blockNumber": 201,
+                "channel": "trade-channel"
+              }
+            ]
+          },
+          {
+            "orderId": "ORD-2026-00089",
+            "ssccs": [
+              "089012340000004616"
+            ],
+            "channel": "DIRECT",
+            "status": "IN_TRANSIT",
+            "priceHash": "14c6544d4d35411d54da36cdae4aeec588979c01896d15aaa629eadcfa005c76",
+            "deliveryBy": "2026-11-16",
+            "proofs": [
+              {
+                "txId": "FIXTURE-d8908995684f",
+                "blockNumber": 196,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-d794fbb09556",
+                "blockNumber": 197,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-00d96492de05",
+                "blockNumber": 198,
+                "channel": "trade-channel"
+              }
+            ]
+          },
+          {
+            "orderId": "ORD-2026-00090",
+            "ssccs": [
+              "089012340000004623"
+            ],
+            "channel": "DIRECT",
+            "status": "DELIVERED",
+            "priceHash": "315fb9011ab63f987fea11f3d3b3b5d997a0cb2f3672ef655ae632ae9b78bbf3",
+            "deliveryBy": "2026-11-14",
+            "proofs": [
+              {
+                "txId": "FIXTURE-852bce17b170",
+                "blockNumber": 190,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-d8b4fe8cafee",
+                "blockNumber": 191,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-1aa3f2aa3e4a",
+                "blockNumber": 192,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-31f9eb9c6c8a",
+                "blockNumber": 205,
+                "channel": "trade-channel"
+              }
+            ]
+          },
+          {
+            "orderId": "ORD-2026-00091",
+            "ssccs": [
+              "089012340000004548"
+            ],
+            "channel": "DIRECT",
+            "status": "OPEN",
+            "deliveryBy": "2026-11-20",
+            "proofs": [
+              {
+                "txId": "FIXTURE-da2e9c370080",
+                "blockNumber": 204,
+                "channel": "trade-channel"
+              }
+            ]
+          },
+          {
+            "orderId": "ORD-2026-00092",
+            "ssccs": [
+              "089012340000004968"
+            ],
+            "channel": "DIRECT",
+            "status": "DELIVERED",
+            "priceHash": "e2228b7cff897159f35c35054775e801142e11ed57b02b8caaab2684214ee978",
+            "deliveryBy": "2026-11-13",
+            "proofs": [
+              {
+                "txId": "FIXTURE-11fa1c778423",
+                "blockNumber": 193,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-0a429d6cf566",
+                "blockNumber": 194,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-9effabd16d9f",
+                "blockNumber": 195,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-ba5b3145214b",
+                "blockNumber": 206,
+                "channel": "trade-channel"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listOrders",
+      "query": {
+        "status": "OPEN"
+      },
+      "body": {
+        "items": [
+          {
+            "orderId": "ORD-2026-00091",
+            "ssccs": [
+              "089012340000004548"
+            ],
+            "channel": "DIRECT",
+            "status": "OPEN",
+            "deliveryBy": "2026-11-20",
+            "proofs": [
+              {
+                "txId": "FIXTURE-da2e9c370080",
+                "blockNumber": 204,
+                "channel": "trade-channel"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listOrders",
+      "query": {
+        "status": "SETTLED"
+      },
+      "body": {
+        "items": [
+          {
+            "orderId": "ORD-2026-00087",
+            "ssccs": [
+              "089012340000004517",
+              "089012340000004555",
+              "089012340000004562"
+            ],
+            "channel": "DIRECT",
+            "status": "SETTLED",
+            "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+            "deliveryBy": "2026-11-12",
+            "proofs": [
+              {
+                "txId": "FIXTURE-9bea49010ff7",
+                "blockNumber": 187,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-48425466165a",
+                "blockNumber": 188,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-1bb7bf657b23",
+                "blockNumber": 189,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-13909a0c4ae7",
+                "blockNumber": 202,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-5ed3ab8b05e0",
+                "blockNumber": 203,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-624955d053cb",
+                "blockNumber": 1278,
+                "channel": "trace-channel"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrder",
+      "params": {
+        "orderId": "ORD-2026-00087"
+      },
+      "body": {
+        "orderId": "ORD-2026-00087",
+        "ssccs": [
+          "089012340000004517",
+          "089012340000004555",
+          "089012340000004562"
+        ],
+        "channel": "DIRECT",
+        "status": "SETTLED",
+        "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+        "deliveryBy": "2026-11-12",
+        "proofs": [
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrder",
+      "params": {
+        "orderId": "ORD-2026-00088"
+      },
+      "body": {
+        "orderId": "ORD-2026-00088",
+        "ssccs": [
+          "089012340000004609"
+        ],
+        "channel": "DIRECT",
+        "status": "PRICE_AGREED",
+        "priceHash": "6756b8cf73caa51e716240609620fd6e3a7874961b28c859fae0c0962f5a2436",
+        "deliveryBy": "2026-11-18",
+        "proofs": [
+          {
+            "txId": "FIXTURE-2bc18965dac2",
+            "blockNumber": 199,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-a5e55eeb76f4",
+            "blockNumber": 200,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-41ab81ad3783",
+            "blockNumber": 201,
+            "channel": "trade-channel"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrder",
+      "params": {
+        "orderId": "ORD-2026-00089"
+      },
+      "body": {
+        "orderId": "ORD-2026-00089",
+        "ssccs": [
+          "089012340000004616"
+        ],
+        "channel": "DIRECT",
+        "status": "IN_TRANSIT",
+        "priceHash": "14c6544d4d35411d54da36cdae4aeec588979c01896d15aaa629eadcfa005c76",
+        "deliveryBy": "2026-11-16",
+        "proofs": [
+          {
+            "txId": "FIXTURE-d8908995684f",
+            "blockNumber": 196,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-d794fbb09556",
+            "blockNumber": 197,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-00d96492de05",
+            "blockNumber": 198,
+            "channel": "trade-channel"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrder",
+      "params": {
+        "orderId": "ORD-2026-00090"
+      },
+      "body": {
+        "orderId": "ORD-2026-00090",
+        "ssccs": [
+          "089012340000004623"
+        ],
+        "channel": "DIRECT",
+        "status": "DELIVERED",
+        "priceHash": "315fb9011ab63f987fea11f3d3b3b5d997a0cb2f3672ef655ae632ae9b78bbf3",
+        "deliveryBy": "2026-11-14",
+        "proofs": [
+          {
+            "txId": "FIXTURE-852bce17b170",
+            "blockNumber": 190,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-d8b4fe8cafee",
+            "blockNumber": 191,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1aa3f2aa3e4a",
+            "blockNumber": 192,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-31f9eb9c6c8a",
+            "blockNumber": 205,
+            "channel": "trade-channel"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrder",
+      "params": {
+        "orderId": "ORD-2026-00091"
+      },
+      "body": {
+        "orderId": "ORD-2026-00091",
+        "ssccs": [
+          "089012340000004548"
+        ],
+        "channel": "DIRECT",
+        "status": "OPEN",
+        "deliveryBy": "2026-11-20",
+        "proofs": [
+          {
+            "txId": "FIXTURE-da2e9c370080",
+            "blockNumber": 204,
+            "channel": "trade-channel"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrder",
+      "params": {
+        "orderId": "ORD-2026-00092"
+      },
+      "body": {
+        "orderId": "ORD-2026-00092",
+        "ssccs": [
+          "089012340000004968"
+        ],
+        "channel": "DIRECT",
+        "status": "DELIVERED",
+        "priceHash": "e2228b7cff897159f35c35054775e801142e11ed57b02b8caaab2684214ee978",
+        "deliveryBy": "2026-11-13",
+        "proofs": [
+          {
+            "txId": "FIXTURE-11fa1c778423",
+            "blockNumber": 193,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-0a429d6cf566",
+            "blockNumber": 194,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-9effabd16d9f",
+            "blockNumber": 195,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-ba5b3145214b",
+            "blockNumber": 206,
+            "channel": "trade-channel"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getOrderPrice",
+      "params": {
+        "orderId": "ORD-2026-00087"
+      },
+      "body": {
+        "orderId": "ORD-2026-00087",
+        "pricePerQtl": 1580,
+        "salt": "550c06f07f3a1841a527132639653230",
+        "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+        "quantityQtl": 67.04,
+        "totalAmount": 105923,
+        "agreedAt": "2026-11-08T14:02:00Z",
+        "proof": {
+          "txId": "FIXTURE-1bb7bf657b23",
+          "blockNumber": 189,
+          "channel": "trade-channel"
+        }
+      }
+    },
+    {
+      "endpoint": "getOrderPrice",
+      "params": {
+        "orderId": "ORD-2026-00088"
+      },
+      "body": {
+        "orderId": "ORD-2026-00088",
+        "pricePerQtl": 1575,
+        "salt": "10a73943417186803f087480462bace1",
+        "priceHash": "6756b8cf73caa51e716240609620fd6e3a7874961b28c859fae0c0962f5a2436",
+        "quantityQtl": 39.6,
+        "totalAmount": 62370,
+        "agreedAt": "2026-11-11T13:47:00Z",
+        "proof": {
+          "txId": "FIXTURE-41ab81ad3783",
+          "blockNumber": 201,
+          "channel": "trade-channel"
+        }
+      }
+    },
+    {
+      "endpoint": "getOrderPrice",
+      "params": {
+        "orderId": "ORD-2026-00089"
+      },
+      "body": {
+        "orderId": "ORD-2026-00089",
+        "pricePerQtl": 1590,
+        "salt": "988ec5e1eadfa3ea2a72f93b02f3eacf",
+        "priceHash": "14c6544d4d35411d54da36cdae4aeec588979c01896d15aaa629eadcfa005c76",
+        "quantityQtl": 34.3,
+        "totalAmount": 54537,
+        "agreedAt": "2026-11-10T13:32:00Z",
+        "proof": {
+          "txId": "FIXTURE-00d96492de05",
+          "blockNumber": 198,
+          "channel": "trade-channel"
+        }
+      }
+    },
+    {
+      "endpoint": "getOrderPrice",
+      "params": {
+        "orderId": "ORD-2026-00090"
+      },
+      "body": {
+        "orderId": "ORD-2026-00090",
+        "pricePerQtl": 1570,
+        "salt": "3f2db536d894ab354388f47c0e9956e9",
+        "priceHash": "315fb9011ab63f987fea11f3d3b3b5d997a0cb2f3672ef655ae632ae9b78bbf3",
+        "quantityQtl": 31.2,
+        "totalAmount": 48984,
+        "agreedAt": "2026-11-09T13:17:00Z",
+        "proof": {
+          "txId": "FIXTURE-1aa3f2aa3e4a",
+          "blockNumber": 192,
+          "channel": "trade-channel"
+        }
+      }
+    },
+    {
+      "endpoint": "getOrderPrice",
+      "params": {
+        "orderId": "ORD-2026-00092"
+      },
+      "body": {
+        "orderId": "ORD-2026-00092",
+        "pricePerQtl": 1500,
+        "salt": "c1e328e59ca6bd5989659e6d7ed07e20",
+        "priceHash": "e2228b7cff897159f35c35054775e801142e11ed57b02b8caaab2684214ee978",
+        "quantityQtl": 11.5,
+        "totalAmount": 17250,
+        "agreedAt": "2026-11-10T01:02:00Z",
+        "proof": {
+          "txId": "FIXTURE-9effabd16d9f",
+          "blockNumber": 195,
+          "channel": "trade-channel"
+        }
+      }
+    },
+    {
+      "endpoint": "getOrderPrice",
+      "params": {
+        "orderId": "ORD-2026-00087"
+      },
+      "query": {
+        "simulate": "ERR_FORBIDDEN_ORG"
+      },
+      "status": 403,
+      "body": {
+        "error": {
+          "code": "ERR_FORBIDDEN_ORG",
+          "message": "Only the FPO and the Buyer can read this price."
+        }
+      }
+    },
+    {
+      "endpoint": "createOrder",
+      "status": 201,
+      "body": {
+        "txId": "FIXTURE-da2e9c370080",
+        "channel": "trade-channel",
+        "chaincode": "order-settlement",
+        "fn": "createOrder",
+        "blockNumber": 204,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-11-14T00:32:00Z",
+        "resource": {
+          "orderId": "ORD-2026-00091",
+          "ssccs": [
+            "089012340000004548"
+          ],
+          "channel": "DIRECT",
+          "status": "OPEN",
+          "deliveryBy": "2026-11-20",
+          "proofs": [
+            {
+              "txId": "FIXTURE-da2e9c370080",
+              "blockNumber": 204,
+              "channel": "trade-channel"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "endpoint": "agreePrice",
+      "params": {
+        "orderId": "ORD-2026-00088"
+      },
+      "body": {
+        "txId": "FIXTURE-a5e55eeb76f4",
+        "channel": "trade-channel",
+        "chaincode": "order-settlement",
+        "fn": "agreePrice",
+        "blockNumber": 200,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-11-11T12:32:00Z",
+        "resource": {
+          "orderId": "ORD-2026-00088",
+          "priceHash": "6756b8cf73caa51e716240609620fd6e3a7874961b28c859fae0c0962f5a2436",
+          "state": "AWAITING_COUNTERPARTY"
+        }
+      }
+    },
+    {
+      "endpoint": "agreePrice",
+      "params": {
+        "orderId": "ORD-2026-00088"
+      },
+      "query": {
+        "simulate": "AGREED"
+      },
+      "body": {
+        "txId": "FIXTURE-41ab81ad3783",
+        "channel": "trade-channel",
+        "chaincode": "order-settlement",
+        "fn": "agreePrice",
+        "blockNumber": 201,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-11-11T13:47:00Z",
+        "resource": {
+          "orderId": "ORD-2026-00088",
+          "priceHash": "6756b8cf73caa51e716240609620fd6e3a7874961b28c859fae0c0962f5a2436",
+          "state": "AGREED"
+        }
+      }
+    },
+    {
+      "endpoint": "agreePrice",
+      "params": {
+        "orderId": "ORD-2026-00088"
+      },
+      "query": {
+        "simulate": "ERR_PRICE_HASH_MISMATCH"
+      },
+      "status": 409,
+      "body": {
+        "error": {
+          "code": "ERR_PRICE_HASH_MISMATCH",
+          "message": "The two submitted prices do not match. Both parties must submit the same price and salt."
+        }
+      }
+    },
+    {
+      "endpoint": "acceptQuality",
+      "params": {
+        "orderId": "ORD-2026-00090"
+      },
+      "body": {
+        "txId": "FIXTURE-31f9eb9c6c8a",
+        "channel": "trade-channel",
+        "chaincode": "order-settlement",
+        "fn": "acceptQuality",
+        "blockNumber": 205,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-11-14T02:56:00Z",
+        "resource": {
+          "orderId": "ORD-2026-00090",
+          "ssccs": [
+            "089012340000004623"
+          ],
+          "channel": "DIRECT",
+          "status": "DELIVERED",
+          "priceHash": "315fb9011ab63f987fea11f3d3b3b5d997a0cb2f3672ef655ae632ae9b78bbf3",
+          "deliveryBy": "2026-11-14",
+          "proofs": [
+            {
+              "txId": "FIXTURE-852bce17b170",
+              "blockNumber": 190,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-d8b4fe8cafee",
+              "blockNumber": 191,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-1aa3f2aa3e4a",
+              "blockNumber": 192,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-31f9eb9c6c8a",
+              "blockNumber": 205,
+              "channel": "trade-channel"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "endpoint": "settleOrder",
+      "params": {
+        "orderId": "ORD-2026-00087"
+      },
+      "body": {
+        "txId": "FIXTURE-5ed3ab8b05e0",
+        "channel": "trade-channel",
+        "chaincode": "order-settlement",
+        "fn": "recordSettlement",
+        "blockNumber": 203,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-11-13T00:32:00Z",
+        "resource": {
+          "orderId": "ORD-2026-00087",
+          "ssccs": [
+            "089012340000004517",
+            "089012340000004555",
+            "089012340000004562"
+          ],
+          "channel": "DIRECT",
+          "status": "SETTLED",
+          "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+          "deliveryBy": "2026-11-12",
+          "proofs": [
+            {
+              "txId": "FIXTURE-9bea49010ff7",
+              "blockNumber": 187,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-48425466165a",
+              "blockNumber": 188,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-1bb7bf657b23",
+              "blockNumber": 189,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-13909a0c4ae7",
+              "blockNumber": 202,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-5ed3ab8b05e0",
+              "blockNumber": 203,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

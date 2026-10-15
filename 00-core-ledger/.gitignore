@@ -1,0 +1,16 @@
+# secrets and generated material
+.env
+.env.*
+!.env.example
+wallet/
+node_modules/
+dist/
+*.log
+data/agmarknet/*.csv
+network/organizations/
+network/channel-artifacts/
+network/bin/
+network/config/
+network/.fabric-install/
+chaincode/**/vendor/
+coverage/

@@ -1,0 +1,273 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "statements.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "note": "Deduction rates (hamali, market fee, commission, transport, cold-storage rent, FPO margin) are fixture placeholders. Cited, notified rates arrive with the seed (docs/DATA_SOURCES.md). UPI reference is simulated.",
+    "reconciliation": "sum(net) + sum(all deductions incl. FPO_MARGIN) = settlementAmount"
+  },
+  "examples": [
+    {
+      "endpoint": "myStatements",
+      "body": {
+        "items": [
+          {
+            "sscc": "089012340000004517",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+            "kg": 1964,
+            "grade": "A",
+            "buyerType": "Processor and organised retail (Kolkata)",
+            "gross": 31031,
+            "deductions": [
+              {
+                "type": "HAMALI",
+                "amount": 177
+              },
+              {
+                "type": "MARKET_FEE",
+                "amount": 155
+              },
+              {
+                "type": "COMMISSION",
+                "amount": 465
+              },
+              {
+                "type": "TRANSPORT",
+                "amount": 550
+              },
+              {
+                "type": "COLD_STORAGE_RENT",
+                "amount": 3142
+              },
+              {
+                "type": "FPO_MARGIN",
+                "amount": 621
+              }
+            ],
+            "net": 25921,
+            "upiRef": "604512339876",
+            "paidOn": "2026-11-13",
+            "proofs": [
+              {
+                "txId": "FIXTURE-f101ae4419cb",
+                "blockNumber": 1202,
+                "channel": "trace-channel"
+              },
+              {
+                "txId": "FIXTURE-1bb7bf657b23",
+                "blockNumber": 189,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-5ed3ab8b05e0",
+                "blockNumber": 203,
+                "channel": "trade-channel"
+              },
+              {
+                "txId": "FIXTURE-624955d053cb",
+                "blockNumber": 1278,
+                "channel": "trace-channel"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "patronagePreview",
+      "body": {
+        "orderId": "ORD-2026-00087",
+        "settlementAmount": 105923,
+        "lines": [
+          {
+            "farmerToken": "FT-9c2e41a07b55d3f1",
+            "name": "Anima Das",
+            "sscc": "089012340000004517",
+            "kg": 1964,
+            "gross": 31031,
+            "deductions": [
+              {
+                "type": "HAMALI",
+                "amount": 177
+              },
+              {
+                "type": "MARKET_FEE",
+                "amount": 155
+              },
+              {
+                "type": "COMMISSION",
+                "amount": 465
+              },
+              {
+                "type": "TRANSPORT",
+                "amount": 550
+              },
+              {
+                "type": "COLD_STORAGE_RENT",
+                "amount": 3142
+              },
+              {
+                "type": "FPO_MARGIN",
+                "amount": 621
+              }
+            ],
+            "net": 25921
+          },
+          {
+            "farmerToken": "FT-dec84c02df89acd9",
+            "name": "Haradhan Mahato",
+            "sscc": "089012340000004555",
+            "kg": 2950,
+            "gross": 46610,
+            "deductions": [
+              {
+                "type": "HAMALI",
+                "amount": 266
+              },
+              {
+                "type": "MARKET_FEE",
+                "amount": 233
+              },
+              {
+                "type": "COMMISSION",
+                "amount": 699
+              },
+              {
+                "type": "TRANSPORT",
+                "amount": 826
+              },
+              {
+                "type": "COLD_STORAGE_RENT",
+                "amount": 4720
+              },
+              {
+                "type": "FPO_MARGIN",
+                "amount": 932
+              }
+            ],
+            "net": 38934
+          },
+          {
+            "farmerToken": "FT-f7c76a42af61bedd",
+            "name": "Parul Samanta",
+            "sscc": "089012340000004562",
+            "kg": 1790,
+            "gross": 28282,
+            "deductions": [
+              {
+                "type": "HAMALI",
+                "amount": 161
+              },
+              {
+                "type": "MARKET_FEE",
+                "amount": 141
+              },
+              {
+                "type": "COMMISSION",
+                "amount": 424
+              },
+              {
+                "type": "TRANSPORT",
+                "amount": 501
+              },
+              {
+                "type": "COLD_STORAGE_RENT",
+                "amount": 2864
+              },
+              {
+                "type": "FPO_MARGIN",
+                "amount": 566
+              }
+            ],
+            "net": 23625
+          }
+        ],
+        "totals": {
+          "gross": 105923,
+          "deductions": 17443,
+          "fpoMargin": 2119,
+          "net": 88480
+        },
+        "reconciles": true
+      }
+    },
+    {
+      "endpoint": "patronageRun",
+      "status": 201,
+      "body": {
+        "txId": "FIXTURE-624955d053cb",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "distributePatronage",
+        "blockNumber": 1278,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP",
+          "RegulatorOrgMSP"
+        ],
+        "committedAt": "2026-11-13T12:32:00Z",
+        "resource": {
+          "runId": "PR-2026-11-001",
+          "orderId": "ORD-2026-00087",
+          "memberCount": 3,
+          "settlementAmount": 105923,
+          "totals": {
+            "gross": 105923,
+            "deductions": 17443,
+            "fpoMargin": 2119,
+            "net": 88480
+          },
+          "distributedAt": "2026-11-13T12:32:00Z",
+          "proofs": [
+            {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "endpoint": "patronageRun",
+      "query": {
+        "simulate": "ERR_PATRONAGE_UNBALANCED"
+      },
+      "status": 422,
+      "body": {
+        "error": {
+          "code": "ERR_PATRONAGE_UNBALANCED",
+          "message": "Payouts and deductions do not add up to the settlement amount (difference above INR 1)."
+        }
+      }
+    },
+    {
+      "endpoint": "listPatronageRuns",
+      "body": {
+        "items": [
+          {
+            "runId": "PR-2026-11-001",
+            "orderId": "ORD-2026-00087",
+            "memberCount": 3,
+            "settlementAmount": 105923,
+            "totals": {
+              "gross": 105923,
+              "deductions": 17443,
+              "fpoMargin": 2119,
+              "net": 88480
+            },
+            "distributedAt": "2026-11-13T12:32:00Z",
+            "proofs": [
+              {
+                "txId": "FIXTURE-624955d053cb",
+                "blockNumber": 1278,
+                "channel": "trace-channel"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

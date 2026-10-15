@@ -1,0 +1,1372 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "provenance.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "note": "No names or phone numbers. UNVERIFIABLE lot 497 returns ERR_NOT_FOUND-like handling in live mode: origin link is broken after erasure."
+  },
+  "examples": [
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004517"
+      },
+      "body": {
+        "sscc": "089012340000004517",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-02",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T12:32:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Changual",
+            "at": "2026-11-04T13:22:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:32:00Z",
+            "orgType": "COLD_STORAGE"
+          },
+          {
+            "step": "Dispatched",
+            "place": "Debra to Kolkata",
+            "at": "2026-11-11T06:32:00Z",
+            "orgType": "TRANSPORT"
+          },
+          {
+            "step": "Received by the buyer",
+            "place": "Kolkata",
+            "at": "2026-11-12T10:32:00Z",
+            "orgType": "BUYER"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-f101ae4419cb",
+            "blockNumber": 1202,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-783840882256",
+            "blockNumber": 1217,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-24834e8d5be4",
+            "blockNumber": 288,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-469ca7c5cb08",
+            "blockNumber": 1231,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d3aff143db3b",
+            "blockNumber": 292,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-58932d87b506",
+            "blockNumber": 303,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-e7b937aeb125",
+            "blockNumber": 1242,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-40fabe3c964d",
+            "blockNumber": 306,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-f1126b32f197",
+            "blockNumber": 309,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-bbd147a82028",
+            "blockNumber": 310,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-8c5c91b1f11d",
+            "blockNumber": 1246,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5746ef7a9135",
+            "blockNumber": 1247,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-3224f816f95a",
+            "blockNumber": 1250,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-338c6e85b5cc",
+            "blockNumber": 1260,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d21d45663060",
+            "blockNumber": 1263,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-33858cd2ed55",
+            "blockNumber": 1268,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-f8cf93af7eb4",
+            "blockNumber": 1271,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004555"
+      },
+      "body": {
+        "sscc": "089012340000004555",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00455",
+        "commodity": "POTATO",
+        "variety": "Kufri Pukhraj",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-02",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T12:35:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Changual",
+            "at": "2026-11-04T13:25:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:35:00Z",
+            "orgType": "COLD_STORAGE"
+          },
+          {
+            "step": "Dispatched",
+            "place": "Debra to Kolkata",
+            "at": "2026-11-11T06:35:00Z",
+            "orgType": "TRANSPORT"
+          },
+          {
+            "step": "Received by the buyer",
+            "place": "Kolkata",
+            "at": "2026-11-12T10:35:00Z",
+            "orgType": "BUYER"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-340a05c17b9a",
+            "blockNumber": 1203,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-f4727a175393",
+            "blockNumber": 1218,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d437036f2825",
+            "blockNumber": 289,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-e676b5f14ebd",
+            "blockNumber": 1232,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-dc35b7f56dda",
+            "blockNumber": 1248,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-36df7553ee1b",
+            "blockNumber": 1251,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-b3e130758e87",
+            "blockNumber": 1261,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-86d2f19a9f52",
+            "blockNumber": 1264,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9217eef86b88",
+            "blockNumber": 1269,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-478b3e745516",
+            "blockNumber": 1272,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004562"
+      },
+      "body": {
+        "sscc": "089012340000004562",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00456",
+        "commodity": "POTATO",
+        "variety": "Kufri Chipsona",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-03",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T12:38:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Changual",
+            "at": "2026-11-04T13:28:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:38:00Z",
+            "orgType": "COLD_STORAGE"
+          },
+          {
+            "step": "Dispatched",
+            "place": "Debra to Kolkata",
+            "at": "2026-11-11T06:38:00Z",
+            "orgType": "TRANSPORT"
+          },
+          {
+            "step": "Received by the buyer",
+            "place": "Kolkata",
+            "at": "2026-11-12T10:38:00Z",
+            "orgType": "BUYER"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-455c1b3c5392",
+            "blockNumber": 1204,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-ffca3ef3f280",
+            "blockNumber": 1219,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-525def49d71e",
+            "blockNumber": 290,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-c91b07b35634",
+            "blockNumber": 1233,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-33562cb883af",
+            "blockNumber": 1249,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-00855bc7668c",
+            "blockNumber": 1252,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-78ad20bf7d0b",
+            "blockNumber": 1262,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d93f43114e15",
+            "blockNumber": 1265,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-875ba7044941",
+            "blockNumber": 1270,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-cad7dbe0ddba",
+            "blockNumber": 1273,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004524"
+      },
+      "body": {
+        "sscc": "089012340000004524",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-04",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T12:41:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Changual",
+            "at": "2026-11-04T13:31:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:41:00Z",
+            "orgType": "COLD_STORAGE"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-9f2172599b56",
+            "blockNumber": 1205,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d70eec3817a7",
+            "blockNumber": 1220,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-b27a70a7227d",
+            "blockNumber": 291,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-49f689b91d1e",
+            "blockNumber": 1234,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-1bebbc204eb8",
+            "blockNumber": 296,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-d69245f11274",
+            "blockNumber": 304,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-ed913001dbf3",
+            "blockNumber": 1243,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-a6a3a0677d29",
+            "blockNumber": 307,
+            "channel": "finance-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004531"
+      },
+      "body": {
+        "sscc": "089012340000004531",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00453",
+        "commodity": "POTATO",
+        "variety": "Kufri Pukhraj",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-10",
+        "grade": "B",
+        "residueTested": false,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T12:44:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Changual",
+            "at": "2026-11-04T13:34:00Z",
+            "orgType": "FPO"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-daca2e22da02",
+            "blockNumber": 1206,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-897214cc61cf",
+            "blockNumber": 1221,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004548"
+      },
+      "body": {
+        "sscc": "089012340000004548",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00454",
+        "commodity": "POTATO",
+        "variety": "Kufri Chipsona",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-05",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T12:47:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Changual",
+            "at": "2026-11-04T13:37:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:47:00Z",
+            "orgType": "COLD_STORAGE"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-1375d3d12eac",
+            "blockNumber": 1207,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0e5c8831c2ba",
+            "blockNumber": 1222,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0be6efdd1d88",
+            "blockNumber": 293,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-2fa343f84a2a",
+            "blockNumber": 1235,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-da2e9c370080",
+            "blockNumber": 204,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1d1ef239c1ff",
+            "blockNumber": 1283,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004609"
+      },
+      "body": {
+        "sscc": "089012340000004609",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00460",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "village": "Golgram",
+        "block": "Debra",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-03",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Golgram",
+            "at": "2026-11-04T12:50:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Golgram",
+            "at": "2026-11-04T13:40:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:50:00Z",
+            "orgType": "COLD_STORAGE"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-fa31bfbc1df7",
+            "blockNumber": 1208,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d9addb8b86f6",
+            "blockNumber": 1223,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-c2e8eb09074c",
+            "blockNumber": 294,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-ecb1ed04dcca",
+            "blockNumber": 1236,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-2bc18965dac2",
+            "blockNumber": 199,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-fe4981ec1f8f",
+            "blockNumber": 1259,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-a5e55eeb76f4",
+            "blockNumber": 200,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-41ab81ad3783",
+            "blockNumber": 201,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-0dbcbbcb971b",
+            "blockNumber": 1266,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004616"
+      },
+      "body": {
+        "sscc": "089012340000004616",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00461",
+        "commodity": "POTATO",
+        "variety": "Kufri Pukhraj",
+        "village": "Golgram",
+        "block": "Debra",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-03",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Golgram",
+            "at": "2026-11-04T12:53:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Golgram",
+            "at": "2026-11-04T13:43:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:53:00Z",
+            "orgType": "COLD_STORAGE"
+          },
+          {
+            "step": "Dispatched",
+            "place": "Debra to Kolkata",
+            "at": "2026-11-13T18:53:00Z",
+            "orgType": "TRANSPORT"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-17620526d1fa",
+            "blockNumber": 1209,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-bd7d21eea52b",
+            "blockNumber": 1224,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-aefd0aebc801",
+            "blockNumber": 295,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-b3877923c63a",
+            "blockNumber": 1237,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d8908995684f",
+            "blockNumber": 196,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-d1fe0fab4d4a",
+            "blockNumber": 1257,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d794fbb09556",
+            "blockNumber": 197,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-00d96492de05",
+            "blockNumber": 198,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-b6d0cbb92291",
+            "blockNumber": 1258,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-7607430d31ab",
+            "blockNumber": 1279,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-95e88b599144",
+            "blockNumber": 1280,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004623"
+      },
+      "body": {
+        "sscc": "089012340000004623",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00462",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "village": "Golgram",
+        "block": "Debra",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-04",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": false,
+          "breaches": 1
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Golgram",
+            "at": "2026-11-04T12:56:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Golgram",
+            "at": "2026-11-04T13:46:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:56:00Z",
+            "orgType": "COLD_STORAGE"
+          },
+          {
+            "step": "Dispatched",
+            "place": "Debra to Kolkata",
+            "at": "2026-11-13T02:08:00Z",
+            "orgType": "TRANSPORT"
+          },
+          {
+            "step": "Received by the buyer",
+            "place": "Kolkata",
+            "at": "2026-11-14T00:56:00Z",
+            "orgType": "BUYER"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-13a76ee3f5c0",
+            "blockNumber": 1210,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-19ae75931d4b",
+            "blockNumber": 1225,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-c631d10a67eb",
+            "blockNumber": 297,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-e4a360649975",
+            "blockNumber": 1238,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-852bce17b170",
+            "blockNumber": 190,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-d1b78a250163",
+            "blockNumber": 1253,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d8b4fe8cafee",
+            "blockNumber": 191,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1aa3f2aa3e4a",
+            "blockNumber": 192,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-8c5e7b335370",
+            "blockNumber": 1254,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-8176a2f133a1",
+            "blockNumber": 1274,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-4ea0b472b44d",
+            "blockNumber": 1276,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-3f7ac83a3d73",
+            "blockNumber": 1281,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-31f9eb9c6c8a",
+            "blockNumber": 205,
+            "channel": "trade-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004968"
+      },
+      "body": {
+        "sscc": "089012340000004968",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00496",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "village": "Golgram",
+        "block": "Debra",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-04",
+        "grade": "B",
+        "residueTested": false,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Golgram",
+            "at": "2026-11-04T12:59:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Golgram",
+            "at": "2026-11-04T13:49:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Rupnarayan Cold Storage (demo)",
+            "at": "2026-11-05T12:59:00Z",
+            "orgType": "COLD_STORAGE"
+          },
+          {
+            "step": "Dispatched",
+            "place": "Debra to Kolkata",
+            "at": "2026-11-13T02:11:00Z",
+            "orgType": "TRANSPORT"
+          },
+          {
+            "step": "Received by the buyer",
+            "place": "Kolkata",
+            "at": "2026-11-14T00:59:00Z",
+            "orgType": "BUYER"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-64f5df2ab6aa",
+            "blockNumber": 1211,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-5103c3edc9be",
+            "blockNumber": 1226,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-eeb96a9cc043",
+            "blockNumber": 298,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-3be6f7dd938c",
+            "blockNumber": 1239,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-11fa1c778423",
+            "blockNumber": 193,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-64849833573c",
+            "blockNumber": 1255,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0a429d6cf566",
+            "blockNumber": 194,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-9effabd16d9f",
+            "blockNumber": 195,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-0334438407cf",
+            "blockNumber": 1256,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-6d041108d3d0",
+            "blockNumber": 1275,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-84cdb4e9280c",
+            "blockNumber": 1277,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-e14a002ca0b0",
+            "blockNumber": 1282,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-ba5b3145214b",
+            "blockNumber": 206,
+            "channel": "trade-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004951"
+      },
+      "body": {
+        "sscc": "089012340000004951",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00495",
+        "commodity": "POTATO",
+        "variety": "Kufri Chipsona",
+        "village": "Golgram",
+        "block": "Debra",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-06",
+        "grade": "C",
+        "residueTested": false,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Golgram",
+            "at": "2026-11-04T13:02:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Golgram",
+            "at": "2026-11-04T13:52:00Z",
+            "orgType": "FPO"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-fc964a9f8582",
+            "blockNumber": 1212,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-353fbc909164",
+            "blockNumber": 1227,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-560c1742fa70",
+            "blockNumber": 1244,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004708"
+      },
+      "body": {
+        "sscc": "089012340000004708",
+        "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+        "commodity": "PADDY",
+        "variety": "Swarna (MTU 7029)",
+        "village": "Gopalpur",
+        "block": "Keshiary",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-08",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Gopalpur",
+            "at": "2026-11-04T13:08:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Gopalpur",
+            "at": "2026-11-04T13:58:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Kansai Agri Warehouse (demo)",
+            "at": "2026-11-05T13:08:00Z",
+            "orgType": "WAREHOUSE"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-2092e138fb97",
+            "blockNumber": 1214,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-5afac359e9dc",
+            "blockNumber": 1229,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-1e5a17b15fc4",
+            "blockNumber": 299,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-d3b962e8043d",
+            "blockNumber": 1240,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0d165c7c3704",
+            "blockNumber": 301,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-8f8203c4c583",
+            "blockNumber": 305,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-9863bf70b035",
+            "blockNumber": 1245,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-71075e709348",
+            "blockNumber": 308,
+            "channel": "finance-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004715"
+      },
+      "body": {
+        "sscc": "089012340000004715",
+        "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+        "commodity": "PADDY",
+        "variety": "Swarna (MTU 7029)",
+        "village": "Gopalpur",
+        "block": "Keshiary",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-09",
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Gopalpur",
+            "at": "2026-11-04T13:11:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Graded and weighed on a signed weighbridge",
+            "place": "Gopalpur",
+            "at": "2026-11-04T14:01:00Z",
+            "orgType": "FPO"
+          },
+          {
+            "step": "Stored",
+            "place": "Kansai Agri Warehouse (demo)",
+            "at": "2026-11-05T13:11:00Z",
+            "orgType": "WAREHOUSE"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-d7c3b1d1e270",
+            "blockNumber": 1215,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-a41e26d0ec92",
+            "blockNumber": 1230,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-c33405c86b9d",
+            "blockNumber": 300,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-5ec6f19f17df",
+            "blockNumber": 1241,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-3603f196397c",
+            "blockNumber": 302,
+            "channel": "finance-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "publicProvenance",
+      "params": {
+        "sscc": "089012340000004807"
+      },
+      "body": {
+        "sscc": "089012340000004807",
+        "humanRef": "WB-PSM-KGP2-BRJ-FPO07-2026-R-00480",
+        "commodity": "BRINJAL",
+        "variety": "Round green (local)",
+        "village": "Changual",
+        "block": "Kharagpur-II",
+        "district": "Paschim Medinipur",
+        "harvestOrUnloadDate": "2026-11-12",
+        "residueTested": false,
+        "phiCompliant": false,
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0
+        },
+        "journey": [
+          {
+            "step": "Lot commissioned with the farmer signature",
+            "place": "Changual",
+            "at": "2026-11-04T13:14:00Z",
+            "orgType": "FPO"
+          }
+        ],
+        "proofs": [
+          {
+            "txId": "FIXTURE-1249819b8278",
+            "blockNumber": 1216,
+            "channel": "trace-channel"
+          }
+        ],
+        "ledgerMode": "live"
+      }
+    },
+    {
+      "endpoint": "scanReport",
+      "body": {
+        "received": true,
+        "id": "8b390316-f7c6-496c-a666-99171566156c"
+      }
+    }
+  ]
+}

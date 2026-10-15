@@ -1,34 +1,27 @@
 # Human steps for 00-core-ledger
 
-Environment: local WSL2 Ubuntu + Docker Desktop (not Codespaces). Updated at CHECKPOINT C0.
+Environment: local WSL2 Ubuntu + Docker Desktop. Updated at CHECKPOINT C1 (your C0 answers are recorded in `docs/DECISIONS.md` D3).
 
-## Do now (needed for C2, so not urgent for C1)
-1. **Install the toolchain.** WSL lacks `go`, `node`, `pnpm`, `jq`, `yq`, `make` and `gh`. Docker 29.7.2 is present. The script needs your sudo password, so run it yourself. In the Claude prompt type:
-   `! bash ~/FPO_SETU/00-core-ledger/scripts/bootstrap-wsl.sh`
-   Then open a new shell and tell me when it is done. I will verify the versions.
-2. **Docker Desktop:** Settings, Resources, WSL integration, enable it for the Ubuntu distro. (`docker` already works in WSL, so this is probably done.)
-3. **GitHub CLI (optional, only if you want me to push or open PRs):** `sudo apt install gh && gh auth login`.
+## Done
+- Toolchain verified: go 1.23.4, node 22.23.3, pnpm 12.11.2, jq 1.8.1, yq 4.44.3, make 4.4.1, docker 29.7.2 + compose v5.4.0, git 2.53.0.
 
-## Accounts and keys (needed later, from the table in `../HUMAN_SETUP.md` section 4)
-| When | What | Needed for |
+## Do now (small)
+1. **Git identity (30 seconds).** `git config --global user.name "Your Name"` and `git config --global user.email you@example.com`. Until then my commits use the handle `developerashutosh123`. Push to `origin` needs credentials: if `git push` asks for a password, create a GitHub personal access token (classic, `repo` scope) or run `sudo apt install gh && gh auth login`.
+2. **Golgram and Gopalpur coordinates.** Neither village exists in OpenStreetMap, so `villages.json` shows the block centre for them. Please send, for each: latitude and longitude (from Google Maps, long-press the village) **or** the LGD code, and for Gopalpur confirm the gram panchayat in Keshiary block (Census 2011 village directory). Not blocking.
+3. **The four Month-12 gate criteria** from the mid-term report (one line each). Until then that KPI shows "criteria not provided". Not blocking.
+
+## Needed before C4 (gateway and seed)
+| What | Where | Goes into |
 |---|---|---|
-| Before C4 | Supabase (Mumbai if offered) or Neon project, and `DATABASE_URL` + `DIRECT_URL` | gateway, indexer, read-API |
-| Before C4 | data.gov.in account, then `DATAGOVIN_API_KEY` | real AGMARKNET prices |
-| Before C4 | AGMARKNET history CSVs: Potato, Brinjal, Cauliflower, Tomato, Paddy at Medinipur (West), Ghatal, Garbeta, Purba Medinipur; last 2 seasons | price history (never synthesised) |
-| C5 | Vercel account (and optionally `VERCEL_TOKEN`) | read-API deploy |
-| C5 | Tunnel choice (see Q3) | public gateway URL |
+| Supabase project, region Mumbai (ap-south-1). Send `DATABASE_URL` (pooled) and `DIRECT_URL` **by writing them into `00-core-ledger/gateway/.env`, never into the chat** | supabase.com, New project, Connect | gateway, indexer, read-API |
+| data.gov.in account and `DATAGOVIN_API_KEY` (same rule: into `.env`) | data.gov.in, My Account | real AGMARKNET prices |
+| AGMARKNET history CSVs: Potato, Brinjal, Cauliflower, Tomato, Paddy at Medinipur (West), Ghatal, Garbeta, Purba Medinipur; last 2 seasons | agmarknet.gov.in, save to `~/FPO_SETU/00-core-ledger/data/agmarknet/` | price history (never synthesised) |
 
-I generate `JWT_SECRET` and `FARMER_TOKEN_SECRET` myself (`openssl rand -hex 32`) into a gitignored `.env`. Never paste keys into the chat.
+I generate `JWT_SECRET`, `FARMER_TOKEN_SECRET` and `PRICE_SALT_SECRET` myself (`openssl rand -hex 32`) into the gitignored `.env`.
 
-## Files I could not find
-- `../docs/` (mid-term deck, report, guidelines PDF) does not exist in the repo. PROMPT.md says to read them if present. If you want them used, copy them to `~/FPO_SETU/docs/` before C1.
+## Needed before C5 (public URL and deploy)
+- **ngrok** (your choice, Q3): free account at ngrok.com, claim the free static domain (dashboard, Domains), install the agent (`snap install ngrok` or the apt repo) and run `ngrok config add-authtoken <token>` yourself. Tell me the domain name.
+- **Vercel** account for the read-only API (and optionally `VERCEL_TOKEN`).
 
-## Questions (answer in one message)
-- **Q1. Postgres host:** Supabase or Neon? (Default: Supabase, Mumbai region.)
-- **Q2. Mid-term docs:** will you add them to `~/FPO_SETU/docs/`, or should I proceed without them?
-- **Q3. Public gateway URL.** Vercel-hosted portals must reach a gateway running on your PC. Options:
-  (a) Cloudflare quick tunnel: no account, but the URL changes on every restart, so you must update `API_URL` in all portals each time;
-  (b) ngrok free static domain: needs a free ngrok account, but the URL is stable. Recommended.
-  Which one?
-- **Q4. WSL memory:** keep the 7.6 GiB default with the lite profile, or raise it to about 11 GB in `.wslconfig` (the host has 15.7 GB) so we can run the full 3-orderer profile? Default: keep lite.
-- **Q5. Commits:** may I commit and push to `origin` (github.com/developerashutosh123/FPO_SETU)? The `.devcontainer/` folder sits at the repo root, outside my folder, as PROMPT.md requires. Shall I include it in my commits? Default: commit locally only, push when you say so.
+## Optional
+- Raise WSL memory later only if you want the full 3-orderer profile (DECISIONS D2). Not needed now.

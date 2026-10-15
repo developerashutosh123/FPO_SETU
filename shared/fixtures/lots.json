@@ -1,0 +1,3764 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "lots.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "lotCount": 16,
+    "goldenLot": "089012340000004517",
+    "signLiveDraft": "089012340000004906",
+    "note": "Bag size assumed 50 kg for every commodity (verify against a West Bengal source before using in copy). Quality and weighbridge numbers are fixture values.",
+    "statuses": [
+      "CLOSED",
+      "PLEDGED",
+      "GRADED",
+      "LISTED",
+      "SOLD",
+      "IN_TRANSIT",
+      "DELIVERED",
+      "REJECTED",
+      "TRANSFORMED",
+      "UNVERIFIABLE",
+      "IN_STORAGE",
+      "COMMISSIONED",
+      "PENDING_FARMER_SIGNATURE"
+    ]
+  },
+  "examples": [
+    {
+      "endpoint": "listLots",
+      "body": {
+        "items": [
+          {
+            "sscc": "089012340000004517",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "CLOSED",
+            "village": "CHANGUAL",
+            "bagCount": 40,
+            "estWeightKg": 2000,
+            "netKg": 1964,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-02",
+            "proof": {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004555",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00455",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "status": "CLOSED",
+            "village": "CHANGUAL",
+            "bagCount": 60,
+            "estWeightKg": 3000,
+            "netKg": 2950,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-02",
+            "proof": {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004562",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00456",
+            "commodity": "POTATO",
+            "variety": "Kufri Chipsona",
+            "status": "CLOSED",
+            "village": "CHANGUAL",
+            "bagCount": 36,
+            "estWeightKg": 1800,
+            "netKg": 1790,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-03",
+            "proof": {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004524",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "PLEDGED",
+            "village": "CHANGUAL",
+            "bagCount": 30,
+            "estWeightKg": 1500,
+            "netKg": 1480,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-04",
+            "proof": {
+              "txId": "FIXTURE-a6a3a0677d29",
+              "blockNumber": 307,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004531",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00453",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "status": "GRADED",
+            "village": "CHANGUAL",
+            "bagCount": 50,
+            "estWeightKg": 2500,
+            "netKg": 2480,
+            "grade": "B",
+            "harvestOrUnloadDate": "2026-11-10",
+            "proof": {
+              "txId": "FIXTURE-897214cc61cf",
+              "blockNumber": 1221,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004548",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00454",
+            "commodity": "POTATO",
+            "variety": "Kufri Chipsona",
+            "status": "LISTED",
+            "village": "CHANGUAL",
+            "bagCount": 44,
+            "estWeightKg": 2200,
+            "netKg": 2190,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-05",
+            "proof": {
+              "txId": "FIXTURE-1d1ef239c1ff",
+              "blockNumber": 1283,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004609",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00460",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "SOLD",
+            "village": "GOLGRAM",
+            "bagCount": 80,
+            "estWeightKg": 4000,
+            "netKg": 3960,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-03",
+            "proof": {
+              "txId": "FIXTURE-0dbcbbcb971b",
+              "blockNumber": 1266,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004616",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00461",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "status": "IN_TRANSIT",
+            "village": "GOLGRAM",
+            "bagCount": 70,
+            "estWeightKg": 3500,
+            "netKg": 3430,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-03",
+            "proof": {
+              "txId": "FIXTURE-95e88b599144",
+              "blockNumber": 1280,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004623",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00462",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "DELIVERED",
+            "village": "GOLGRAM",
+            "bagCount": 64,
+            "estWeightKg": 3200,
+            "netKg": 3120,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-04",
+            "proof": {
+              "txId": "FIXTURE-31f9eb9c6c8a",
+              "blockNumber": 205,
+              "channel": "trade-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004968",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00496",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "REJECTED",
+            "village": "GOLGRAM",
+            "bagCount": 24,
+            "estWeightKg": 1200,
+            "netKg": 1150,
+            "grade": "B",
+            "harvestOrUnloadDate": "2026-11-04",
+            "proof": {
+              "txId": "FIXTURE-ba5b3145214b",
+              "blockNumber": 206,
+              "channel": "trade-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004951",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00495",
+            "commodity": "POTATO",
+            "variety": "Kufri Chipsona",
+            "status": "TRANSFORMED",
+            "village": "GOLGRAM",
+            "bagCount": 30,
+            "estWeightKg": 1500,
+            "netKg": 1460,
+            "grade": "C",
+            "harvestOrUnloadDate": "2026-11-06",
+            "proof": {
+              "txId": "FIXTURE-560c1742fa70",
+              "blockNumber": 1244,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004975",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00497",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "UNVERIFIABLE",
+            "village": "CHANGUAL",
+            "bagCount": 20,
+            "estWeightKg": 1000,
+            "netKg": 980,
+            "grade": "B",
+            "harvestOrUnloadDate": "2026-11-01",
+            "proof": {
+              "txId": "FIXTURE-4be7de4fe726",
+              "blockNumber": 1228,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004708",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+            "commodity": "PADDY",
+            "variety": "Swarna (MTU 7029)",
+            "status": "PLEDGED",
+            "village": "GOPALPUR",
+            "bagCount": 100,
+            "estWeightKg": 5000,
+            "netKg": 4900,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-08",
+            "proof": {
+              "txId": "FIXTURE-71075e709348",
+              "blockNumber": 308,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004715",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+            "commodity": "PADDY",
+            "variety": "Swarna (MTU 7029)",
+            "status": "IN_STORAGE",
+            "village": "GOPALPUR",
+            "bagCount": 80,
+            "estWeightKg": 4000,
+            "netKg": 3920,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-09",
+            "proof": {
+              "txId": "FIXTURE-3603f196397c",
+              "blockNumber": 302,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004807",
+            "humanRef": "WB-PSM-KGP2-BRJ-FPO07-2026-R-00480",
+            "commodity": "BRINJAL",
+            "variety": "Round green (local)",
+            "status": "COMMISSIONED",
+            "village": "CHANGUAL",
+            "bagCount": 20,
+            "estWeightKg": 1000,
+            "harvestOrUnloadDate": "2026-11-12",
+            "proof": {
+              "txId": "FIXTURE-1249819b8278",
+              "blockNumber": 1216,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004906",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00490",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "PENDING_FARMER_SIGNATURE",
+            "village": "CHANGUAL",
+            "bagCount": 40,
+            "estWeightKg": 2000,
+            "harvestOrUnloadDate": "2026-11-13"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listLots",
+      "query": {
+        "village": "CHANGUAL"
+      },
+      "body": {
+        "items": [
+          {
+            "sscc": "089012340000004517",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "CLOSED",
+            "village": "CHANGUAL",
+            "bagCount": 40,
+            "estWeightKg": 2000,
+            "netKg": 1964,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-02",
+            "proof": {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004555",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00455",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "status": "CLOSED",
+            "village": "CHANGUAL",
+            "bagCount": 60,
+            "estWeightKg": 3000,
+            "netKg": 2950,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-02",
+            "proof": {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004562",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00456",
+            "commodity": "POTATO",
+            "variety": "Kufri Chipsona",
+            "status": "CLOSED",
+            "village": "CHANGUAL",
+            "bagCount": 36,
+            "estWeightKg": 1800,
+            "netKg": 1790,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-03",
+            "proof": {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004524",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "PLEDGED",
+            "village": "CHANGUAL",
+            "bagCount": 30,
+            "estWeightKg": 1500,
+            "netKg": 1480,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-04",
+            "proof": {
+              "txId": "FIXTURE-a6a3a0677d29",
+              "blockNumber": 307,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004531",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00453",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "status": "GRADED",
+            "village": "CHANGUAL",
+            "bagCount": 50,
+            "estWeightKg": 2500,
+            "netKg": 2480,
+            "grade": "B",
+            "harvestOrUnloadDate": "2026-11-10",
+            "proof": {
+              "txId": "FIXTURE-897214cc61cf",
+              "blockNumber": 1221,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004548",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00454",
+            "commodity": "POTATO",
+            "variety": "Kufri Chipsona",
+            "status": "LISTED",
+            "village": "CHANGUAL",
+            "bagCount": 44,
+            "estWeightKg": 2200,
+            "netKg": 2190,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-05",
+            "proof": {
+              "txId": "FIXTURE-1d1ef239c1ff",
+              "blockNumber": 1283,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004975",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00497",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "UNVERIFIABLE",
+            "village": "CHANGUAL",
+            "bagCount": 20,
+            "estWeightKg": 1000,
+            "netKg": 980,
+            "grade": "B",
+            "harvestOrUnloadDate": "2026-11-01",
+            "proof": {
+              "txId": "FIXTURE-4be7de4fe726",
+              "blockNumber": 1228,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004807",
+            "humanRef": "WB-PSM-KGP2-BRJ-FPO07-2026-R-00480",
+            "commodity": "BRINJAL",
+            "variety": "Round green (local)",
+            "status": "COMMISSIONED",
+            "village": "CHANGUAL",
+            "bagCount": 20,
+            "estWeightKg": 1000,
+            "harvestOrUnloadDate": "2026-11-12",
+            "proof": {
+              "txId": "FIXTURE-1249819b8278",
+              "blockNumber": 1216,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004906",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00490",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "PENDING_FARMER_SIGNATURE",
+            "village": "CHANGUAL",
+            "bagCount": 40,
+            "estWeightKg": 2000,
+            "harvestOrUnloadDate": "2026-11-13"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listLots",
+      "query": {
+        "village": "GOLGRAM"
+      },
+      "body": {
+        "items": [
+          {
+            "sscc": "089012340000004609",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00460",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "SOLD",
+            "village": "GOLGRAM",
+            "bagCount": 80,
+            "estWeightKg": 4000,
+            "netKg": 3960,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-03",
+            "proof": {
+              "txId": "FIXTURE-0dbcbbcb971b",
+              "blockNumber": 1266,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004616",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00461",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "status": "IN_TRANSIT",
+            "village": "GOLGRAM",
+            "bagCount": 70,
+            "estWeightKg": 3500,
+            "netKg": 3430,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-03",
+            "proof": {
+              "txId": "FIXTURE-95e88b599144",
+              "blockNumber": 1280,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004623",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00462",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "DELIVERED",
+            "village": "GOLGRAM",
+            "bagCount": 64,
+            "estWeightKg": 3200,
+            "netKg": 3120,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-04",
+            "proof": {
+              "txId": "FIXTURE-31f9eb9c6c8a",
+              "blockNumber": 205,
+              "channel": "trade-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004968",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00496",
+            "commodity": "POTATO",
+            "variety": "Kufri Jyoti",
+            "status": "REJECTED",
+            "village": "GOLGRAM",
+            "bagCount": 24,
+            "estWeightKg": 1200,
+            "netKg": 1150,
+            "grade": "B",
+            "harvestOrUnloadDate": "2026-11-04",
+            "proof": {
+              "txId": "FIXTURE-ba5b3145214b",
+              "blockNumber": 206,
+              "channel": "trade-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004951",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00495",
+            "commodity": "POTATO",
+            "variety": "Kufri Chipsona",
+            "status": "TRANSFORMED",
+            "village": "GOLGRAM",
+            "bagCount": 30,
+            "estWeightKg": 1500,
+            "netKg": 1460,
+            "grade": "C",
+            "harvestOrUnloadDate": "2026-11-06",
+            "proof": {
+              "txId": "FIXTURE-560c1742fa70",
+              "blockNumber": 1244,
+              "channel": "trace-channel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listLots",
+      "query": {
+        "village": "GOPALPUR"
+      },
+      "body": {
+        "items": [
+          {
+            "sscc": "089012340000004708",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+            "commodity": "PADDY",
+            "variety": "Swarna (MTU 7029)",
+            "status": "PLEDGED",
+            "village": "GOPALPUR",
+            "bagCount": 100,
+            "estWeightKg": 5000,
+            "netKg": 4900,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-08",
+            "proof": {
+              "txId": "FIXTURE-71075e709348",
+              "blockNumber": 308,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004715",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+            "commodity": "PADDY",
+            "variety": "Swarna (MTU 7029)",
+            "status": "IN_STORAGE",
+            "village": "GOPALPUR",
+            "bagCount": 80,
+            "estWeightKg": 4000,
+            "netKg": 3920,
+            "grade": "A",
+            "harvestOrUnloadDate": "2026-11-09",
+            "proof": {
+              "txId": "FIXTURE-3603f196397c",
+              "blockNumber": 302,
+              "channel": "finance-channel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004517"
+      },
+      "body": {
+        "sscc": "089012340000004517",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "CLOSED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-9c2e41a07b55d3f1",
+        "plotId": "PL-7Q2M9X4K1A",
+        "bagCount": 40,
+        "estWeightKg": 2000,
+        "harvestOrUnloadDate": "2026-11-02",
+        "custody": [
+          {
+            "from": "FpoOrgMSP",
+            "to": "BuyerOrgMSP",
+            "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+            "proposedAt": "2026-11-11T06:32:00Z",
+            "proof": {
+              "txId": "FIXTURE-33858cd2ed55",
+              "blockNumber": 1268,
+              "channel": "trace-channel"
+            },
+            "acceptedAt": "2026-11-12T10:32:00Z"
+          }
+        ],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "dfeba8ced90c3459e3b6021d78bd68aff41ed9005c3de59010d0a14529e7d2b3",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "2e346e4a14ce86deac2c54b3cc6e7b36385f8946fcb034d91c9890bf5db38e60",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "017ac4d12b66080e2522c407f9df8d84aee863b3a90f4240a7b8804318e06e34"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-f101ae4419cb",
+            "blockNumber": 1202,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-783840882256",
+            "blockNumber": 1217,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-24834e8d5be4",
+            "blockNumber": 288,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-469ca7c5cb08",
+            "blockNumber": 1231,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d3aff143db3b",
+            "blockNumber": 292,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-58932d87b506",
+            "blockNumber": 303,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-e7b937aeb125",
+            "blockNumber": 1242,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-40fabe3c964d",
+            "blockNumber": 306,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-f1126b32f197",
+            "blockNumber": 309,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-bbd147a82028",
+            "blockNumber": 310,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-8c5c91b1f11d",
+            "blockNumber": 1246,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5746ef7a9135",
+            "blockNumber": 1247,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-3224f816f95a",
+            "blockNumber": 1250,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-338c6e85b5cc",
+            "blockNumber": 1260,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d21d45663060",
+            "blockNumber": 1263,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-33858cd2ed55",
+            "blockNumber": 1268,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-f8cf93af7eb4",
+            "blockNumber": 1271,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 1964,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 3204,
+            "tareKg": 1240,
+            "netKg": 1964,
+            "at": "2026-11-04T13:22:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:22:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:32:00Z",
+          "enwr": "ENWR-NERL-2026-004211",
+          "repository": "NERL"
+        },
+        "lien": {
+          "status": "RELEASED",
+          "lienId": "LIEN-2026-00040",
+          "bank": "BankOrgMSP",
+          "proof": {
+            "txId": "FIXTURE-bbd147a82028",
+            "blockNumber": 310,
+            "channel": "finance-channel"
+          }
+        },
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0,
+          "digests": [
+            {
+              "window": "2026-11-11T22:00Z/2026-11-11T11:32Z",
+              "avgC": 4.1,
+              "proof": {
+                "txId": "FIXTURE-d21d45663060",
+                "blockNumber": 1263,
+                "channel": "trace-channel"
+              }
+            }
+          ]
+        },
+        "order": {
+          "orderId": "ORD-2026-00087",
+          "channel": "DIRECT",
+          "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+          "settled": true
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004555"
+      },
+      "body": {
+        "sscc": "089012340000004555",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00455",
+        "commodity": "POTATO",
+        "variety": "Kufri Pukhraj",
+        "status": "CLOSED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-dec84c02df89acd9",
+        "plotId": "PL-HDHDAZH9J4",
+        "bagCount": 60,
+        "estWeightKg": 3000,
+        "harvestOrUnloadDate": "2026-11-02",
+        "custody": [
+          {
+            "from": "FpoOrgMSP",
+            "to": "BuyerOrgMSP",
+            "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+            "proposedAt": "2026-11-11T06:35:00Z",
+            "proof": {
+              "txId": "FIXTURE-9217eef86b88",
+              "blockNumber": 1269,
+              "channel": "trace-channel"
+            },
+            "acceptedAt": "2026-11-12T10:35:00Z"
+          }
+        ],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "14e02372a205da76c3aec845915c64dcc2e87ac75fad0d9666f6682cc631b1b8",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "8b1414c7f7c5c9a23102933b3491b50d7b3f9a72647454698cddff0e57c7fa1c",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "32d677dca48292d99544c92b9b5795a3be125174b08ad43481a9e4ca734b264f"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-340a05c17b9a",
+            "blockNumber": 1203,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-f4727a175393",
+            "blockNumber": 1218,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d437036f2825",
+            "blockNumber": 289,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-e676b5f14ebd",
+            "blockNumber": 1232,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-dc35b7f56dda",
+            "blockNumber": 1248,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-36df7553ee1b",
+            "blockNumber": 1251,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-b3e130758e87",
+            "blockNumber": 1261,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-86d2f19a9f52",
+            "blockNumber": 1264,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9217eef86b88",
+            "blockNumber": 1269,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-478b3e745516",
+            "blockNumber": 1272,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 2950,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 4190,
+            "tareKg": 1240,
+            "netKg": 2950,
+            "at": "2026-11-04T13:25:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:25:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:35:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0,
+          "digests": [
+            {
+              "window": "2026-11-11T22:00Z/2026-11-11T11:35Z",
+              "avgC": 4.1,
+              "proof": {
+                "txId": "FIXTURE-86d2f19a9f52",
+                "blockNumber": 1264,
+                "channel": "trace-channel"
+              }
+            }
+          ]
+        },
+        "order": {
+          "orderId": "ORD-2026-00087",
+          "channel": "DIRECT",
+          "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+          "settled": true
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004562"
+      },
+      "body": {
+        "sscc": "089012340000004562",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00456",
+        "commodity": "POTATO",
+        "variety": "Kufri Chipsona",
+        "status": "CLOSED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-f7c76a42af61bedd",
+        "plotId": "PL-9CGLBGAGSB",
+        "bagCount": 36,
+        "estWeightKg": 1800,
+        "harvestOrUnloadDate": "2026-11-03",
+        "custody": [
+          {
+            "from": "FpoOrgMSP",
+            "to": "BuyerOrgMSP",
+            "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+            "proposedAt": "2026-11-11T06:38:00Z",
+            "proof": {
+              "txId": "FIXTURE-875ba7044941",
+              "blockNumber": 1270,
+              "channel": "trace-channel"
+            },
+            "acceptedAt": "2026-11-12T10:38:00Z"
+          }
+        ],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "73ef14a8309a353904913096f13ffe713de4efe7853f4e3605fd71a3ffc350de",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "8b6c1a770f52f727bfb4c96f2daa186188e0da64d1496ddb397f299328c0471b",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "c235f0da96bad166c0d14396dc8aa8a09edea9b062daa87876437ba8520dbbd6"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-455c1b3c5392",
+            "blockNumber": 1204,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-ffca3ef3f280",
+            "blockNumber": 1219,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-525def49d71e",
+            "blockNumber": 290,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-c91b07b35634",
+            "blockNumber": 1233,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-9bea49010ff7",
+            "blockNumber": 187,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-33562cb883af",
+            "blockNumber": 1249,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-48425466165a",
+            "blockNumber": 188,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1bb7bf657b23",
+            "blockNumber": 189,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-00855bc7668c",
+            "blockNumber": 1252,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-78ad20bf7d0b",
+            "blockNumber": 1262,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d93f43114e15",
+            "blockNumber": 1265,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-875ba7044941",
+            "blockNumber": 1270,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-13909a0c4ae7",
+            "blockNumber": 202,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-5ed3ab8b05e0",
+            "blockNumber": 203,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-cad7dbe0ddba",
+            "blockNumber": 1273,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-624955d053cb",
+            "blockNumber": 1278,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 1790,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 3030,
+            "tareKg": 1240,
+            "netKg": 1790,
+            "at": "2026-11-04T13:28:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:28:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:38:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0,
+          "digests": [
+            {
+              "window": "2026-11-11T22:00Z/2026-11-11T11:38Z",
+              "avgC": 4.1,
+              "proof": {
+                "txId": "FIXTURE-d93f43114e15",
+                "blockNumber": 1265,
+                "channel": "trace-channel"
+              }
+            }
+          ]
+        },
+        "order": {
+          "orderId": "ORD-2026-00087",
+          "channel": "DIRECT",
+          "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+          "settled": true
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004524"
+      },
+      "body": {
+        "sscc": "089012340000004524",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "PLEDGED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-9c2e41a07b55d3f1",
+        "plotId": "PL-7Q2M9X4K1A",
+        "bagCount": 30,
+        "estWeightKg": 1500,
+        "harvestOrUnloadDate": "2026-11-04",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "e2c42a4832d6665d99024e1cad8e43083a087da4eab19c88ffa35dc1da62cda6",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "c9ccc555cd6ca77fdc4ae039c4921113e6154b6e37c958510ff755a92472a090",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "dd1c37ec0a68ab606ee71bfc7787fd4557e43cea65d88949a4d3ec5832dbbdea"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-9f2172599b56",
+            "blockNumber": 1205,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d70eec3817a7",
+            "blockNumber": 1220,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-b27a70a7227d",
+            "blockNumber": 291,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-49f689b91d1e",
+            "blockNumber": 1234,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-1bebbc204eb8",
+            "blockNumber": 296,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-d69245f11274",
+            "blockNumber": 304,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-ed913001dbf3",
+            "blockNumber": 1243,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-a6a3a0677d29",
+            "blockNumber": 307,
+            "channel": "finance-channel"
+          }
+        ],
+        "netKg": 1480,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 2720,
+            "tareKg": 1240,
+            "netKg": 1480,
+            "at": "2026-11-04T13:31:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:31:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:41:00Z",
+          "enwr": "ENWR-NERL-2026-004212",
+          "repository": "NERL"
+        },
+        "lien": {
+          "status": "ACTIVE",
+          "lienId": "LIEN-2026-00041",
+          "bank": "BankOrgMSP",
+          "proof": {
+            "txId": "FIXTURE-d69245f11274",
+            "blockNumber": 304,
+            "channel": "finance-channel"
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004531"
+      },
+      "body": {
+        "sscc": "089012340000004531",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00453",
+        "commodity": "POTATO",
+        "variety": "Kufri Pukhraj",
+        "status": "GRADED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-dec84c02df89acd9",
+        "plotId": "PL-HDHDAZH9J4",
+        "bagCount": 50,
+        "estWeightKg": 2500,
+        "harvestOrUnloadDate": "2026-11-10",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "60ea130a9fdce4dfa63be067420b7d5caccb965928e1dee6ecade96f095ff4f6",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "0ba78808c3aef1a457e52c64e267c5fa96efab9f3b3e60069c72d74f3c76a201",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "af262744e8ecbf19580a9697952818fc1de419905d5ff57bc6b71c9e192e8999"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-daca2e22da02",
+            "blockNumber": 1206,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-897214cc61cf",
+            "blockNumber": 1221,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 2480,
+        "grade": "B",
+        "residueTested": false,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 3720,
+            "tareKg": 1240,
+            "netKg": 2480,
+            "at": "2026-11-04T13:34:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:34:00Z",
+            "potato": {
+              "sizeGradeMm": "35-45",
+              "greeningPct": 2.1,
+              "rotPct": 1.6,
+              "cutsPct": 2.9
+            }
+          },
+          "deviceVerified": true
+        },
+        "lien": {
+          "status": "NONE"
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004548"
+      },
+      "body": {
+        "sscc": "089012340000004548",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00454",
+        "commodity": "POTATO",
+        "variety": "Kufri Chipsona",
+        "status": "LISTED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-f7c76a42af61bedd",
+        "plotId": "PL-9CGLBGAGSB",
+        "bagCount": 44,
+        "estWeightKg": 2200,
+        "harvestOrUnloadDate": "2026-11-05",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "9c8dd4cefe23030ac97545ce519a2d2c46abf146a19b9a214842d1110549b465",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "ff7456971b2c8eb8101725068ae790d6ed16a1ffe6dff150ea37ebf925198814",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "8754de5b425b22566fb57249f68a37d85ac8052064325f7bd86e75a6d483f5aa"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-1375d3d12eac",
+            "blockNumber": 1207,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0e5c8831c2ba",
+            "blockNumber": 1222,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0be6efdd1d88",
+            "blockNumber": 293,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-2fa343f84a2a",
+            "blockNumber": 1235,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-da2e9c370080",
+            "blockNumber": 204,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1d1ef239c1ff",
+            "blockNumber": 1283,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 2190,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 3430,
+            "tareKg": 1240,
+            "netKg": 2190,
+            "at": "2026-11-04T13:37:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:37:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:47:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "order": {
+          "orderId": "ORD-2026-00091",
+          "channel": "DIRECT",
+          "settled": false
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004609"
+      },
+      "body": {
+        "sscc": "089012340000004609",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00460",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "SOLD",
+        "village": "GOLGRAM",
+        "farmerToken": "FT-64a4da6467dc0bf9",
+        "plotId": "PL-SQEBEAJTCH",
+        "bagCount": 80,
+        "estWeightKg": 4000,
+        "harvestOrUnloadDate": "2026-11-03",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "daf7779dd0e19baea374cdea05e6304b38a175daf1437219eecb25a1d509f9bd",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "3a34e0b8f5ed7ecbe3824f22f06bb5ebcd5d235ecae86123b339eb2bfa825a7e",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "9f6f41a96c98575d330f9cac3baf701df563550c5ae10b7532192035e606cdd3"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-fa31bfbc1df7",
+            "blockNumber": 1208,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d9addb8b86f6",
+            "blockNumber": 1223,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-c2e8eb09074c",
+            "blockNumber": 294,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-ecb1ed04dcca",
+            "blockNumber": 1236,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-2bc18965dac2",
+            "blockNumber": 199,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-fe4981ec1f8f",
+            "blockNumber": 1259,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-a5e55eeb76f4",
+            "blockNumber": 200,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-41ab81ad3783",
+            "blockNumber": 201,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-0dbcbbcb971b",
+            "blockNumber": 1266,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 3960,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 5200,
+            "tareKg": 1240,
+            "netKg": 3960,
+            "at": "2026-11-04T13:40:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:40:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:50:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "order": {
+          "orderId": "ORD-2026-00088",
+          "channel": "DIRECT",
+          "priceHash": "6756b8cf73caa51e716240609620fd6e3a7874961b28c859fae0c0962f5a2436",
+          "settled": false
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004616"
+      },
+      "body": {
+        "sscc": "089012340000004616",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00461",
+        "commodity": "POTATO",
+        "variety": "Kufri Pukhraj",
+        "status": "IN_TRANSIT",
+        "village": "GOLGRAM",
+        "farmerToken": "FT-e100ab24a5701879",
+        "plotId": "PL-VM8XGF4AKJ",
+        "bagCount": 70,
+        "estWeightKg": 3500,
+        "harvestOrUnloadDate": "2026-11-03",
+        "custody": [
+          {
+            "from": "FpoOrgMSP",
+            "to": "BuyerOrgMSP",
+            "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+            "proposedAt": "2026-11-13T18:53:00Z",
+            "proof": {
+              "txId": "FIXTURE-7607430d31ab",
+              "blockNumber": 1279,
+              "channel": "trace-channel"
+            }
+          }
+        ],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "9065d0c647c9c126223f39533362c42ea4fc8e5398cc69dffdbe4b657866b636",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "7a4c25e968899622c2d8d06366e524ca89ed5c20dd0df90eae148268be045642",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "3ff50ef304723a5c3a6e07bf372e89bb212de0d4a22363439751b54a7bf59466"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-17620526d1fa",
+            "blockNumber": 1209,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-bd7d21eea52b",
+            "blockNumber": 1224,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-aefd0aebc801",
+            "blockNumber": 295,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-b3877923c63a",
+            "blockNumber": 1237,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d8908995684f",
+            "blockNumber": 196,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-d1fe0fab4d4a",
+            "blockNumber": 1257,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d794fbb09556",
+            "blockNumber": 197,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-00d96492de05",
+            "blockNumber": 198,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-b6d0cbb92291",
+            "blockNumber": 1258,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-7607430d31ab",
+            "blockNumber": 1279,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-95e88b599144",
+            "blockNumber": 1280,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 3430,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 4670,
+            "tareKg": 1240,
+            "netKg": 3430,
+            "at": "2026-11-04T13:43:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:43:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:53:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0,
+          "digests": [
+            {
+              "window": "2026-11-13T22:00Z/2026-11-13T23:53Z",
+              "avgC": 4.1,
+              "proof": {
+                "txId": "FIXTURE-95e88b599144",
+                "blockNumber": 1280,
+                "channel": "trace-channel"
+              }
+            }
+          ]
+        },
+        "order": {
+          "orderId": "ORD-2026-00089",
+          "channel": "DIRECT",
+          "priceHash": "14c6544d4d35411d54da36cdae4aeec588979c01896d15aaa629eadcfa005c76",
+          "settled": false
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004623"
+      },
+      "body": {
+        "sscc": "089012340000004623",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00462",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "DELIVERED",
+        "village": "GOLGRAM",
+        "farmerToken": "FT-e100ab24a5701879",
+        "plotId": "PL-VM8XGF4AKJ",
+        "bagCount": 64,
+        "estWeightKg": 3200,
+        "harvestOrUnloadDate": "2026-11-04",
+        "custody": [
+          {
+            "from": "FpoOrgMSP",
+            "to": "BuyerOrgMSP",
+            "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+            "proposedAt": "2026-11-13T02:08:00Z",
+            "proof": {
+              "txId": "FIXTURE-3f7ac83a3d73",
+              "blockNumber": 1281,
+              "channel": "trace-channel"
+            },
+            "acceptedAt": "2026-11-14T00:56:00Z"
+          }
+        ],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "473fa7a365ae396333007553d8b1a3a1f93d64e71736b72f59b28c8f1dc29603",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "779566dcacf40b389fb608f6fea92584f213186e3caf4d5a388cb2d0176d4cb3",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "9fdcc1e87e29bcc7f1ed6f334c4f4a9933ba4b5c0d61f4a5a59e52d666455c44"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-13a76ee3f5c0",
+            "blockNumber": 1210,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-19ae75931d4b",
+            "blockNumber": 1225,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-c631d10a67eb",
+            "blockNumber": 297,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-e4a360649975",
+            "blockNumber": 1238,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-852bce17b170",
+            "blockNumber": 190,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-d1b78a250163",
+            "blockNumber": 1253,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-d8b4fe8cafee",
+            "blockNumber": 191,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-1aa3f2aa3e4a",
+            "blockNumber": 192,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-8c5e7b335370",
+            "blockNumber": 1254,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-8176a2f133a1",
+            "blockNumber": 1274,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-4ea0b472b44d",
+            "blockNumber": 1276,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-3f7ac83a3d73",
+            "blockNumber": 1281,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-31f9eb9c6c8a",
+            "blockNumber": 205,
+            "channel": "trade-channel"
+          }
+        ],
+        "netKg": 3120,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 4360,
+            "tareKg": 1240,
+            "netKg": 3120,
+            "at": "2026-11-04T13:46:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:46:00Z",
+            "potato": {
+              "sizeGradeMm": "45-55",
+              "greeningPct": 0.8,
+              "rotPct": 0.4,
+              "cutsPct": 1.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:56:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "coldChain": {
+          "continuous": false,
+          "breaches": 1,
+          "digests": [
+            {
+              "window": "2026-11-12T22:00Z/2026-11-13T07:08Z",
+              "avgC": 6.8,
+              "proof": {
+                "txId": "FIXTURE-4ea0b472b44d",
+                "blockNumber": 1276,
+                "channel": "trace-channel"
+              }
+            }
+          ]
+        },
+        "order": {
+          "orderId": "ORD-2026-00090",
+          "channel": "DIRECT",
+          "priceHash": "315fb9011ab63f987fea11f3d3b3b5d997a0cb2f3672ef655ae632ae9b78bbf3",
+          "settled": false
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004968"
+      },
+      "body": {
+        "sscc": "089012340000004968",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00496",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "REJECTED",
+        "village": "GOLGRAM",
+        "farmerToken": "FT-64a4da6467dc0bf9",
+        "plotId": "PL-SQEBEAJTCH",
+        "bagCount": 24,
+        "estWeightKg": 1200,
+        "harvestOrUnloadDate": "2026-11-04",
+        "custody": [
+          {
+            "from": "FpoOrgMSP",
+            "to": "BuyerOrgMSP",
+            "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+            "proposedAt": "2026-11-13T02:11:00Z",
+            "proof": {
+              "txId": "FIXTURE-e14a002ca0b0",
+              "blockNumber": 1282,
+              "channel": "trace-channel"
+            },
+            "acceptedAt": "2026-11-14T00:59:00Z"
+          }
+        ],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "4c2a61146fd1663495c5a9733b99f2822fd9e56dcc7d0b5ad7056e50849348b1",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "740025e388734de51bcb508104f4f101299fb5d135c47956fadc2c88d8f4ee3f",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "7260903a42dd4a7be27f7b500216f07b50c4b01961d72cd97fd7ece434ff945d"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-64f5df2ab6aa",
+            "blockNumber": 1211,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-5103c3edc9be",
+            "blockNumber": 1226,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-eeb96a9cc043",
+            "blockNumber": 298,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-3be6f7dd938c",
+            "blockNumber": 1239,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-11fa1c778423",
+            "blockNumber": 193,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-64849833573c",
+            "blockNumber": 1255,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0a429d6cf566",
+            "blockNumber": 194,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-9effabd16d9f",
+            "blockNumber": 195,
+            "channel": "trade-channel"
+          },
+          {
+            "txId": "FIXTURE-0334438407cf",
+            "blockNumber": 1256,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-6d041108d3d0",
+            "blockNumber": 1275,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-84cdb4e9280c",
+            "blockNumber": 1277,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-e14a002ca0b0",
+            "blockNumber": 1282,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-ba5b3145214b",
+            "blockNumber": 206,
+            "channel": "trade-channel"
+          }
+        ],
+        "netKg": 1150,
+        "grade": "B",
+        "residueTested": false,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 2390,
+            "tareKg": 1240,
+            "netKg": 1150,
+            "at": "2026-11-04T13:49:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:49:00Z",
+            "potato": {
+              "sizeGradeMm": "35-45",
+              "greeningPct": 2.1,
+              "rotPct": 1.6,
+              "cutsPct": 2.9
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "depositedAt": "2026-11-05T12:59:00Z"
+        },
+        "lien": {
+          "status": "NONE"
+        },
+        "coldChain": {
+          "continuous": true,
+          "breaches": 0,
+          "digests": [
+            {
+              "window": "2026-11-12T22:00Z/2026-11-13T07:11Z",
+              "avgC": 4.1,
+              "proof": {
+                "txId": "FIXTURE-84cdb4e9280c",
+                "blockNumber": 1277,
+                "channel": "trace-channel"
+              }
+            }
+          ]
+        },
+        "order": {
+          "orderId": "ORD-2026-00092",
+          "channel": "DIRECT",
+          "priceHash": "e2228b7cff897159f35c35054775e801142e11ed57b02b8caaab2684214ee978",
+          "settled": false
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004951"
+      },
+      "body": {
+        "sscc": "089012340000004951",
+        "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00495",
+        "commodity": "POTATO",
+        "variety": "Kufri Chipsona",
+        "status": "TRANSFORMED",
+        "village": "GOLGRAM",
+        "farmerToken": "FT-df1c565f3b0fb0ec",
+        "plotId": "PL-SYKQAZEC7Z",
+        "bagCount": 30,
+        "estWeightKg": 1500,
+        "harvestOrUnloadDate": "2026-11-06",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "066766579876d37ead6e8f5916198dbc2476e60d816f7bc8fbb015a44c857411",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "1fa508f505d45f78271e29bab12c88ed94195bd9a3ca603627818c8c4220bd96",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "fa710135f09d1be0e2b557d197f4d2ee3bbacd726290dff41ff9d27cf43fcbaa"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-fc964a9f8582",
+            "blockNumber": 1212,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-353fbc909164",
+            "blockNumber": 1227,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-560c1742fa70",
+            "blockNumber": 1244,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 1460,
+        "grade": "C",
+        "residueTested": false,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 2700,
+            "tareKg": 1240,
+            "netKg": 1460,
+            "at": "2026-11-04T13:52:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:52:00Z",
+            "potato": {
+              "sizeGradeMm": "<35",
+              "greeningPct": 2.1,
+              "rotPct": 1.6,
+              "cutsPct": 2.9
+            }
+          },
+          "deviceVerified": true
+        },
+        "lien": {
+          "status": "NONE"
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004975"
+      },
+      "body": {
+        "sscc": "089012340000004975",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00497",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "UNVERIFIABLE",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-336dc870812dcadd",
+        "plotId": "PL-98AMPZNVX9",
+        "bagCount": 20,
+        "estWeightKg": 1000,
+        "harvestOrUnloadDate": "2026-11-01",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "adde5c9b937f4afe79e89c6b5b4a13cf156753dd67ad1c33617075d1de4d6d68",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "7fc247bb01a0608c09495622813d6637354f25f717088c393ce14387d92add52",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "b3cb5e13f125ae10bf27d505f048f7bac6f70927bc88c6e75353b9b9e55ee922"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-cf21ea1c3a13",
+            "blockNumber": 1213,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-4be7de4fe726",
+            "blockNumber": 1228,
+            "channel": "trace-channel"
+          }
+        ],
+        "netKg": 980,
+        "grade": "B",
+        "residueTested": false,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 2220,
+            "tareKg": 1240,
+            "netKg": 980,
+            "at": "2026-11-04T13:55:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:55:00Z",
+            "potato": {
+              "sizeGradeMm": "35-45",
+              "greeningPct": 2.1,
+              "rotPct": 1.6,
+              "cutsPct": 2.9
+            }
+          },
+          "deviceVerified": true
+        },
+        "lien": {
+          "status": "NONE"
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004708"
+      },
+      "body": {
+        "sscc": "089012340000004708",
+        "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+        "commodity": "PADDY",
+        "variety": "Swarna (MTU 7029)",
+        "status": "PLEDGED",
+        "village": "GOPALPUR",
+        "farmerToken": "FT-5ec94d1595b2ba19",
+        "plotId": "PL-XL2E5DZNZR",
+        "bagCount": 100,
+        "estWeightKg": 5000,
+        "harvestOrUnloadDate": "2026-11-08",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "b0479aedde9acf227c84d45925281de17a829af830c4546a9e854824ab9e49b5",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "2b9a2ee4e45700063243ac5999fb8b3839cbef4b90647b5308c03b8e309a2786",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "6147e98dbcf91d25a3f715acc1d3a74ba8fcd99870ff097bd4f9b8681d561351"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-2092e138fb97",
+            "blockNumber": 1214,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-5afac359e9dc",
+            "blockNumber": 1229,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-1e5a17b15fc4",
+            "blockNumber": 299,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-d3b962e8043d",
+            "blockNumber": 1240,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-0d165c7c3704",
+            "blockNumber": 301,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-8f8203c4c583",
+            "blockNumber": 305,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-9863bf70b035",
+            "blockNumber": 1245,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-71075e709348",
+            "blockNumber": 308,
+            "channel": "finance-channel"
+          }
+        ],
+        "netKg": 4900,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 6140,
+            "tareKg": 1240,
+            "netKg": 4900,
+            "at": "2026-11-04T13:58:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T13:58:00Z",
+            "paddy": {
+              "moisturePct": 13.6,
+              "foreignMatterPct": 0.9,
+              "brokenPct": 3.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "WAREHOUSE",
+          "facilityName": "Kansai Agri Warehouse (demo)",
+          "depositedAt": "2026-11-05T13:08:00Z",
+          "enwr": "ENWR-CCRL-2026-000118",
+          "repository": "CCRL"
+        },
+        "lien": {
+          "status": "ACTIVE",
+          "lienId": "LIEN-2026-00042",
+          "bank": "BankOrgMSP",
+          "proof": {
+            "txId": "FIXTURE-8f8203c4c583",
+            "blockNumber": 305,
+            "channel": "finance-channel"
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004715"
+      },
+      "body": {
+        "sscc": "089012340000004715",
+        "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+        "commodity": "PADDY",
+        "variety": "Swarna (MTU 7029)",
+        "status": "IN_STORAGE",
+        "village": "GOPALPUR",
+        "farmerToken": "FT-0f748379769ba6a3",
+        "plotId": "PL-KCKF2BAXXM",
+        "bagCount": 80,
+        "estWeightKg": 4000,
+        "harvestOrUnloadDate": "2026-11-09",
+        "custody": [],
+        "integrity": {
+          "docs": [
+            {
+              "name": "Weighbridge slip",
+              "sha256": "8f4e4a14b00073a48785d90a4b9727290537cdc1a533a7658d1a9ceffdba6420",
+              "viewable": true
+            },
+            {
+              "name": "Quality meter report",
+              "sha256": "2d6b4932129329aced3a974404ea41f2ee36e4f155071db2cb943ba1d4b5a8fa",
+              "viewable": true
+            }
+          ],
+          "merkleRoot": "ae2c241d599a8dbf107ca0cea7e83e59e81146475efa55a484e60f7c17941266"
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-d7c3b1d1e270",
+            "blockNumber": 1215,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-a41e26d0ec92",
+            "blockNumber": 1230,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-c33405c86b9d",
+            "blockNumber": 300,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-5ec6f19f17df",
+            "blockNumber": 1241,
+            "channel": "trace-channel"
+          },
+          {
+            "txId": "FIXTURE-3603f196397c",
+            "blockNumber": 302,
+            "channel": "finance-channel"
+          }
+        ],
+        "netKg": 3920,
+        "grade": "A",
+        "residueTested": true,
+        "phiCompliant": true,
+        "quality": {
+          "weighbridge": {
+            "deviceId": "WB-CHG-01",
+            "grossKg": 5160,
+            "tareKg": 1240,
+            "netKg": 3920,
+            "at": "2026-11-04T14:01:00Z"
+          },
+          "reading": {
+            "deviceId": "QM-CHG-01",
+            "at": "2026-11-04T14:01:00Z",
+            "paddy": {
+              "moisturePct": 13.6,
+              "foreignMatterPct": 0.9,
+              "brokenPct": 3.2
+            }
+          },
+          "deviceVerified": true
+        },
+        "storage": {
+          "facility": "WAREHOUSE",
+          "facilityName": "Kansai Agri Warehouse (demo)",
+          "depositedAt": "2026-11-05T13:11:00Z",
+          "enwr": "ENWR-CCRL-2026-000119",
+          "repository": "CCRL"
+        },
+        "lien": {
+          "status": "NONE"
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004807"
+      },
+      "body": {
+        "sscc": "089012340000004807",
+        "humanRef": "WB-PSM-KGP2-BRJ-FPO07-2026-R-00480",
+        "commodity": "BRINJAL",
+        "variety": "Round green (local)",
+        "status": "COMMISSIONED",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-b1605dbe23993739",
+        "plotId": "PL-EMVMLAMP3A",
+        "bagCount": 20,
+        "estWeightKg": 1000,
+        "harvestOrUnloadDate": "2026-11-12",
+        "custody": [],
+        "integrity": {
+          "docs": []
+        },
+        "proofs": [
+          {
+            "txId": "FIXTURE-1249819b8278",
+            "blockNumber": 1216,
+            "channel": "trace-channel"
+          }
+        ],
+        "lien": {
+          "status": "NONE"
+        }
+      }
+    },
+    {
+      "endpoint": "getLot",
+      "params": {
+        "sscc": "089012340000004906"
+      },
+      "body": {
+        "sscc": "089012340000004906",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00490",
+        "commodity": "POTATO",
+        "variety": "Kufri Jyoti",
+        "status": "PENDING_FARMER_SIGNATURE",
+        "village": "CHANGUAL",
+        "farmerToken": "FT-9c2e41a07b55d3f1",
+        "plotId": "PL-7Q2M9X4K1A",
+        "bagCount": 40,
+        "estWeightKg": 2000,
+        "harvestOrUnloadDate": "2026-11-13",
+        "custody": [],
+        "integrity": {
+          "docs": []
+        },
+        "proofs": []
+      }
+    },
+    {
+      "endpoint": "createLotDraft",
+      "status": 201,
+      "body": {
+        "sscc": "089012340000004906",
+        "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00490",
+        "payloadToSign": "{\"bagCount\":40,\"commodity\":\"POTATO\",\"estWeightKg\":2000,\"farmerToken\":\"FT-9c2e41a07b55d3f1\",\"harvestOrUnloadDate\":\"2026-11-13\",\"plotId\":\"PL-7Q2M9X4K1A\",\"sscc\":\"089012340000004906\"}"
+      }
+    },
+    {
+      "endpoint": "listPendingDrafts",
+      "body": [
+        {
+          "sscc": "089012340000004906",
+          "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00490",
+          "payloadToSign": "{\"bagCount\":40,\"commodity\":\"POTATO\",\"estWeightKg\":2000,\"farmerToken\":\"FT-9c2e41a07b55d3f1\",\"harvestOrUnloadDate\":\"2026-11-13\",\"plotId\":\"PL-7Q2M9X4K1A\",\"sscc\":\"089012340000004906\"}",
+          "commodity": "POTATO",
+          "variety": "Kufri Jyoti",
+          "village": "CHANGUAL",
+          "bagCount": 40,
+          "estWeightKg": 2000,
+          "harvestOrUnloadDate": "2026-11-13",
+          "createdBy": "subhankar.vle",
+          "createdAt": "2026-11-14T11:32:00Z"
+        }
+      ]
+    },
+    {
+      "endpoint": "farmerSign",
+      "params": {
+        "sscc": "089012340000004517"
+      },
+      "body": {
+        "txId": "FIXTURE-f101ae4419cb",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "commissionLot",
+        "blockNumber": 1202,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP",
+          "RegulatorOrgMSP"
+        ],
+        "committedAt": "2026-11-04T12:32:00Z",
+        "resource": {
+          "sscc": "089012340000004517",
+          "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+          "commodity": "POTATO",
+          "variety": "Kufri Jyoti",
+          "status": "CLOSED",
+          "village": "CHANGUAL",
+          "farmerToken": "FT-9c2e41a07b55d3f1",
+          "plotId": "PL-7Q2M9X4K1A",
+          "bagCount": 40,
+          "estWeightKg": 2000,
+          "harvestOrUnloadDate": "2026-11-02",
+          "custody": [
+            {
+              "from": "FpoOrgMSP",
+              "to": "BuyerOrgMSP",
+              "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+              "proposedAt": "2026-11-11T06:32:00Z",
+              "proof": {
+                "txId": "FIXTURE-33858cd2ed55",
+                "blockNumber": 1268,
+                "channel": "trace-channel"
+              },
+              "acceptedAt": "2026-11-12T10:32:00Z"
+            }
+          ],
+          "integrity": {
+            "docs": [
+              {
+                "name": "Weighbridge slip",
+                "sha256": "dfeba8ced90c3459e3b6021d78bd68aff41ed9005c3de59010d0a14529e7d2b3",
+                "viewable": true
+              },
+              {
+                "name": "Quality meter report",
+                "sha256": "2e346e4a14ce86deac2c54b3cc6e7b36385f8946fcb034d91c9890bf5db38e60",
+                "viewable": true
+              }
+            ],
+            "merkleRoot": "017ac4d12b66080e2522c407f9df8d84aee863b3a90f4240a7b8804318e06e34"
+          },
+          "proofs": [
+            {
+              "txId": "FIXTURE-f101ae4419cb",
+              "blockNumber": 1202,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-783840882256",
+              "blockNumber": 1217,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-24834e8d5be4",
+              "blockNumber": 288,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-469ca7c5cb08",
+              "blockNumber": 1231,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d3aff143db3b",
+              "blockNumber": 292,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-58932d87b506",
+              "blockNumber": 303,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-e7b937aeb125",
+              "blockNumber": 1242,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-40fabe3c964d",
+              "blockNumber": 306,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-f1126b32f197",
+              "blockNumber": 309,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-bbd147a82028",
+              "blockNumber": 310,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-8c5c91b1f11d",
+              "blockNumber": 1246,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-9bea49010ff7",
+              "blockNumber": 187,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-5746ef7a9135",
+              "blockNumber": 1247,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-48425466165a",
+              "blockNumber": 188,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-1bb7bf657b23",
+              "blockNumber": 189,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-3224f816f95a",
+              "blockNumber": 1250,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-338c6e85b5cc",
+              "blockNumber": 1260,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d21d45663060",
+              "blockNumber": 1263,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-33858cd2ed55",
+              "blockNumber": 1268,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-13909a0c4ae7",
+              "blockNumber": 202,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-5ed3ab8b05e0",
+              "blockNumber": 203,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-f8cf93af7eb4",
+              "blockNumber": 1271,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          ],
+          "netKg": 1964,
+          "grade": "A",
+          "residueTested": true,
+          "phiCompliant": true,
+          "quality": {
+            "weighbridge": {
+              "deviceId": "WB-CHG-01",
+              "grossKg": 3204,
+              "tareKg": 1240,
+              "netKg": 1964,
+              "at": "2026-11-04T13:22:00Z"
+            },
+            "reading": {
+              "deviceId": "QM-CHG-01",
+              "at": "2026-11-04T13:22:00Z",
+              "potato": {
+                "sizeGradeMm": "45-55",
+                "greeningPct": 0.8,
+                "rotPct": 0.4,
+                "cutsPct": 1.2
+              }
+            },
+            "deviceVerified": true
+          },
+          "storage": {
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "depositedAt": "2026-11-05T12:32:00Z",
+            "enwr": "ENWR-NERL-2026-004211",
+            "repository": "NERL"
+          },
+          "lien": {
+            "status": "RELEASED",
+            "lienId": "LIEN-2026-00040",
+            "bank": "BankOrgMSP",
+            "proof": {
+              "txId": "FIXTURE-bbd147a82028",
+              "blockNumber": 310,
+              "channel": "finance-channel"
+            }
+          },
+          "coldChain": {
+            "continuous": true,
+            "breaches": 0,
+            "digests": [
+              {
+                "window": "2026-11-11T22:00Z/2026-11-11T11:32Z",
+                "avgC": 4.1,
+                "proof": {
+                  "txId": "FIXTURE-d21d45663060",
+                  "blockNumber": 1263,
+                  "channel": "trace-channel"
+                }
+              }
+            ]
+          },
+          "order": {
+            "orderId": "ORD-2026-00087",
+            "channel": "DIRECT",
+            "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+            "settled": true
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "deviceRead",
+      "params": {
+        "deviceId": "WB-CHG-01"
+      },
+      "body": {
+        "reading": {
+          "deviceId": "WB-CHG-01",
+          "grossKg": 3204,
+          "tareKg": 1240,
+          "netKg": 1964,
+          "at": "2026-11-04T13:22:00Z"
+        },
+        "signatureHex": "026d1dc82a68d8eb23dccaa8c348df53fa03ef2e8131c26a795b6fcac5d9d546395f9cd405d59b689187c6641007ef23276068e40b077ac6e120ada212f896af",
+        "deviceId": "WB-CHG-01"
+      }
+    },
+    {
+      "endpoint": "deviceRead",
+      "params": {
+        "deviceId": "QM-CHG-01"
+      },
+      "body": {
+        "reading": {
+          "deviceId": "QM-CHG-01",
+          "at": "2026-11-04T13:22:00Z",
+          "potato": {
+            "sizeGradeMm": "45-55",
+            "greeningPct": 0.8,
+            "rotPct": 0.4,
+            "cutsPct": 1.2
+          }
+        },
+        "signatureHex": "6824474d8c3d7046b2c4873b31de728929527aea4ea63aafe275456b547634c182ef6cba1dbfe0d49350f3d9f01c0d8435a97527a9e0180b6fe2844ba2d37509",
+        "deviceId": "QM-CHG-01"
+      }
+    },
+    {
+      "endpoint": "attestQuality",
+      "params": {
+        "sscc": "089012340000004517"
+      },
+      "body": {
+        "txId": "FIXTURE-783840882256",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "attestQuality",
+        "blockNumber": 1217,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-11-04T13:22:00Z",
+        "resource": {
+          "sscc": "089012340000004517",
+          "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+          "commodity": "POTATO",
+          "variety": "Kufri Jyoti",
+          "status": "CLOSED",
+          "village": "CHANGUAL",
+          "farmerToken": "FT-9c2e41a07b55d3f1",
+          "plotId": "PL-7Q2M9X4K1A",
+          "bagCount": 40,
+          "estWeightKg": 2000,
+          "harvestOrUnloadDate": "2026-11-02",
+          "custody": [
+            {
+              "from": "FpoOrgMSP",
+              "to": "BuyerOrgMSP",
+              "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+              "proposedAt": "2026-11-11T06:32:00Z",
+              "proof": {
+                "txId": "FIXTURE-33858cd2ed55",
+                "blockNumber": 1268,
+                "channel": "trace-channel"
+              },
+              "acceptedAt": "2026-11-12T10:32:00Z"
+            }
+          ],
+          "integrity": {
+            "docs": [
+              {
+                "name": "Weighbridge slip",
+                "sha256": "dfeba8ced90c3459e3b6021d78bd68aff41ed9005c3de59010d0a14529e7d2b3",
+                "viewable": true
+              },
+              {
+                "name": "Quality meter report",
+                "sha256": "2e346e4a14ce86deac2c54b3cc6e7b36385f8946fcb034d91c9890bf5db38e60",
+                "viewable": true
+              }
+            ],
+            "merkleRoot": "017ac4d12b66080e2522c407f9df8d84aee863b3a90f4240a7b8804318e06e34"
+          },
+          "proofs": [
+            {
+              "txId": "FIXTURE-f101ae4419cb",
+              "blockNumber": 1202,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-783840882256",
+              "blockNumber": 1217,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-24834e8d5be4",
+              "blockNumber": 288,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-469ca7c5cb08",
+              "blockNumber": 1231,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d3aff143db3b",
+              "blockNumber": 292,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-58932d87b506",
+              "blockNumber": 303,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-e7b937aeb125",
+              "blockNumber": 1242,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-40fabe3c964d",
+              "blockNumber": 306,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-f1126b32f197",
+              "blockNumber": 309,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-bbd147a82028",
+              "blockNumber": 310,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-8c5c91b1f11d",
+              "blockNumber": 1246,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-9bea49010ff7",
+              "blockNumber": 187,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-5746ef7a9135",
+              "blockNumber": 1247,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-48425466165a",
+              "blockNumber": 188,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-1bb7bf657b23",
+              "blockNumber": 189,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-3224f816f95a",
+              "blockNumber": 1250,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-338c6e85b5cc",
+              "blockNumber": 1260,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d21d45663060",
+              "blockNumber": 1263,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-33858cd2ed55",
+              "blockNumber": 1268,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-13909a0c4ae7",
+              "blockNumber": 202,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-5ed3ab8b05e0",
+              "blockNumber": 203,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-f8cf93af7eb4",
+              "blockNumber": 1271,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-624955d053cb",
+              "blockNumber": 1278,
+              "channel": "trace-channel"
+            }
+          ],
+          "netKg": 1964,
+          "grade": "A",
+          "residueTested": true,
+          "phiCompliant": true,
+          "quality": {
+            "weighbridge": {
+              "deviceId": "WB-CHG-01",
+              "grossKg": 3204,
+              "tareKg": 1240,
+              "netKg": 1964,
+              "at": "2026-11-04T13:22:00Z"
+            },
+            "reading": {
+              "deviceId": "QM-CHG-01",
+              "at": "2026-11-04T13:22:00Z",
+              "potato": {
+                "sizeGradeMm": "45-55",
+                "greeningPct": 0.8,
+                "rotPct": 0.4,
+                "cutsPct": 1.2
+              }
+            },
+            "deviceVerified": true
+          },
+          "storage": {
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "depositedAt": "2026-11-05T12:32:00Z",
+            "enwr": "ENWR-NERL-2026-004211",
+            "repository": "NERL"
+          },
+          "lien": {
+            "status": "RELEASED",
+            "lienId": "LIEN-2026-00040",
+            "bank": "BankOrgMSP",
+            "proof": {
+              "txId": "FIXTURE-bbd147a82028",
+              "blockNumber": 310,
+              "channel": "finance-channel"
+            }
+          },
+          "coldChain": {
+            "continuous": true,
+            "breaches": 0,
+            "digests": [
+              {
+                "window": "2026-11-11T22:00Z/2026-11-11T11:32Z",
+                "avgC": 4.1,
+                "proof": {
+                  "txId": "FIXTURE-d21d45663060",
+                  "blockNumber": 1263,
+                  "channel": "trace-channel"
+                }
+              }
+            ]
+          },
+          "order": {
+            "orderId": "ORD-2026-00087",
+            "channel": "DIRECT",
+            "priceHash": "045161bd559eef662ad2ea70fd01adc0fe6de2f295fe233262be3588825343ba",
+            "settled": true
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "transformLot",
+      "params": {
+        "sscc": "089012340000004951"
+      },
+      "body": {
+        "txId": "FIXTURE-560c1742fa70",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "recordTransformation",
+        "blockNumber": 1244,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP",
+          "RegulatorOrgMSP"
+        ],
+        "committedAt": "2026-11-06T13:02:00Z",
+        "resource": {
+          "sscc": "089012340000004951",
+          "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00495",
+          "commodity": "POTATO",
+          "variety": "Kufri Chipsona",
+          "status": "TRANSFORMED",
+          "village": "GOLGRAM",
+          "farmerToken": "FT-df1c565f3b0fb0ec",
+          "plotId": "PL-SYKQAZEC7Z",
+          "bagCount": 30,
+          "estWeightKg": 1500,
+          "harvestOrUnloadDate": "2026-11-06",
+          "custody": [],
+          "integrity": {
+            "docs": [
+              {
+                "name": "Weighbridge slip",
+                "sha256": "066766579876d37ead6e8f5916198dbc2476e60d816f7bc8fbb015a44c857411",
+                "viewable": true
+              },
+              {
+                "name": "Quality meter report",
+                "sha256": "1fa508f505d45f78271e29bab12c88ed94195bd9a3ca603627818c8c4220bd96",
+                "viewable": true
+              }
+            ],
+            "merkleRoot": "fa710135f09d1be0e2b557d197f4d2ee3bbacd726290dff41ff9d27cf43fcbaa"
+          },
+          "proofs": [
+            {
+              "txId": "FIXTURE-fc964a9f8582",
+              "blockNumber": 1212,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-353fbc909164",
+              "blockNumber": 1227,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-560c1742fa70",
+              "blockNumber": 1244,
+              "channel": "trace-channel"
+            }
+          ],
+          "netKg": 1460,
+          "grade": "C",
+          "residueTested": false,
+          "phiCompliant": true,
+          "quality": {
+            "weighbridge": {
+              "deviceId": "WB-CHG-01",
+              "grossKg": 2700,
+              "tareKg": 1240,
+              "netKg": 1460,
+              "at": "2026-11-04T13:52:00Z"
+            },
+            "reading": {
+              "deviceId": "QM-CHG-01",
+              "at": "2026-11-04T13:52:00Z",
+              "potato": {
+                "sizeGradeMm": "<35",
+                "greeningPct": 2.1,
+                "rotPct": 1.6,
+                "cutsPct": 2.9
+              }
+            },
+            "deviceVerified": true
+          },
+          "lien": {
+            "status": "NONE"
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "proposeCustody",
+      "params": {
+        "sscc": "089012340000004616"
+      },
+      "body": {
+        "txId": "FIXTURE-7607430d31ab",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "proposeTransfer",
+        "blockNumber": 1279,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP",
+          "RegulatorOrgMSP"
+        ],
+        "committedAt": "2026-11-13T18:53:00Z",
+        "resource": {
+          "sscc": "089012340000004616",
+          "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00461",
+          "commodity": "POTATO",
+          "variety": "Kufri Pukhraj",
+          "status": "IN_TRANSIT",
+          "village": "GOLGRAM",
+          "farmerToken": "FT-e100ab24a5701879",
+          "plotId": "PL-VM8XGF4AKJ",
+          "bagCount": 70,
+          "estWeightKg": 3500,
+          "harvestOrUnloadDate": "2026-11-03",
+          "custody": [
+            {
+              "from": "FpoOrgMSP",
+              "to": "BuyerOrgMSP",
+              "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+              "proposedAt": "2026-11-13T18:53:00Z",
+              "proof": {
+                "txId": "FIXTURE-7607430d31ab",
+                "blockNumber": 1279,
+                "channel": "trace-channel"
+              }
+            }
+          ],
+          "integrity": {
+            "docs": [
+              {
+                "name": "Weighbridge slip",
+                "sha256": "9065d0c647c9c126223f39533362c42ea4fc8e5398cc69dffdbe4b657866b636",
+                "viewable": true
+              },
+              {
+                "name": "Quality meter report",
+                "sha256": "7a4c25e968899622c2d8d06366e524ca89ed5c20dd0df90eae148268be045642",
+                "viewable": true
+              }
+            ],
+            "merkleRoot": "3ff50ef304723a5c3a6e07bf372e89bb212de0d4a22363439751b54a7bf59466"
+          },
+          "proofs": [
+            {
+              "txId": "FIXTURE-17620526d1fa",
+              "blockNumber": 1209,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-bd7d21eea52b",
+              "blockNumber": 1224,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-aefd0aebc801",
+              "blockNumber": 295,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-b3877923c63a",
+              "blockNumber": 1237,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d8908995684f",
+              "blockNumber": 196,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-d1fe0fab4d4a",
+              "blockNumber": 1257,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d794fbb09556",
+              "blockNumber": 197,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-00d96492de05",
+              "blockNumber": 198,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-b6d0cbb92291",
+              "blockNumber": 1258,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-7607430d31ab",
+              "blockNumber": 1279,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-95e88b599144",
+              "blockNumber": 1280,
+              "channel": "trace-channel"
+            }
+          ],
+          "netKg": 3430,
+          "grade": "A",
+          "residueTested": true,
+          "phiCompliant": true,
+          "quality": {
+            "weighbridge": {
+              "deviceId": "WB-CHG-01",
+              "grossKg": 4670,
+              "tareKg": 1240,
+              "netKg": 3430,
+              "at": "2026-11-04T13:43:00Z"
+            },
+            "reading": {
+              "deviceId": "QM-CHG-01",
+              "at": "2026-11-04T13:43:00Z",
+              "potato": {
+                "sizeGradeMm": "45-55",
+                "greeningPct": 0.8,
+                "rotPct": 0.4,
+                "cutsPct": 1.2
+              }
+            },
+            "deviceVerified": true
+          },
+          "storage": {
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "depositedAt": "2026-11-05T12:53:00Z"
+          },
+          "lien": {
+            "status": "NONE"
+          },
+          "coldChain": {
+            "continuous": true,
+            "breaches": 0,
+            "digests": [
+              {
+                "window": "2026-11-13T22:00Z/2026-11-13T23:53Z",
+                "avgC": 4.1,
+                "proof": {
+                  "txId": "FIXTURE-95e88b599144",
+                  "blockNumber": 1280,
+                  "channel": "trace-channel"
+                }
+              }
+            ]
+          },
+          "order": {
+            "orderId": "ORD-2026-00089",
+            "channel": "DIRECT",
+            "priceHash": "14c6544d4d35411d54da36cdae4aeec588979c01896d15aaa629eadcfa005c76",
+            "settled": false
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "acceptCustody",
+      "params": {
+        "sscc": "089012340000004623"
+      },
+      "body": {
+        "txId": "FIXTURE-3f7ac83a3d73",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "acceptTransfer",
+        "blockNumber": 1281,
+        "validationCode": "VALID",
+        "endorsers": [
+          "BuyerOrgMSP",
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-14T00:56:00Z",
+        "resource": {
+          "sscc": "089012340000004623",
+          "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00462",
+          "commodity": "POTATO",
+          "variety": "Kufri Jyoti",
+          "status": "DELIVERED",
+          "village": "GOLGRAM",
+          "farmerToken": "FT-e100ab24a5701879",
+          "plotId": "PL-VM8XGF4AKJ",
+          "bagCount": 64,
+          "estWeightKg": 3200,
+          "harvestOrUnloadDate": "2026-11-04",
+          "custody": [
+            {
+              "from": "FpoOrgMSP",
+              "to": "BuyerOrgMSP",
+              "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+              "proposedAt": "2026-11-13T02:08:00Z",
+              "proof": {
+                "txId": "FIXTURE-3f7ac83a3d73",
+                "blockNumber": 1281,
+                "channel": "trace-channel"
+              },
+              "acceptedAt": "2026-11-14T00:56:00Z"
+            }
+          ],
+          "integrity": {
+            "docs": [
+              {
+                "name": "Weighbridge slip",
+                "sha256": "473fa7a365ae396333007553d8b1a3a1f93d64e71736b72f59b28c8f1dc29603",
+                "viewable": true
+              },
+              {
+                "name": "Quality meter report",
+                "sha256": "779566dcacf40b389fb608f6fea92584f213186e3caf4d5a388cb2d0176d4cb3",
+                "viewable": true
+              }
+            ],
+            "merkleRoot": "9fdcc1e87e29bcc7f1ed6f334c4f4a9933ba4b5c0d61f4a5a59e52d666455c44"
+          },
+          "proofs": [
+            {
+              "txId": "FIXTURE-13a76ee3f5c0",
+              "blockNumber": 1210,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-19ae75931d4b",
+              "blockNumber": 1225,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-c631d10a67eb",
+              "blockNumber": 297,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-e4a360649975",
+              "blockNumber": 1238,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-852bce17b170",
+              "blockNumber": 190,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-d1b78a250163",
+              "blockNumber": 1253,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d8b4fe8cafee",
+              "blockNumber": 191,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-1aa3f2aa3e4a",
+              "blockNumber": 192,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-8c5e7b335370",
+              "blockNumber": 1254,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-8176a2f133a1",
+              "blockNumber": 1274,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-4ea0b472b44d",
+              "blockNumber": 1276,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-3f7ac83a3d73",
+              "blockNumber": 1281,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-31f9eb9c6c8a",
+              "blockNumber": 205,
+              "channel": "trade-channel"
+            }
+          ],
+          "netKg": 3120,
+          "grade": "A",
+          "residueTested": true,
+          "phiCompliant": true,
+          "quality": {
+            "weighbridge": {
+              "deviceId": "WB-CHG-01",
+              "grossKg": 4360,
+              "tareKg": 1240,
+              "netKg": 3120,
+              "at": "2026-11-04T13:46:00Z"
+            },
+            "reading": {
+              "deviceId": "QM-CHG-01",
+              "at": "2026-11-04T13:46:00Z",
+              "potato": {
+                "sizeGradeMm": "45-55",
+                "greeningPct": 0.8,
+                "rotPct": 0.4,
+                "cutsPct": 1.2
+              }
+            },
+            "deviceVerified": true
+          },
+          "storage": {
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "depositedAt": "2026-11-05T12:56:00Z"
+          },
+          "lien": {
+            "status": "NONE"
+          },
+          "coldChain": {
+            "continuous": false,
+            "breaches": 1,
+            "digests": [
+              {
+                "window": "2026-11-12T22:00Z/2026-11-13T07:08Z",
+                "avgC": 6.8,
+                "proof": {
+                  "txId": "FIXTURE-4ea0b472b44d",
+                  "blockNumber": 1276,
+                  "channel": "trace-channel"
+                }
+              }
+            ]
+          },
+          "order": {
+            "orderId": "ORD-2026-00090",
+            "channel": "DIRECT",
+            "priceHash": "315fb9011ab63f987fea11f3d3b3b5d997a0cb2f3672ef655ae632ae9b78bbf3",
+            "settled": false
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "anchorConditionDigest",
+      "params": {
+        "sscc": "089012340000004616"
+      },
+      "body": {
+        "txId": "FIXTURE-95e88b599144",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "anchorConditionDigest",
+        "blockNumber": 1280,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP",
+          "RegulatorOrgMSP"
+        ],
+        "committedAt": "2026-11-13T23:53:00Z",
+        "resource": {
+          "sscc": "089012340000004616",
+          "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00461",
+          "commodity": "POTATO",
+          "variety": "Kufri Pukhraj",
+          "status": "IN_TRANSIT",
+          "village": "GOLGRAM",
+          "farmerToken": "FT-e100ab24a5701879",
+          "plotId": "PL-VM8XGF4AKJ",
+          "bagCount": 70,
+          "estWeightKg": 3500,
+          "harvestOrUnloadDate": "2026-11-03",
+          "custody": [
+            {
+              "from": "FpoOrgMSP",
+              "to": "BuyerOrgMSP",
+              "place": "Debra to Kolkata (Gangetic Fresh Foods)",
+              "proposedAt": "2026-11-13T18:53:00Z",
+              "proof": {
+                "txId": "FIXTURE-7607430d31ab",
+                "blockNumber": 1279,
+                "channel": "trace-channel"
+              }
+            }
+          ],
+          "integrity": {
+            "docs": [
+              {
+                "name": "Weighbridge slip",
+                "sha256": "9065d0c647c9c126223f39533362c42ea4fc8e5398cc69dffdbe4b657866b636",
+                "viewable": true
+              },
+              {
+                "name": "Quality meter report",
+                "sha256": "7a4c25e968899622c2d8d06366e524ca89ed5c20dd0df90eae148268be045642",
+                "viewable": true
+              }
+            ],
+            "merkleRoot": "3ff50ef304723a5c3a6e07bf372e89bb212de0d4a22363439751b54a7bf59466"
+          },
+          "proofs": [
+            {
+              "txId": "FIXTURE-17620526d1fa",
+              "blockNumber": 1209,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-bd7d21eea52b",
+              "blockNumber": 1224,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-aefd0aebc801",
+              "blockNumber": 295,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-b3877923c63a",
+              "blockNumber": 1237,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d8908995684f",
+              "blockNumber": 196,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-d1fe0fab4d4a",
+              "blockNumber": 1257,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-d794fbb09556",
+              "blockNumber": 197,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-00d96492de05",
+              "blockNumber": 198,
+              "channel": "trade-channel"
+            },
+            {
+              "txId": "FIXTURE-b6d0cbb92291",
+              "blockNumber": 1258,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-7607430d31ab",
+              "blockNumber": 1279,
+              "channel": "trace-channel"
+            },
+            {
+              "txId": "FIXTURE-95e88b599144",
+              "blockNumber": 1280,
+              "channel": "trace-channel"
+            }
+          ],
+          "netKg": 3430,
+          "grade": "A",
+          "residueTested": true,
+          "phiCompliant": true,
+          "quality": {
+            "weighbridge": {
+              "deviceId": "WB-CHG-01",
+              "grossKg": 4670,
+              "tareKg": 1240,
+              "netKg": 3430,
+              "at": "2026-11-04T13:43:00Z"
+            },
+            "reading": {
+              "deviceId": "QM-CHG-01",
+              "at": "2026-11-04T13:43:00Z",
+              "potato": {
+                "sizeGradeMm": "45-55",
+                "greeningPct": 0.8,
+                "rotPct": 0.4,
+                "cutsPct": 1.2
+              }
+            },
+            "deviceVerified": true
+          },
+          "storage": {
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "depositedAt": "2026-11-05T12:53:00Z"
+          },
+          "lien": {
+            "status": "NONE"
+          },
+          "coldChain": {
+            "continuous": true,
+            "breaches": 0,
+            "digests": [
+              {
+                "window": "2026-11-13T22:00Z/2026-11-13T23:53Z",
+                "avgC": 4.1,
+                "proof": {
+                  "txId": "FIXTURE-95e88b599144",
+                  "blockNumber": 1280,
+                  "channel": "trace-channel"
+                }
+              }
+            ]
+          },
+          "order": {
+            "orderId": "ORD-2026-00089",
+            "channel": "DIRECT",
+            "priceHash": "14c6544d4d35411d54da36cdae4aeec588979c01896d15aaa629eadcfa005c76",
+            "settled": false
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "listCatalogue",
+      "body": {
+        "items": [
+          {
+            "sscc": "089012340000004531",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00453",
+            "commodity": "POTATO",
+            "variety": "Kufri Pukhraj",
+            "grade": "B",
+            "netKg": 2480,
+            "quantityQtl": 24.8,
+            "village": "CHANGUAL",
+            "block": "Kharagpur-II",
+            "harvestOrUnloadDate": "2026-11-10",
+            "residueTested": false,
+            "phiCompliant": true,
+            "coldChain": {
+              "continuous": true,
+              "breaches": 0
+            },
+            "proof": {
+              "txId": "FIXTURE-897214cc61cf",
+              "blockNumber": 1221,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "sscc": "089012340000004715",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+            "commodity": "PADDY",
+            "variety": "Swarna (MTU 7029)",
+            "grade": "A",
+            "netKg": 3920,
+            "quantityQtl": 39.2,
+            "village": "GOPALPUR",
+            "block": "Keshiary",
+            "harvestOrUnloadDate": "2026-11-09",
+            "residueTested": true,
+            "phiCompliant": true,
+            "coldChain": {
+              "continuous": true,
+              "breaches": 0
+            },
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "proof": {
+              "txId": "FIXTURE-3603f196397c",
+              "blockNumber": 302,
+              "channel": "finance-channel"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

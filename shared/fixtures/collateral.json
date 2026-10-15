@@ -1,0 +1,1354 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "collateral.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "note": "Valuation: assessedValue = qtl x modal x (1 - haircut); eligibleLoan = 70% of assessedValue. Potato price basis, haircut %, loan tenure and rate are fixture placeholders. Paddy basis is the paddy MSP (secondary-source verified)."
+  },
+  "examples": [
+    {
+      "endpoint": "listCollateral",
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004517",
+              "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+              "commodity": "POTATO",
+              "grade": "A",
+              "village": "CHANGUAL",
+              "status": "CLOSED"
+            },
+            "enwr": "ENWR-NERL-2026-004211",
+            "repository": "NERL",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "quantityQtl": 19.64,
+            "assessedValue": 21211,
+            "priceBasis": {
+              "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)",
+              "market": "Medinipur (West)",
+              "date": "2026-11-13",
+              "modalPerQtl": 1350
+            },
+            "haircutPct": 20,
+            "ltvPct": 70,
+            "eligibleLoan": 14848,
+            "lien": {
+              "status": "RELEASED",
+              "lienId": "LIEN-2026-00040",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-bbd147a82028",
+                "blockNumber": 310,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T12:32:00Z",
+                "avgC": 3.4,
+                "note": "Cold-store temperature digest (simulated logger)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Rupnarayan Cold Storage (demo)",
+                "score": 92
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": false,
+            "cgsNpfReason": "Cold-storage receipt. Whether potato is notified for e-NWR under WDRA is not yet verified (see DATA_SOURCES)."
+          },
+          {
+            "lot": {
+              "sscc": "089012340000004524",
+              "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+              "commodity": "POTATO",
+              "grade": "A",
+              "village": "CHANGUAL",
+              "status": "PLEDGED"
+            },
+            "enwr": "ENWR-NERL-2026-004212",
+            "repository": "NERL",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "quantityQtl": 14.8,
+            "assessedValue": 15984,
+            "priceBasis": {
+              "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)",
+              "market": "Medinipur (West)",
+              "date": "2026-11-13",
+              "modalPerQtl": 1350
+            },
+            "haircutPct": 20,
+            "ltvPct": 70,
+            "eligibleLoan": 11189,
+            "lien": {
+              "status": "ACTIVE",
+              "lienId": "LIEN-2026-00041",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-d69245f11274",
+                "blockNumber": 304,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T12:41:00Z",
+                "avgC": 3.4,
+                "note": "Cold-store temperature digest (simulated logger)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Rupnarayan Cold Storage (demo)",
+                "score": 92
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": false,
+            "cgsNpfReason": "Cold-storage receipt. Whether potato is notified for e-NWR under WDRA is not yet verified (see DATA_SOURCES)."
+          },
+          {
+            "lot": {
+              "sscc": "089012340000004708",
+              "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+              "commodity": "PADDY",
+              "grade": "A",
+              "village": "GOPALPUR",
+              "status": "PLEDGED"
+            },
+            "enwr": "ENWR-CCRL-2026-000118",
+            "repository": "CCRL",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "quantityQtl": 49,
+            "assessedValue": 107648,
+            "priceBasis": {
+              "source": "MSP KMS 2026-27, common paddy (CCEA 13-05-2026, secondary-source verified; PIB link added at C4)",
+              "market": "All-India MSP",
+              "date": "2026-05-13",
+              "modalPerQtl": 2441
+            },
+            "haircutPct": 10,
+            "ltvPct": 70,
+            "eligibleLoan": 75354,
+            "lien": {
+              "status": "ACTIVE",
+              "lienId": "LIEN-2026-00042",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-8f8203c4c583",
+                "blockNumber": 305,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T13:08:00Z",
+                "note": "Warehouse intake inspection (simulated)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Kansai Agri Warehouse (demo)",
+                "score": 88
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": true,
+            "cgsNpfReason": "e-NWR on a WDRA-registered warehouse (registration shown as simulated). Rule is a simulated NCGTC adapter, not an NCGTC decision."
+          },
+          {
+            "lot": {
+              "sscc": "089012340000004715",
+              "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+              "commodity": "PADDY",
+              "grade": "A",
+              "village": "GOPALPUR",
+              "status": "IN_STORAGE"
+            },
+            "enwr": "ENWR-CCRL-2026-000119",
+            "repository": "CCRL",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "quantityQtl": 39.2,
+            "assessedValue": 86118,
+            "priceBasis": {
+              "source": "MSP KMS 2026-27, common paddy (CCEA 13-05-2026, secondary-source verified; PIB link added at C4)",
+              "market": "All-India MSP",
+              "date": "2026-05-13",
+              "modalPerQtl": 2441
+            },
+            "haircutPct": 10,
+            "ltvPct": 70,
+            "eligibleLoan": 60283,
+            "lien": {
+              "status": "NONE"
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T13:11:00Z",
+                "note": "Warehouse intake inspection (simulated)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Kansai Agri Warehouse (demo)",
+                "score": 88
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": true,
+            "cgsNpfReason": "e-NWR on a WDRA-registered warehouse (registration shown as simulated). Rule is a simulated NCGTC adapter, not an NCGTC decision."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "enwr": "ENWR-NERL-2026-004211"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004517",
+              "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+              "commodity": "POTATO",
+              "grade": "A",
+              "village": "CHANGUAL",
+              "status": "CLOSED"
+            },
+            "enwr": "ENWR-NERL-2026-004211",
+            "repository": "NERL",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "quantityQtl": 19.64,
+            "assessedValue": 21211,
+            "priceBasis": {
+              "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)",
+              "market": "Medinipur (West)",
+              "date": "2026-11-13",
+              "modalPerQtl": 1350
+            },
+            "haircutPct": 20,
+            "ltvPct": 70,
+            "eligibleLoan": 14848,
+            "lien": {
+              "status": "RELEASED",
+              "lienId": "LIEN-2026-00040",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-bbd147a82028",
+                "blockNumber": 310,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T12:32:00Z",
+                "avgC": 3.4,
+                "note": "Cold-store temperature digest (simulated logger)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Rupnarayan Cold Storage (demo)",
+                "score": 92
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": false,
+            "cgsNpfReason": "Cold-storage receipt. Whether potato is notified for e-NWR under WDRA is not yet verified (see DATA_SOURCES)."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "sscc": "089012340000004517"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004517",
+              "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+              "commodity": "POTATO",
+              "grade": "A",
+              "village": "CHANGUAL",
+              "status": "CLOSED"
+            },
+            "enwr": "ENWR-NERL-2026-004211",
+            "repository": "NERL",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "quantityQtl": 19.64,
+            "assessedValue": 21211,
+            "priceBasis": {
+              "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)",
+              "market": "Medinipur (West)",
+              "date": "2026-11-13",
+              "modalPerQtl": 1350
+            },
+            "haircutPct": 20,
+            "ltvPct": 70,
+            "eligibleLoan": 14848,
+            "lien": {
+              "status": "RELEASED",
+              "lienId": "LIEN-2026-00040",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-bbd147a82028",
+                "blockNumber": 310,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T12:32:00Z",
+                "avgC": 3.4,
+                "note": "Cold-store temperature digest (simulated logger)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Rupnarayan Cold Storage (demo)",
+                "score": 92
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": false,
+            "cgsNpfReason": "Cold-storage receipt. Whether potato is notified for e-NWR under WDRA is not yet verified (see DATA_SOURCES)."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "enwr": "ENWR-NERL-2026-004212"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004524",
+              "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+              "commodity": "POTATO",
+              "grade": "A",
+              "village": "CHANGUAL",
+              "status": "PLEDGED"
+            },
+            "enwr": "ENWR-NERL-2026-004212",
+            "repository": "NERL",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "quantityQtl": 14.8,
+            "assessedValue": 15984,
+            "priceBasis": {
+              "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)",
+              "market": "Medinipur (West)",
+              "date": "2026-11-13",
+              "modalPerQtl": 1350
+            },
+            "haircutPct": 20,
+            "ltvPct": 70,
+            "eligibleLoan": 11189,
+            "lien": {
+              "status": "ACTIVE",
+              "lienId": "LIEN-2026-00041",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-d69245f11274",
+                "blockNumber": 304,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T12:41:00Z",
+                "avgC": 3.4,
+                "note": "Cold-store temperature digest (simulated logger)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Rupnarayan Cold Storage (demo)",
+                "score": 92
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": false,
+            "cgsNpfReason": "Cold-storage receipt. Whether potato is notified for e-NWR under WDRA is not yet verified (see DATA_SOURCES)."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "sscc": "089012340000004524"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004524",
+              "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00452",
+              "commodity": "POTATO",
+              "grade": "A",
+              "village": "CHANGUAL",
+              "status": "PLEDGED"
+            },
+            "enwr": "ENWR-NERL-2026-004212",
+            "repository": "NERL",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "quantityQtl": 14.8,
+            "assessedValue": 15984,
+            "priceBasis": {
+              "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)",
+              "market": "Medinipur (West)",
+              "date": "2026-11-13",
+              "modalPerQtl": 1350
+            },
+            "haircutPct": 20,
+            "ltvPct": 70,
+            "eligibleLoan": 11189,
+            "lien": {
+              "status": "ACTIVE",
+              "lienId": "LIEN-2026-00041",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-d69245f11274",
+                "blockNumber": 304,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T12:41:00Z",
+                "avgC": 3.4,
+                "note": "Cold-store temperature digest (simulated logger)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Rupnarayan Cold Storage (demo)",
+                "score": 92
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": false,
+            "cgsNpfReason": "Cold-storage receipt. Whether potato is notified for e-NWR under WDRA is not yet verified (see DATA_SOURCES)."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "enwr": "ENWR-CCRL-2026-000118"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004708",
+              "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+              "commodity": "PADDY",
+              "grade": "A",
+              "village": "GOPALPUR",
+              "status": "PLEDGED"
+            },
+            "enwr": "ENWR-CCRL-2026-000118",
+            "repository": "CCRL",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "quantityQtl": 49,
+            "assessedValue": 107648,
+            "priceBasis": {
+              "source": "MSP KMS 2026-27, common paddy (CCEA 13-05-2026, secondary-source verified; PIB link added at C4)",
+              "market": "All-India MSP",
+              "date": "2026-05-13",
+              "modalPerQtl": 2441
+            },
+            "haircutPct": 10,
+            "ltvPct": 70,
+            "eligibleLoan": 75354,
+            "lien": {
+              "status": "ACTIVE",
+              "lienId": "LIEN-2026-00042",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-8f8203c4c583",
+                "blockNumber": 305,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T13:08:00Z",
+                "note": "Warehouse intake inspection (simulated)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Kansai Agri Warehouse (demo)",
+                "score": 88
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": true,
+            "cgsNpfReason": "e-NWR on a WDRA-registered warehouse (registration shown as simulated). Rule is a simulated NCGTC adapter, not an NCGTC decision."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "sscc": "089012340000004708"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004708",
+              "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+              "commodity": "PADDY",
+              "grade": "A",
+              "village": "GOPALPUR",
+              "status": "PLEDGED"
+            },
+            "enwr": "ENWR-CCRL-2026-000118",
+            "repository": "CCRL",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "quantityQtl": 49,
+            "assessedValue": 107648,
+            "priceBasis": {
+              "source": "MSP KMS 2026-27, common paddy (CCEA 13-05-2026, secondary-source verified; PIB link added at C4)",
+              "market": "All-India MSP",
+              "date": "2026-05-13",
+              "modalPerQtl": 2441
+            },
+            "haircutPct": 10,
+            "ltvPct": 70,
+            "eligibleLoan": 75354,
+            "lien": {
+              "status": "ACTIVE",
+              "lienId": "LIEN-2026-00042",
+              "bank": "BankOrgMSP",
+              "proof": {
+                "txId": "FIXTURE-8f8203c4c583",
+                "blockNumber": 305,
+                "channel": "finance-channel"
+              }
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T13:08:00Z",
+                "note": "Warehouse intake inspection (simulated)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Kansai Agri Warehouse (demo)",
+                "score": 88
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": true,
+            "cgsNpfReason": "e-NWR on a WDRA-registered warehouse (registration shown as simulated). Rule is a simulated NCGTC adapter, not an NCGTC decision."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "enwr": "ENWR-CCRL-2026-000119"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004715",
+              "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+              "commodity": "PADDY",
+              "grade": "A",
+              "village": "GOPALPUR",
+              "status": "IN_STORAGE"
+            },
+            "enwr": "ENWR-CCRL-2026-000119",
+            "repository": "CCRL",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "quantityQtl": 39.2,
+            "assessedValue": 86118,
+            "priceBasis": {
+              "source": "MSP KMS 2026-27, common paddy (CCEA 13-05-2026, secondary-source verified; PIB link added at C4)",
+              "market": "All-India MSP",
+              "date": "2026-05-13",
+              "modalPerQtl": 2441
+            },
+            "haircutPct": 10,
+            "ltvPct": 70,
+            "eligibleLoan": 60283,
+            "lien": {
+              "status": "NONE"
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T13:11:00Z",
+                "note": "Warehouse intake inspection (simulated)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Kansai Agri Warehouse (demo)",
+                "score": 88
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": true,
+            "cgsNpfReason": "e-NWR on a WDRA-registered warehouse (registration shown as simulated). Rule is a simulated NCGTC adapter, not an NCGTC decision."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listCollateral",
+      "query": {
+        "sscc": "089012340000004715"
+      },
+      "body": {
+        "items": [
+          {
+            "lot": {
+              "sscc": "089012340000004715",
+              "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+              "commodity": "PADDY",
+              "grade": "A",
+              "village": "GOPALPUR",
+              "status": "IN_STORAGE"
+            },
+            "enwr": "ENWR-CCRL-2026-000119",
+            "repository": "CCRL",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "quantityQtl": 39.2,
+            "assessedValue": 86118,
+            "priceBasis": {
+              "source": "MSP KMS 2026-27, common paddy (CCEA 13-05-2026, secondary-source verified; PIB link added at C4)",
+              "market": "All-India MSP",
+              "date": "2026-05-13",
+              "modalPerQtl": 2441
+            },
+            "haircutPct": 10,
+            "ltvPct": 70,
+            "eligibleLoan": 60283,
+            "lien": {
+              "status": "NONE"
+            },
+            "storageConditionHistory": [
+              {
+                "at": "2026-11-05T13:11:00Z",
+                "note": "Warehouse intake inspection (simulated)"
+              }
+            ],
+            "attestorReputation": [
+              {
+                "attestor": "Kansai Agri Warehouse (demo)",
+                "score": 88
+              },
+              {
+                "attestor": "Weighbridge WB-CHG-01",
+                "score": 97
+              }
+            ],
+            "cgsNpfEligible": true,
+            "cgsNpfReason": "e-NWR on a WDRA-registered warehouse (registration shown as simulated). Rule is a simulated NCGTC adapter, not an NCGTC decision."
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "recordDeposit",
+      "status": 201,
+      "body": {
+        "txId": "FIXTURE-24834e8d5be4",
+        "channel": "finance-channel",
+        "chaincode": "pledge-lien",
+        "fn": "recordDeposit",
+        "blockNumber": 288,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-05T12:32:00Z",
+        "resource": {
+          "depositId": "DEP-2026-00201",
+          "sscc": "089012340000004517",
+          "facility": "COLD_STORAGE",
+          "facilityName": "Rupnarayan Cold Storage (demo)",
+          "bags": 40,
+          "depositedAt": "2026-11-05T12:32:00Z",
+          "enwr": "ENWR-NERL-2026-004211",
+          "repository": "NERL",
+          "proof": {
+            "txId": "FIXTURE-24834e8d5be4",
+            "blockNumber": 288,
+            "channel": "finance-channel"
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "listDeposits",
+      "body": {
+        "items": [
+          {
+            "depositId": "DEP-2026-00201",
+            "sscc": "089012340000004517",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 40,
+            "depositedAt": "2026-11-05T12:32:00Z",
+            "enwr": "ENWR-NERL-2026-004211",
+            "repository": "NERL",
+            "proof": {
+              "txId": "FIXTURE-24834e8d5be4",
+              "blockNumber": 288,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00202",
+            "sscc": "089012340000004555",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 60,
+            "depositedAt": "2026-11-05T12:35:00Z",
+            "proof": {
+              "txId": "FIXTURE-d437036f2825",
+              "blockNumber": 289,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00203",
+            "sscc": "089012340000004562",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 36,
+            "depositedAt": "2026-11-05T12:38:00Z",
+            "proof": {
+              "txId": "FIXTURE-525def49d71e",
+              "blockNumber": 290,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00204",
+            "sscc": "089012340000004524",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 30,
+            "depositedAt": "2026-11-05T12:41:00Z",
+            "enwr": "ENWR-NERL-2026-004212",
+            "repository": "NERL",
+            "proof": {
+              "txId": "FIXTURE-b27a70a7227d",
+              "blockNumber": 291,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00205",
+            "sscc": "089012340000004548",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 44,
+            "depositedAt": "2026-11-05T12:47:00Z",
+            "proof": {
+              "txId": "FIXTURE-0be6efdd1d88",
+              "blockNumber": 293,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00206",
+            "sscc": "089012340000004609",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 80,
+            "depositedAt": "2026-11-05T12:50:00Z",
+            "proof": {
+              "txId": "FIXTURE-c2e8eb09074c",
+              "blockNumber": 294,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00207",
+            "sscc": "089012340000004616",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 70,
+            "depositedAt": "2026-11-05T12:53:00Z",
+            "proof": {
+              "txId": "FIXTURE-aefd0aebc801",
+              "blockNumber": 295,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00208",
+            "sscc": "089012340000004623",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 64,
+            "depositedAt": "2026-11-05T12:56:00Z",
+            "proof": {
+              "txId": "FIXTURE-c631d10a67eb",
+              "blockNumber": 297,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00209",
+            "sscc": "089012340000004968",
+            "facility": "COLD_STORAGE",
+            "facilityName": "Rupnarayan Cold Storage (demo)",
+            "bags": 24,
+            "depositedAt": "2026-11-05T12:59:00Z",
+            "proof": {
+              "txId": "FIXTURE-eeb96a9cc043",
+              "blockNumber": 298,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00210",
+            "sscc": "089012340000004708",
+            "facility": "WAREHOUSE",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "bags": 100,
+            "depositedAt": "2026-11-05T13:08:00Z",
+            "enwr": "ENWR-CCRL-2026-000118",
+            "repository": "CCRL",
+            "proof": {
+              "txId": "FIXTURE-1e5a17b15fc4",
+              "blockNumber": 299,
+              "channel": "finance-channel"
+            }
+          },
+          {
+            "depositId": "DEP-2026-00211",
+            "sscc": "089012340000004715",
+            "facility": "WAREHOUSE",
+            "facilityName": "Kansai Agri Warehouse (demo)",
+            "bags": 80,
+            "depositedAt": "2026-11-05T13:11:00Z",
+            "enwr": "ENWR-CCRL-2026-000119",
+            "repository": "CCRL",
+            "proof": {
+              "txId": "FIXTURE-c33405c86b9d",
+              "blockNumber": 300,
+              "channel": "finance-channel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "issueEnwr",
+      "params": {
+        "id": "DEP-2026-00201"
+      },
+      "body": {
+        "txId": "FIXTURE-d3aff143db3b",
+        "channel": "finance-channel",
+        "chaincode": "pledge-lien",
+        "fn": "issueENWRRef",
+        "blockNumber": 292,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-05T12:47:00Z",
+        "resource": {
+          "depositId": "DEP-2026-00201",
+          "enwr": "ENWR-NERL-2026-004211",
+          "repository": "NERL",
+          "simulatedAdapter": true
+        }
+      }
+    },
+    {
+      "endpoint": "markLien",
+      "params": {
+        "enwr": "ENWR-NERL-2026-004212"
+      },
+      "status": 201,
+      "body": {
+        "txId": "FIXTURE-d69245f11274",
+        "channel": "finance-channel",
+        "chaincode": "pledge-lien",
+        "fn": "markLien",
+        "blockNumber": 304,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-06T12:41:00Z",
+        "resource": {
+          "loanId": "LN-2026-00041",
+          "enwr": "ENWR-NERL-2026-004212",
+          "sscc": "089012340000004524",
+          "amount": 11189,
+          "status": "DISBURSED",
+          "proofs": [
+            {
+              "txId": "FIXTURE-d69245f11274",
+              "blockNumber": 304,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-a6a3a0677d29",
+              "blockNumber": 307,
+              "channel": "finance-channel"
+            }
+          ],
+          "tenureDays": 180,
+          "ratePct": 9.5,
+          "repaidAmount": 0
+        }
+      }
+    },
+    {
+      "endpoint": "markLien",
+      "params": {
+        "enwr": "ENWR-NERL-2026-004212"
+      },
+      "query": {
+        "simulate": "ERR_DOUBLE_FINANCING"
+      },
+      "status": 409,
+      "body": {
+        "error": {
+          "code": "ERR_DOUBLE_FINANCING",
+          "message": "This lot already has an active lien (tx FIXTURE-d69245f11274). Release it before pledging again.",
+          "txId": "FIXTURE-d69245f11274"
+        }
+      }
+    },
+    {
+      "endpoint": "disburseLoan",
+      "params": {
+        "loanId": "LN-2026-00041"
+      },
+      "body": {
+        "txId": "FIXTURE-a6a3a0677d29",
+        "channel": "finance-channel",
+        "chaincode": "pledge-lien",
+        "fn": "recordDisbursement",
+        "blockNumber": 307,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-06T13:21:00Z",
+        "resource": {
+          "loanId": "LN-2026-00041",
+          "enwr": "ENWR-NERL-2026-004212",
+          "sscc": "089012340000004524",
+          "amount": 11189,
+          "status": "DISBURSED",
+          "proofs": [
+            {
+              "txId": "FIXTURE-d69245f11274",
+              "blockNumber": 304,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-a6a3a0677d29",
+              "blockNumber": 307,
+              "channel": "finance-channel"
+            }
+          ],
+          "tenureDays": 180,
+          "ratePct": 9.5,
+          "repaidAmount": 0
+        }
+      }
+    },
+    {
+      "endpoint": "repayLoan",
+      "params": {
+        "loanId": "LN-2026-00040"
+      },
+      "body": {
+        "txId": "FIXTURE-f1126b32f197",
+        "channel": "finance-channel",
+        "chaincode": "pledge-lien",
+        "fn": "recordRepayment",
+        "blockNumber": 309,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-07T12:32:00Z",
+        "resource": {
+          "loanId": "LN-2026-00040",
+          "enwr": "ENWR-NERL-2026-004211",
+          "sscc": "089012340000004517",
+          "amount": 14848,
+          "status": "RELEASED",
+          "proofs": [
+            {
+              "txId": "FIXTURE-58932d87b506",
+              "blockNumber": 303,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-40fabe3c964d",
+              "blockNumber": 306,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-f1126b32f197",
+              "blockNumber": 309,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-bbd147a82028",
+              "blockNumber": 310,
+              "channel": "finance-channel"
+            }
+          ],
+          "tenureDays": 180,
+          "ratePct": 9.5,
+          "repaidAmount": 15145
+        }
+      }
+    },
+    {
+      "endpoint": "releaseLien",
+      "params": {
+        "loanId": "LN-2026-00040"
+      },
+      "body": {
+        "txId": "FIXTURE-bbd147a82028",
+        "channel": "finance-channel",
+        "chaincode": "pledge-lien",
+        "fn": "releaseLien",
+        "blockNumber": 310,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP"
+        ],
+        "committedAt": "2026-11-07T12:57:00Z",
+        "resource": {
+          "loanId": "LN-2026-00040",
+          "enwr": "ENWR-NERL-2026-004211",
+          "sscc": "089012340000004517",
+          "amount": 14848,
+          "status": "RELEASED",
+          "proofs": [
+            {
+              "txId": "FIXTURE-58932d87b506",
+              "blockNumber": 303,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-40fabe3c964d",
+              "blockNumber": 306,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-f1126b32f197",
+              "blockNumber": 309,
+              "channel": "finance-channel"
+            },
+            {
+              "txId": "FIXTURE-bbd147a82028",
+              "blockNumber": 310,
+              "channel": "finance-channel"
+            }
+          ],
+          "tenureDays": 180,
+          "ratePct": 9.5,
+          "repaidAmount": 15145
+        }
+      }
+    },
+    {
+      "endpoint": "listLoans",
+      "body": {
+        "items": [
+          {
+            "loanId": "LN-2026-00040",
+            "enwr": "ENWR-NERL-2026-004211",
+            "sscc": "089012340000004517",
+            "amount": 14848,
+            "status": "RELEASED",
+            "proofs": [
+              {
+                "txId": "FIXTURE-58932d87b506",
+                "blockNumber": 303,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-40fabe3c964d",
+                "blockNumber": 306,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-f1126b32f197",
+                "blockNumber": 309,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-bbd147a82028",
+                "blockNumber": 310,
+                "channel": "finance-channel"
+              }
+            ],
+            "tenureDays": 180,
+            "ratePct": 9.5,
+            "repaidAmount": 15145
+          },
+          {
+            "loanId": "LN-2026-00041",
+            "enwr": "ENWR-NERL-2026-004212",
+            "sscc": "089012340000004524",
+            "amount": 11189,
+            "status": "DISBURSED",
+            "proofs": [
+              {
+                "txId": "FIXTURE-d69245f11274",
+                "blockNumber": 304,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-a6a3a0677d29",
+                "blockNumber": 307,
+                "channel": "finance-channel"
+              }
+            ],
+            "tenureDays": 180,
+            "ratePct": 9.5,
+            "repaidAmount": 0
+          },
+          {
+            "loanId": "LN-2026-00042",
+            "enwr": "ENWR-CCRL-2026-000118",
+            "sscc": "089012340000004708",
+            "amount": 75354,
+            "status": "DISBURSED",
+            "proofs": [
+              {
+                "txId": "FIXTURE-8f8203c4c583",
+                "blockNumber": 305,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-71075e709348",
+                "blockNumber": 308,
+                "channel": "finance-channel"
+              }
+            ],
+            "tenureDays": 180,
+            "ratePct": 9.5,
+            "repaidAmount": 0
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listLoans",
+      "query": {
+        "status": "DISBURSED"
+      },
+      "body": {
+        "items": [
+          {
+            "loanId": "LN-2026-00041",
+            "enwr": "ENWR-NERL-2026-004212",
+            "sscc": "089012340000004524",
+            "amount": 11189,
+            "status": "DISBURSED",
+            "proofs": [
+              {
+                "txId": "FIXTURE-d69245f11274",
+                "blockNumber": 304,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-a6a3a0677d29",
+                "blockNumber": 307,
+                "channel": "finance-channel"
+              }
+            ],
+            "tenureDays": 180,
+            "ratePct": 9.5,
+            "repaidAmount": 0
+          },
+          {
+            "loanId": "LN-2026-00042",
+            "enwr": "ENWR-CCRL-2026-000118",
+            "sscc": "089012340000004708",
+            "amount": 75354,
+            "status": "DISBURSED",
+            "proofs": [
+              {
+                "txId": "FIXTURE-8f8203c4c583",
+                "blockNumber": 305,
+                "channel": "finance-channel"
+              },
+              {
+                "txId": "FIXTURE-71075e709348",
+                "blockNumber": 308,
+                "channel": "finance-channel"
+              }
+            ],
+            "tenureDays": 180,
+            "ratePct": 9.5,
+            "repaidAmount": 0
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getLoan",
+      "params": {
+        "loanId": "LN-2026-00040"
+      },
+      "body": {
+        "loanId": "LN-2026-00040",
+        "enwr": "ENWR-NERL-2026-004211",
+        "sscc": "089012340000004517",
+        "amount": 14848,
+        "status": "RELEASED",
+        "proofs": [
+          {
+            "txId": "FIXTURE-58932d87b506",
+            "blockNumber": 303,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-40fabe3c964d",
+            "blockNumber": 306,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-f1126b32f197",
+            "blockNumber": 309,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-bbd147a82028",
+            "blockNumber": 310,
+            "channel": "finance-channel"
+          }
+        ],
+        "tenureDays": 180,
+        "ratePct": 9.5,
+        "repaidAmount": 15145
+      }
+    },
+    {
+      "endpoint": "getLoan",
+      "params": {
+        "loanId": "LN-2026-00041"
+      },
+      "body": {
+        "loanId": "LN-2026-00041",
+        "enwr": "ENWR-NERL-2026-004212",
+        "sscc": "089012340000004524",
+        "amount": 11189,
+        "status": "DISBURSED",
+        "proofs": [
+          {
+            "txId": "FIXTURE-d69245f11274",
+            "blockNumber": 304,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-a6a3a0677d29",
+            "blockNumber": 307,
+            "channel": "finance-channel"
+          }
+        ],
+        "tenureDays": 180,
+        "ratePct": 9.5,
+        "repaidAmount": 0
+      }
+    },
+    {
+      "endpoint": "getLoan",
+      "params": {
+        "loanId": "LN-2026-00042"
+      },
+      "body": {
+        "loanId": "LN-2026-00042",
+        "enwr": "ENWR-CCRL-2026-000118",
+        "sscc": "089012340000004708",
+        "amount": 75354,
+        "status": "DISBURSED",
+        "proofs": [
+          {
+            "txId": "FIXTURE-8f8203c4c583",
+            "blockNumber": 305,
+            "channel": "finance-channel"
+          },
+          {
+            "txId": "FIXTURE-71075e709348",
+            "blockNumber": 308,
+            "channel": "finance-channel"
+          }
+        ],
+        "tenureDays": 180,
+        "ratePct": 9.5,
+        "repaidAmount": 0
+      }
+    }
+  ]
+}

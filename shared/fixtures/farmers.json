@@ -1,0 +1,688 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "farmers.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "note": "Farmer tokens other than Anima Das are illustrative: live tokens are HMACs of a server secret, so they differ per deployment. Anima Das and the contract example share FT-9c2e41a07b55d3f1 only in fixtures. Diary products, doses and PHI days are illustrative; cited values arrive with the seed (docs/DATA_SOURCES.md).",
+    "erasedFarmer": "santosh (PII blank, erased: true)"
+  },
+  "examples": [
+    {
+      "endpoint": "listFarmers",
+      "body": {
+        "items": [
+          {
+            "farmerToken": "FT-9c2e41a07b55d3f1",
+            "village": "CHANGUAL",
+            "gender": "F",
+            "joinedOn": "2026-03-02",
+            "erased": false,
+            "id": "e89bbf7c-aa0a-4a5c-a60c-f97fa6a3f748",
+            "name": "Anima Das",
+            "nameLocal": "অনিমা দাস",
+            "phone": "9000000001",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-7Q2M9X4K1A",
+                "areaHa": 0.8,
+                "crops": [
+                  "POTATO",
+                  "PADDY"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-dec84c02df89acd9",
+            "village": "CHANGUAL",
+            "gender": "M",
+            "joinedOn": "2026-03-02",
+            "erased": false,
+            "id": "3595c8b4-6cd9-4e9b-a196-5fb6673ae641",
+            "name": "Haradhan Mahato",
+            "nameLocal": "হরধন মাহাতো",
+            "phone": "9000000002",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-HDHDAZH9J4",
+                "areaHa": 1.2,
+                "crops": [
+                  "POTATO",
+                  "PADDY"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-f7c76a42af61bedd",
+            "village": "CHANGUAL",
+            "gender": "F",
+            "joinedOn": "2026-03-03",
+            "erased": false,
+            "id": "088d42ba-220c-45dd-a681-89037376491c",
+            "name": "Parul Samanta",
+            "nameLocal": "পারুল সামন্ত",
+            "phone": "9000000003",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-9CGLBGAGSB",
+                "areaHa": 0.6,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-b1605dbe23993739",
+            "village": "CHANGUAL",
+            "gender": "F",
+            "joinedOn": "2026-03-05",
+            "erased": false,
+            "id": "28b0a8a7-96a7-42dd-a6cc-f4b34ebc1d38",
+            "name": "Kalyani Giri",
+            "nameLocal": "কল্যাণী গিরি",
+            "phone": "9000000004",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-EMVMLAMP3A",
+                "areaHa": 0.4,
+                "crops": [
+                  "BRINJAL",
+                  "CAULIFLOWER"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-336dc870812dcadd",
+            "village": "CHANGUAL",
+            "gender": "M",
+            "joinedOn": "2026-03-05",
+            "erased": true,
+            "id": "a3638803-3162-4c57-a9c2-bce3bb7d7952",
+            "name": "",
+            "nameLocal": "",
+            "phone": "",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-98AMPZNVX9",
+                "areaHa": 0.5,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-64a4da6467dc0bf9",
+            "village": "GOLGRAM",
+            "gender": "F",
+            "joinedOn": "2026-03-09",
+            "erased": false,
+            "id": "3b9b4885-2231-40f6-ab9b-601756a94b49",
+            "name": "Sabita Pal",
+            "nameLocal": "সবিতা পাল",
+            "phone": "9000000006",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-SQEBEAJTCH",
+                "areaHa": 1,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "d9f0ba9bb1110e45aa81fae3ec7c5573899a4e77ab578883a740a3cdbaa977b6"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-e100ab24a5701879",
+            "village": "GOLGRAM",
+            "gender": "M",
+            "joinedOn": "2026-03-09",
+            "erased": false,
+            "id": "fedddc1b-9da8-4a47-ab42-2bacf4efb82c",
+            "name": "Gobinda Bera",
+            "nameLocal": "গোবিন্দ বেরা",
+            "phone": "9000000007",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-VM8XGF4AKJ",
+                "areaHa": 1.5,
+                "crops": [
+                  "POTATO",
+                  "PADDY"
+                ],
+                "polygonHash": "d9f0ba9bb1110e45aa81fae3ec7c5573899a4e77ab578883a740a3cdbaa977b6"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-df1c565f3b0fb0ec",
+            "village": "GOLGRAM",
+            "gender": "M",
+            "joinedOn": "2026-03-10",
+            "erased": false,
+            "id": "8704dc6c-cc39-41e9-af63-0100dbc45227",
+            "name": "Dulal Jana",
+            "nameLocal": "দুলাল জানা",
+            "phone": "9000000008",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-SYKQAZEC7Z",
+                "areaHa": 0.9,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "d9f0ba9bb1110e45aa81fae3ec7c5573899a4e77ab578883a740a3cdbaa977b6"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-5ec94d1595b2ba19",
+            "village": "GOPALPUR",
+            "gender": "M",
+            "joinedOn": "2026-03-16",
+            "erased": false,
+            "id": "fcbe2ada-b024-42f3-a704-2c1ba4ffa107",
+            "name": "Sukumar Murmu",
+            "nameLocal": "সুকুমার মুর্মু",
+            "phone": "9000000009",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-XL2E5DZNZR",
+                "areaHa": 1.1,
+                "crops": [
+                  "PADDY"
+                ],
+                "polygonHash": "de9d443ebac107b60b081887333698510b3d7bd1abdc2f533ef25fc207c09451"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-0f748379769ba6a3",
+            "village": "GOPALPUR",
+            "gender": "F",
+            "joinedOn": "2026-03-16",
+            "erased": false,
+            "id": "a273bef7-a160-40f9-a0bf-4b43aa266782",
+            "name": "Budhni Hembram",
+            "nameLocal": "বুধনি হেমব্রম",
+            "phone": "9000000010",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-KCKF2BAXXM",
+                "areaHa": 0.7,
+                "crops": [
+                  "PADDY"
+                ],
+                "polygonHash": "de9d443ebac107b60b081887333698510b3d7bd1abdc2f533ef25fc207c09451"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listFarmers",
+      "query": {
+        "village": "CHANGUAL"
+      },
+      "body": {
+        "items": [
+          {
+            "farmerToken": "FT-9c2e41a07b55d3f1",
+            "village": "CHANGUAL",
+            "gender": "F",
+            "joinedOn": "2026-03-02",
+            "erased": false,
+            "id": "e89bbf7c-aa0a-4a5c-a60c-f97fa6a3f748",
+            "name": "Anima Das",
+            "nameLocal": "অনিমা দাস",
+            "phone": "9000000001",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-7Q2M9X4K1A",
+                "areaHa": 0.8,
+                "crops": [
+                  "POTATO",
+                  "PADDY"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-dec84c02df89acd9",
+            "village": "CHANGUAL",
+            "gender": "M",
+            "joinedOn": "2026-03-02",
+            "erased": false,
+            "id": "3595c8b4-6cd9-4e9b-a196-5fb6673ae641",
+            "name": "Haradhan Mahato",
+            "nameLocal": "হরধন মাহাতো",
+            "phone": "9000000002",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-HDHDAZH9J4",
+                "areaHa": 1.2,
+                "crops": [
+                  "POTATO",
+                  "PADDY"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-f7c76a42af61bedd",
+            "village": "CHANGUAL",
+            "gender": "F",
+            "joinedOn": "2026-03-03",
+            "erased": false,
+            "id": "088d42ba-220c-45dd-a681-89037376491c",
+            "name": "Parul Samanta",
+            "nameLocal": "পারুল সামন্ত",
+            "phone": "9000000003",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-9CGLBGAGSB",
+                "areaHa": 0.6,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-b1605dbe23993739",
+            "village": "CHANGUAL",
+            "gender": "F",
+            "joinedOn": "2026-03-05",
+            "erased": false,
+            "id": "28b0a8a7-96a7-42dd-a6cc-f4b34ebc1d38",
+            "name": "Kalyani Giri",
+            "nameLocal": "কল্যাণী গিরি",
+            "phone": "9000000004",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-EMVMLAMP3A",
+                "areaHa": 0.4,
+                "crops": [
+                  "BRINJAL",
+                  "CAULIFLOWER"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-336dc870812dcadd",
+            "village": "CHANGUAL",
+            "gender": "M",
+            "joinedOn": "2026-03-05",
+            "erased": true,
+            "id": "a3638803-3162-4c57-a9c2-bce3bb7d7952",
+            "name": "",
+            "nameLocal": "",
+            "phone": "",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-98AMPZNVX9",
+                "areaHa": 0.5,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listFarmers",
+      "query": {
+        "village": "GOLGRAM"
+      },
+      "body": {
+        "items": [
+          {
+            "farmerToken": "FT-64a4da6467dc0bf9",
+            "village": "GOLGRAM",
+            "gender": "F",
+            "joinedOn": "2026-03-09",
+            "erased": false,
+            "id": "3b9b4885-2231-40f6-ab9b-601756a94b49",
+            "name": "Sabita Pal",
+            "nameLocal": "সবিতা পাল",
+            "phone": "9000000006",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-SQEBEAJTCH",
+                "areaHa": 1,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "d9f0ba9bb1110e45aa81fae3ec7c5573899a4e77ab578883a740a3cdbaa977b6"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-e100ab24a5701879",
+            "village": "GOLGRAM",
+            "gender": "M",
+            "joinedOn": "2026-03-09",
+            "erased": false,
+            "id": "fedddc1b-9da8-4a47-ab42-2bacf4efb82c",
+            "name": "Gobinda Bera",
+            "nameLocal": "গোবিন্দ বেরা",
+            "phone": "9000000007",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-VM8XGF4AKJ",
+                "areaHa": 1.5,
+                "crops": [
+                  "POTATO",
+                  "PADDY"
+                ],
+                "polygonHash": "d9f0ba9bb1110e45aa81fae3ec7c5573899a4e77ab578883a740a3cdbaa977b6"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-df1c565f3b0fb0ec",
+            "village": "GOLGRAM",
+            "gender": "M",
+            "joinedOn": "2026-03-10",
+            "erased": false,
+            "id": "8704dc6c-cc39-41e9-af63-0100dbc45227",
+            "name": "Dulal Jana",
+            "nameLocal": "দুলাল জানা",
+            "phone": "9000000008",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-SYKQAZEC7Z",
+                "areaHa": 0.9,
+                "crops": [
+                  "POTATO"
+                ],
+                "polygonHash": "d9f0ba9bb1110e45aa81fae3ec7c5573899a4e77ab578883a740a3cdbaa977b6"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "listFarmers",
+      "query": {
+        "village": "GOPALPUR"
+      },
+      "body": {
+        "items": [
+          {
+            "farmerToken": "FT-5ec94d1595b2ba19",
+            "village": "GOPALPUR",
+            "gender": "M",
+            "joinedOn": "2026-03-16",
+            "erased": false,
+            "id": "fcbe2ada-b024-42f3-a704-2c1ba4ffa107",
+            "name": "Sukumar Murmu",
+            "nameLocal": "সুকুমার মুর্মু",
+            "phone": "9000000009",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-XL2E5DZNZR",
+                "areaHa": 1.1,
+                "crops": [
+                  "PADDY"
+                ],
+                "polygonHash": "de9d443ebac107b60b081887333698510b3d7bd1abdc2f533ef25fc207c09451"
+              }
+            ]
+          },
+          {
+            "farmerToken": "FT-0f748379769ba6a3",
+            "village": "GOPALPUR",
+            "gender": "F",
+            "joinedOn": "2026-03-16",
+            "erased": false,
+            "id": "a273bef7-a160-40f9-a0bf-4b43aa266782",
+            "name": "Budhni Hembram",
+            "nameLocal": "বুধনি হেমব্রম",
+            "phone": "9000000010",
+            "preferredLang": "bn",
+            "plots": [
+              {
+                "plotId": "PL-KCKF2BAXXM",
+                "areaHa": 0.7,
+                "crops": [
+                  "PADDY"
+                ],
+                "polygonHash": "de9d443ebac107b60b081887333698510b3d7bd1abdc2f533ef25fc207c09451"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "getMyFarmer",
+      "body": {
+        "farmerToken": "FT-9c2e41a07b55d3f1",
+        "village": "CHANGUAL",
+        "gender": "F",
+        "joinedOn": "2026-03-02",
+        "erased": false,
+        "id": "e89bbf7c-aa0a-4a5c-a60c-f97fa6a3f748",
+        "name": "Anima Das",
+        "nameLocal": "অনিমা দাস",
+        "phone": "9000000001",
+        "preferredLang": "bn",
+        "plots": [
+          {
+            "plotId": "PL-7Q2M9X4K1A",
+            "areaHa": 0.8,
+            "crops": [
+              "POTATO",
+              "PADDY"
+            ],
+            "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "registerFarmer",
+      "status": 201,
+      "body": {
+        "txId": "FIXTURE-5d5edcc37832",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "registerFarmerAndPlot",
+        "blockNumber": 1190,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-03-29T14:02:00Z",
+        "resource": {
+          "farmerToken": "FT-dec84c02df89acd9",
+          "village": "CHANGUAL",
+          "gender": "M",
+          "joinedOn": "2026-03-02",
+          "erased": false,
+          "id": "3595c8b4-6cd9-4e9b-a196-5fb6673ae641",
+          "name": "Haradhan Mahato",
+          "nameLocal": "হরধন মাহাতো",
+          "phone": "9000000002",
+          "preferredLang": "bn",
+          "plots": [
+            {
+              "plotId": "PL-HDHDAZH9J4",
+              "areaHa": 1.2,
+              "crops": [
+                "POTATO",
+                "PADDY"
+              ],
+              "polygonHash": "ecca034bf96d7552b377c515ec6e72c532883b17b14b82383a7af2db569619df"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "endpoint": "registerDeviceKey",
+      "body": {
+        "txId": "FIXTURE-907044f5f79e",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "registerFarmerAndPlot",
+        "blockNumber": 1199,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-03-30T12:32:00Z",
+        "resource": {
+          "farmerToken": "FT-9c2e41a07b55d3f1",
+          "devicePublicKeyHex": "044f578a72f61d705e7b7e256dcfc1f06e35dc078e3580df2bf60d20158d827ceab2f237a45db979f105cee57454ccd416ab057396a4ec26e3f170ecee1727c7b2"
+        }
+      }
+    },
+    {
+      "endpoint": "erasePersonalData",
+      "params": {
+        "id": "a3638803-3162-4c57-a9c2-bce3bb7d7952"
+      },
+      "body": {
+        "txId": "FIXTURE-b6e4f8c5bfb9",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "markUnverifiable",
+        "blockNumber": 1267,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BuyerOrgMSP",
+          "RegulatorOrgMSP"
+        ],
+        "committedAt": "2026-11-12T09:12:00Z",
+        "resource": {
+          "farmerToken": "FT-336dc870812dcadd",
+          "erased": true,
+          "lotsMarkedUnverifiable": 1
+        }
+      }
+    },
+    {
+      "endpoint": "listDiaryInputs",
+      "body": {
+        "items": [
+          {
+            "id": "af3bb091-4abe-4a2e-a9f3-0b352aac9a81",
+            "farmerId": "e89bbf7c-aa0a-4a5c-a60c-f97fa6a3f748",
+            "product": "Mancozeb 75% WP",
+            "activeIngredient": "Mancozeb",
+            "dose": "2.5 g/L",
+            "appliedOn": "2026-10-05",
+            "phiDays": 7,
+            "crop": "POTATO",
+            "plotId": "PL-7Q2M9X4K1A",
+            "hash": "9d3ff1cd9b15366d5940e63443ffb4c1919c7fbb3616636ee8dd0dd6c18fd55f",
+            "phiClearOn": "2026-10-12",
+            "proof": {
+              "txId": "FIXTURE-8da57c0b8342",
+              "blockNumber": 1200,
+              "channel": "trace-channel"
+            }
+          },
+          {
+            "id": "2bdd8aba-9971-445a-a658-5b1d0b32e4ff",
+            "farmerId": "e89bbf7c-aa0a-4a5c-a60c-f97fa6a3f748",
+            "product": "Metalaxyl + Mancozeb",
+            "activeIngredient": "Metalaxyl 8% + Mancozeb 64%",
+            "dose": "2.5 g/L",
+            "appliedOn": "2026-10-14",
+            "phiDays": 7,
+            "crop": "POTATO",
+            "plotId": "PL-7Q2M9X4K1A",
+            "hash": "acb217f1bf58441f3745526f205facd18a7546c75f42b6619b70ae44d59ac72c",
+            "phiClearOn": "2026-10-21",
+            "proof": {
+              "txId": "FIXTURE-8484f3a2955d",
+              "blockNumber": 1201,
+              "channel": "trace-channel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "createDiaryInput",
+      "status": 201,
+      "body": {
+        "txId": "FIXTURE-8484f3a2955d",
+        "channel": "trace-channel",
+        "chaincode": "lot-lifecycle",
+        "fn": "recordInputEvent",
+        "blockNumber": 1201,
+        "validationCode": "VALID",
+        "endorsers": [
+          "FpoOrgMSP",
+          "BankOrgMSP",
+          "BuyerOrgMSP"
+        ],
+        "committedAt": "2026-10-14T12:32:00Z",
+        "resource": {
+          "id": "2bdd8aba-9971-445a-a658-5b1d0b32e4ff",
+          "farmerId": "e89bbf7c-aa0a-4a5c-a60c-f97fa6a3f748",
+          "product": "Metalaxyl + Mancozeb",
+          "activeIngredient": "Metalaxyl 8% + Mancozeb 64%",
+          "dose": "2.5 g/L",
+          "appliedOn": "2026-10-14",
+          "phiDays": 7,
+          "crop": "POTATO",
+          "plotId": "PL-7Q2M9X4K1A",
+          "hash": "acb217f1bf58441f3745526f205facd18a7546c75f42b6619b70ae44d59ac72c",
+          "phiClearOn": "2026-10-21",
+          "proof": {
+            "txId": "FIXTURE-8484f3a2955d",
+            "blockNumber": 1201,
+            "channel": "trace-channel"
+          }
+        }
+      }
+    }
+  ]
+}

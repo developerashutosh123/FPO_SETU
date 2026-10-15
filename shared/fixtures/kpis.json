@@ -1,0 +1,188 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "kpis.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "note": "KPIs here are computed from the small fixture world, not the real seed. KPIs that need data the fixtures do not have are null with the reason in computedFrom. month12_gate stays null: the four criteria are in the mid-term report, which was not provided."
+  },
+  "examples": [
+    {
+      "endpoint": "kpis",
+      "body": {
+        "asOf": "2026-11-14T12:32:00Z",
+        "items": [
+          {
+            "key": "price_premium",
+            "label": "Realised price premium",
+            "value": null,
+            "unit": "%",
+            "target": "+8%",
+            "computedFrom": "Needs the AGMARKNET modal series for the same week; not in fixtures",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "post_harvest_loss",
+            "label": "Post-harvest loss",
+            "value": 1.8,
+            "unit": "%",
+            "target": "< 8%",
+            "numerator": 9824,
+            "denominator": 10000,
+            "computedFrom": "fixture world (9 members, 16 lots): accepted kg taken as graded net kg of delivered lots, weight-weighted",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "pledge_reach",
+            "label": "Pledge finance reach",
+            "value": 28.6,
+            "unit": "%",
+            "target": "35%",
+            "numerator": 2,
+            "denominator": 7,
+            "computedFrom": "fixture world (9 members, 16 lots): members with a lien / members with stored lots. Value facilitated INR 1,01,391",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "payment_cycle",
+            "label": "Payment cycle",
+            "value": 4.9,
+            "unit": "days",
+            "target": "< 7 days",
+            "computedFrom": "fixture world (9 members, 16 lots): PriceAgreed to PatronageDistributed, order ORD-2026-00087 (one order, so the median is that value)",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "statement_views",
+            "label": "Statement views",
+            "value": null,
+            "unit": "%",
+            "target": "70%",
+            "computedFrom": "Telemetry (MemberStatementViewed) is not seeded in fixtures",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "time_to_trace",
+            "label": "Time to trace (p50)",
+            "value": null,
+            "unit": "ms",
+            "target": "< 5 s",
+            "computedFrom": "Measured on the live /public/provenance endpoint; not in fixtures",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "audit_divergence",
+            "label": "Audit divergence",
+            "value": 25,
+            "unit": "%",
+            "target": "< 5%",
+            "numerator": 1,
+            "denominator": 4,
+            "computedFrom": "fixture world (9 members, 16 lots): divergent re-inspections / lots audited",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "women_participation",
+            "label": "Women's participation",
+            "value": 55.6,
+            "unit": "%",
+            "target": ">= 40%",
+            "numerator": 5,
+            "denominator": 9,
+            "computedFrom": "fixture world (9 members, 16 lots): women with at least one lot / members with at least one lot",
+            "asOf": "2026-11-14T12:32:00Z"
+          },
+          {
+            "key": "month12_gate",
+            "label": "Month-12 gate",
+            "value": null,
+            "unit": "criteria met",
+            "target": "all 4",
+            "computedFrom": "The four criteria come from the mid-term report, which was not provided",
+            "asOf": "2026-11-14T12:32:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "auditSample",
+      "body": {
+        "drawnOn": "2026-11-12",
+        "sampleRatePct": 5,
+        "items": [
+          {
+            "sscc": "089012340000004517",
+            "humanRef": "WB-PSM-KGP2-POT-FPO07-2026-R-00451",
+            "village": "CHANGUAL",
+            "status": "MATCH",
+            "auditedOn": "2026-11-13",
+            "note": "Re-weighed within tolerance"
+          },
+          {
+            "sscc": "089012340000004609",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00460",
+            "village": "GOLGRAM",
+            "status": "MATCH",
+            "auditedOn": "2026-11-13"
+          },
+          {
+            "sscc": "089012340000004623",
+            "humanRef": "WB-PSM-DBR-POT-FPO07-2026-R-00462",
+            "village": "GOLGRAM",
+            "status": "DIVERGENT",
+            "auditedOn": "2026-11-13",
+            "note": "Re-inspection grade B, attested grade A"
+          },
+          {
+            "sscc": "089012340000004708",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00470",
+            "village": "GOPALPUR",
+            "status": "MATCH",
+            "auditedOn": "2026-11-13"
+          },
+          {
+            "sscc": "089012340000004715",
+            "humanRef": "WB-PSM-KSY-PAD-FPO07-2026-K-00471",
+            "village": "GOPALPUR",
+            "status": "PENDING"
+          }
+        ],
+        "audited": 4,
+        "divergent": 1,
+        "divergenceRatePct": 25
+      }
+    },
+    {
+      "endpoint": "attestorReputation",
+      "body": [
+        {
+          "attestor": "Rupnarayan Cold Storage (demo)",
+          "kind": "FACILITY",
+          "score": 92,
+          "attestations": 31,
+          "divergences": 1
+        },
+        {
+          "attestor": "Kansai Agri Warehouse (demo)",
+          "kind": "FACILITY",
+          "score": 88,
+          "attestations": 12,
+          "divergences": 0
+        },
+        {
+          "attestor": "WB-CHG-01",
+          "kind": "DEVICE",
+          "score": 97,
+          "attestations": 52,
+          "divergences": 0
+        },
+        {
+          "attestor": "QM-CHG-01",
+          "kind": "DEVICE",
+          "score": 95,
+          "attestations": 52,
+          "divergences": 1
+        }
+      ]
+    }
+  ]
+}

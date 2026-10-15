@@ -3,7 +3,7 @@
  * Owned by 00-core-ledger. Portals COPY this file via scripts/sync-contract.mjs; never edit the copy.
  * Any change: bump CONTRACT_VERSION and add a line to the changelog in shared/CONTRACT.md.
  */
-export const CONTRACT_VERSION = '1.0.0' as const;
+export const CONTRACT_VERSION = '1.0.1' as const;
 
 // ---------- Orgs, roles, channels ----------
 export type OrgMsp = 'FpoOrgMSP' | 'BankOrgMSP' | 'BuyerOrgMSP' | 'RegulatorOrgMSP';
@@ -38,7 +38,7 @@ export const LEDGER_EVENTS = [
   'LotGraded', 'QualityCredentialIssued', 'LotTransformed', 'DepositRecorded', 'ENWRIssued',
   'LienMarked', 'LoanDisbursed', 'LoanRepaid', 'LienReleased', 'OrderCreated', 'PriceAgreed',
   'CustodyProposed', 'CustodyAccepted', 'ConditionDigestAnchored', 'QualityAccepted',
-  'SettlementExecuted', 'PatronageDistributed', 'PersonalDataErased',
+  'SettlementExecuted', 'PatronageDistributed', 'PersonalDataErased', 'LotStatusChanged',
 ] as const;
 export type LedgerEventName = (typeof LEDGER_EVENTS)[number];
 
@@ -47,6 +47,14 @@ export type ErrorCode =
   | 'ERR_NOT_FOUND' | 'ERR_INVALID_STATE' | 'ERR_BAD_FARMER_SIGNATURE' | 'ERR_BAD_DEVICE_SIGNATURE'
   | 'ERR_DOUBLE_FINANCING' | 'ERR_LOT_PLEDGED' | 'ERR_UNILATERAL_CUSTODY' | 'ERR_PRICE_HASH_MISMATCH'
   | 'ERR_PATRONAGE_UNBALANCED' | 'ERR_LEDGER_UNAVAILABLE';
+
+/** HTTP status the gateway uses for each error code (v1.0.1). */
+export const ERROR_HTTP_STATUS: Record<ErrorCode, number> = {
+  ERR_UNAUTHENTICATED: 401, ERR_FORBIDDEN_ROLE: 403, ERR_FORBIDDEN_ORG: 403, ERR_VALIDATION: 400, ERR_NOT_FOUND: 404,
+  ERR_INVALID_STATE: 409, ERR_BAD_FARMER_SIGNATURE: 422, ERR_BAD_DEVICE_SIGNATURE: 422, ERR_DOUBLE_FINANCING: 409,
+  ERR_LOT_PLEDGED: 409, ERR_UNILATERAL_CUSTODY: 403, ERR_PRICE_HASH_MISMATCH: 409, ERR_PATRONAGE_UNBALANCED: 422,
+  ERR_LEDGER_UNAVAILABLE: 503,
+};
 
 // ---------- Ledger primitives ----------
 export interface LedgerReceipt {
@@ -121,6 +129,7 @@ export interface LotPassport {
 export interface LotDraft { sscc: string; humanRef: string; payloadToSign: string /* canonical JSON */ }
 
 // ---------- Finance ----------
+/** assessedValue = quantityQtl x priceBasis.modalPerQtl x (1 - haircutPct/100). eligibleLoan = assessedValue x ltvPct/100. */
 export interface Collateral {
   lot: Pick<LotPassport, 'sscc' | 'humanRef' | 'commodity' | 'grade' | 'village' | 'status'>;
   enwr: string; repository: 'NERL' | 'CCRL'; facilityName: string;
@@ -132,7 +141,11 @@ export interface Collateral {
   attestorReputation: { attestor: string; score: number }[];
   cgsNpfEligible: boolean; cgsNpfReason: string;
 }
-export interface Loan { loanId: string; enwr: string; amount: number; status: 'SANCTIONED' | 'DISBURSED' | 'REPAID' | 'RELEASED'; proofs: Proof[] }
+export interface Loan {
+  loanId: string; enwr: string; sscc?: string; amount: number; status: 'SANCTIONED' | 'DISBURSED' | 'REPAID' | 'RELEASED'; proofs: Proof[];
+  /** Loan terms live in loanTermsPDC (FPO, Bank). Present only for credit_officer and ceo. */
+  tenureDays?: number; ratePct?: number; repaidAmount?: number;
+}
 
 // ---------- Trade ----------
 export interface Order {
@@ -155,7 +168,159 @@ export interface Provenance {
 }
 export interface Kpi { key: string; label: string; value: number | null; unit: string; target?: string; numerator?: number; denominator?: number; computedFrom: string; asOf: string }
 export interface PricePoint { date: string; market: string; commodity: string; min: number; max: number; modal: number; source: string }
-export interface Village { code: VillageCode; name: string; nameBn: string; block: string; gp?: string; lat: number; lon: number; role: 'PILOT' | 'COMPARISON'; source: string }
+export interface Village {
+  code: VillageCode; name: string; nameBn: string; block: string; gp?: string; lat: number; lon: number;
+  role: 'PILOT' | 'COMPARISON';
+  /** LANDMARK: a mapped feature inside the village. BLOCK_CENTROID: the village is not in OpenStreetMap, so the block centre is shown. Never a village centroid. */
+  precision: 'LANDMARK' | 'BLOCK_CENTROID';
+  source: string; note?: string;
+}
+
+// ---------- Signing formats (F2, F3) ----------
+/** Payload the farmer's device signs for F2. Sign `canonicalJson(payload)` (UTF-8 bytes) with ECDSA P-256 / SHA-256. */
+export interface LotCommissionPayload {
+  sscc: string; farmerToken: string; plotId: string; commodity: Commodity;
+  bagCount: number; estWeightKg: number; harvestOrUnloadDate: string;
+}
+/**
+ * Wire formats for every signature and public key in the system:
+ *  - `signatureHex`: 128 hex chars = r || s, 32 bytes each, big-endian (IEEE P1363, what Web Crypto produces). Not DER.
+ *  - `publicKeyHex` / `devicePublicKeyHex`: 130 hex chars = uncompressed SEC1 point 0x04 || X || Y (Web Crypto `exportKey('raw')`).
+ *  - Lowercase hex, no 0x prefix.
+ */
+export type SignatureHex = string;
+export type PublicKeyHex = string;
+
+// ---------- Request and response bodies (v1.0.1): one named type per endpoint body ----------
+export type Receipted<T> = LedgerReceipt & { resource: T };
+
+// Auth and system
+export interface LoginRequest { username: string; password: string; portal: Portal }
+export interface OtpRequest { phone: string }
+export interface OtpRequestResponse { sent: true; demoOtp: string }
+export interface OtpVerifyRequest { phone: string; otp: string }
+export interface HealthResponse {
+  ok: boolean; ledgerMode: LedgerMode; contractVersion: string;
+  channels: Partial<Record<Channel, { height: number }>>;
+}
+export type AdapterMode = 'simulated' | 'live';
+export interface PublicConfig { portalUrls: PortalUrls; contractVersion: string; adapterModes: Record<string, AdapterMode> }
+
+// Ledger explorer
+export interface BlockTx { txId: string; chaincode: string; fn: string; validationCode: string; creatorMsp: OrgMsp; timestamp: string }
+export interface BlockDetail extends BlockSummary { txs: BlockTx[] }
+export interface SearchHit { kind: 'tx' | 'lot' | 'enwr' | 'order'; id: string; channel?: Channel; label: string }
+export type LedgerBlocksResponse = BlockSummary[];
+export type LedgerSearchResponse = SearchHit[];
+
+// Farmers
+export interface GeoJsonPolygon { type: 'Polygon'; coordinates: number[][][] }
+export interface RegisterFarmerRequest {
+  name: string; nameLocal: string; gender: 'F' | 'M' | 'O'; phone: string; village: VillageCode;
+  plot: { geojson: GeoJsonPolygon; areaHa: number; crops: Commodity[] };
+  consent: { version: string; lang: 'bn' | 'hi' | 'en'; acceptedAt: string };
+  devicePublicKeyHex?: PublicKeyHex;
+}
+export interface DeviceKeyRequest { publicKeyHex: PublicKeyHex }
+export interface DeviceKeyRegistered { farmerToken: string; devicePublicKeyHex: PublicKeyHex }
+export interface ErasureResult { farmerToken: string; erased: true; lotsMarkedUnverifiable: number }
+
+// Crop diary
+export interface DiaryInputRequest {
+  product: string; activeIngredient: string; dose: string; appliedOn: string; phiDays: number; crop: Commodity;
+  plotId?: string; farmerId?: string; // farmerId only when a VLE records on a member's behalf
+}
+export interface DiaryInput extends DiaryInputRequest {
+  id: string; farmerId: string; hash: string; phiClearOn: string; proof?: Proof;
+}
+
+// Lots
+export interface LotDraftRequest {
+  farmerId: string; plotId: string; commodity: Commodity; variety?: string;
+  bagCount: number; estWeightKg: number; harvestOrUnloadDate: string;
+}
+export interface PendingLotDraft extends LotDraft {
+  commodity: Commodity; variety?: string; village: VillageCode; bagCount: number; estWeightKg: number;
+  harvestOrUnloadDate: string; createdBy: string; createdAt: string;
+}
+export interface FarmerSignRequest { signatureHex: SignatureHex }
+export interface DeviceReadRequest { sscc: string }
+export type DeviceReadResponse = SignedReading<WeighbridgeReading> | SignedReading<QualityReading>;
+export interface QualityRequest {
+  weighbridgeReading: SignedReading<WeighbridgeReading>; qualityReading: SignedReading<QualityReading>; grade: Grade;
+}
+export interface TransformRequest { toProcessing: true; reason: string }
+export interface CustodyProposeRequest { toOrg: OrgMsp; vehicleNo: string; loggerId: string }
+export interface ConditionDigestRequest { window: string; minC: number; maxC: number; avgC: number; breaches: number; digestHash: string }
+export type LotListItem = Pick<
+  LotPassport,
+  'sscc' | 'humanRef' | 'commodity' | 'variety' | 'status' | 'village' | 'bagCount' | 'estWeightKg' | 'netKg' | 'grade' | 'harvestOrUnloadDate'
+> & { proof?: Proof };
+export interface CatalogueItem {
+  sscc: string; humanRef: string; commodity: Commodity; variety?: string; grade: Grade; netKg: number; quantityQtl: number;
+  village: VillageCode; block: string; harvestOrUnloadDate: string;
+  residueTested: boolean; phiCompliant: boolean; coldChain: { continuous: boolean; breaches: number };
+  facilityName?: string; proof?: Proof;
+}
+
+// Storage and finance
+export interface DepositRequest { sscc: string; facility: FacilityType; facilityName: string; bags: number; depositedAt: string }
+export interface Deposit {
+  depositId: string; sscc: string; facility: FacilityType; facilityName: string; bags: number; depositedAt: string;
+  enwr?: string; repository?: 'NERL' | 'CCRL'; proof?: Proof;
+}
+export interface EnwrIssued { depositId: string; enwr: string; repository: 'NERL' | 'CCRL'; simulatedAdapter: true }
+export interface LienRequest { loanId: string; amount: number; tenureDays: number; ratePct: number }
+export interface RepayRequest { amount: number }
+
+// Trade
+export interface CreateOrderRequest { ssccs: string[]; channel: SalesChannel; deliveryBy: string }
+/**
+ * `priceHash = sha256Hex(canonicalJson({orderId, pricePerQtl, salt}))`. Both parties submit it; the call commits when both hashes match.
+ * If `salt` is omitted the gateway derives it: first 32 hex chars of HMAC-SHA256(PRICE_SALT_SECRET, orderId). Both submissions then agree without sharing a salt out of band.
+ */
+export interface AgreePriceRequest { pricePerQtl: number; salt?: string }
+export interface PriceAgreementState { orderId: string; priceHash: string; state: 'AWAITING_COUNTERPARTY' | 'AGREED' }
+export interface OrderPrice {
+  orderId: string; pricePerQtl: number; salt: string; priceHash: string; quantityQtl: number; totalAmount: number;
+  agreedAt: string; proof: Proof;
+}
+export interface AcceptQualityRequest { accepted: boolean; notes?: string }
+export interface SettleRequest { amount: number; upiRef: string }
+
+// Patronage and statements
+export interface PatronageLine {
+  farmerToken: string; name: string; sscc: string; kg: number; gross: number; deductions: Deduction[]; net: number;
+}
+/**
+ * Reconciliation rule (chaincode F7): sum(gross) = settlementAmount, and for every line gross = net + sum(deductions).
+ * Therefore sum(net) + sum(all deductions, FPO_MARGIN included) = settlementAmount, within INR 1 total for rounding.
+ */
+export interface PatronagePreview {
+  orderId: string; settlementAmount: number; lines: PatronageLine[];
+  totals: { gross: number; deductions: number; fpoMargin: number; net: number }; reconciles: boolean;
+}
+export interface PatronageRunRequest { orderId: string }
+export interface PatronageRun {
+  runId: string; orderId: string; memberCount: number; settlementAmount: number;
+  totals: { gross: number; deductions: number; fpoMargin: number; net: number }; distributedAt: string; proofs: Proof[];
+}
+
+// Analytics
+export interface KpisResponse { items: Kpi[]; asOf: string }
+export interface MspEntry {
+  crop: 'paddy'; season: string; grade: 'COMMON' | 'GRADE_A'; pricePerQtl: number; announcedOn: string; source: string; sourceUrl?: string;
+}
+export interface MspResponse { crop: 'paddy'; items: MspEntry[] }
+export interface AuditItem { sscc: string; humanRef: string; village: VillageCode; status: 'PENDING' | 'MATCH' | 'DIVERGENT'; auditedOn?: string; note?: string }
+export interface AuditSample {
+  drawnOn: string; sampleRatePct: number; items: AuditItem[]; audited: number; divergent: number; divergenceRatePct: number | null;
+}
+export interface AttestorReputation { attestor: string; kind: 'FACILITY' | 'DEVICE' | 'OPERATOR'; score: number; attestations: number; divergences: number }
+
+// Public
+export interface ScanReportRequest { sscc: string; approxLocation?: string; suspicious?: boolean; note?: string }
+export interface ScanReportResponse { received: true; id: string }
 
 // ---------- Deep links ----------
 export interface PortalUrls { farmerWeb: string; fpo: string; bank: string; buyer: string; consumer: string; gov: string }
@@ -175,16 +340,36 @@ export const deepLink = {
 };
 
 // ---------- Helpers (must behave identically everywhere) ----------
-/** Canonical JSON: object keys sorted recursively, no whitespace. Used for every signature. */
+/**
+ * Canonical JSON: object keys sorted recursively (UTF-16 code-unit order; keep keys ASCII), no whitespace.
+ * Used for every signature. Only JSON-safe values are allowed: string, finite number, boolean, null, arrays, plain objects.
+ * `undefined` object properties are dropped. Anything else (NaN, Infinity, bigint, function, symbol, undefined in an array or at top level) throws,
+ * because silently coercing it to null would sign different bytes than the verifier sees.
+ * Cross-language rule: the Go verifier must not HTML-escape (<, >, &) and must emit raw UTF-8 (including U+2028/2029). Prefer integers over floats in signed payloads.
+ */
 export function canonicalJson(value: unknown): string {
-  if (value === null || typeof value !== 'object') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
-  const obj = value as Record<string, unknown>;
-  return `{${Object.keys(obj)
-    .filter((k) => obj[k] !== undefined)
-    .sort()
-    .map((k) => `${JSON.stringify(k)}:${canonicalJson(obj[k])}`)
-    .join(',')}}`;
+  if (value === null) return 'null';
+  switch (typeof value) {
+    case 'string':
+    case 'boolean':
+      return JSON.stringify(value);
+    case 'number':
+      if (!Number.isFinite(value)) throw new Error('canonicalJson: non-finite number');
+      return JSON.stringify(value);
+    case 'object': {
+      if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+      const proto = Object.getPrototypeOf(value);
+      if (proto !== Object.prototype && proto !== null) throw new Error('canonicalJson: only plain objects are allowed');
+      const obj = value as Record<string, unknown>;
+      return `{${Object.keys(obj)
+        .filter((k) => obj[k] !== undefined)
+        .sort()
+        .map((k) => `${JSON.stringify(k)}:${canonicalJson(obj[k])}`)
+        .join(',')}}`;
+    }
+    default:
+      throw new Error(`canonicalJson: unsupported type ${typeof value}`);
+  }
 }
 
 /** GS1 mod-10 check digit for the first 17 digits of an SSCC. */

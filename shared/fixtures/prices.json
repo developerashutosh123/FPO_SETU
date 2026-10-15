@@ -1,0 +1,197 @@
+{
+  "_meta": {
+    "contractVersion": "1.0.1",
+    "file": "prices.json",
+    "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
+    "warning": "These rows are NOT AGMARKNET data. They are round placeholder numbers so that charts can be laid out. The real series come from data.gov.in and AGMARKNET CSVs in phase C4. Never show them as market prices; any row whose source starts with FIXTURE must be rendered as placeholder.",
+    "unit": "INR per quintal"
+  },
+  "examples": [
+    {
+      "endpoint": "prices",
+      "body": {
+        "items": [
+          {
+            "date": "2026-11-07",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1000,
+            "max": 1200,
+            "modal": 1100,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-08",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1000,
+            "max": 1200,
+            "modal": 1100,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-09",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1000,
+            "max": 1250,
+            "modal": 1150,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-10",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1050,
+            "max": 1250,
+            "modal": 1150,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-11",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1050,
+            "max": 1250,
+            "modal": 1150,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-12",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1050,
+            "max": 1300,
+            "modal": 1200,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-13",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1100,
+            "max": 1300,
+            "modal": 1200,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "prices",
+      "query": {
+        "commodity": "Potato"
+      },
+      "body": {
+        "items": [
+          {
+            "date": "2026-11-07",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1000,
+            "max": 1200,
+            "modal": 1100,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-08",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1000,
+            "max": 1200,
+            "modal": 1100,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-09",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1000,
+            "max": 1250,
+            "modal": 1150,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-10",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1050,
+            "max": 1250,
+            "modal": 1150,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-11",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1050,
+            "max": 1250,
+            "modal": 1150,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-12",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1050,
+            "max": 1300,
+            "modal": 1200,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          },
+          {
+            "date": "2026-11-13",
+            "market": "Medinipur (West)",
+            "commodity": "Potato",
+            "min": 1100,
+            "max": 1300,
+            "modal": 1200,
+            "source": "FIXTURE-PLACEHOLDER (not AGMARKNET data)"
+          }
+        ]
+      }
+    },
+    {
+      "endpoint": "pricesMsp",
+      "query": {
+        "crop": "paddy"
+      },
+      "body": {
+        "crop": "paddy",
+        "items": [
+          {
+            "crop": "paddy",
+            "season": "KMS 2025-26",
+            "grade": "COMMON",
+            "pricePerQtl": 2369,
+            "announcedOn": "2025-05-28",
+            "source": "CCEA decision, PIB release of 28-05-2025 (figure confirmed from news reports; PIB URL added at C4)"
+          },
+          {
+            "crop": "paddy",
+            "season": "KMS 2025-26",
+            "grade": "GRADE_A",
+            "pricePerQtl": 2389,
+            "announcedOn": "2025-05-28",
+            "source": "CCEA decision, PIB release of 28-05-2025 (figure confirmed from news reports; PIB URL added at C4)"
+          },
+          {
+            "crop": "paddy",
+            "season": "KMS 2026-27",
+            "grade": "COMMON",
+            "pricePerQtl": 2441,
+            "announcedOn": "2026-05-13",
+            "source": "CCEA decision, PIB release of 13-05-2026 (figure confirmed from news reports; PIB URL added at C4)"
+          },
+          {
+            "crop": "paddy",
+            "season": "KMS 2026-27",
+            "grade": "GRADE_A",
+            "pricePerQtl": 2461,
+            "announcedOn": "2026-05-13",
+            "source": "CCEA decision, PIB release of 13-05-2026 (figure confirmed from news reports; PIB URL added at C4)"
+          }
+        ]
+      }
+    }
+  ]
+}
