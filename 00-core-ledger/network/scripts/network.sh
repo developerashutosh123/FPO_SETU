@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# FPO-SETU Fabric network control. Lite profile: 1 Raft orderer, 4 peers (LevelDB), 5 CAs.
+# FPO-SETU Fabric network control. Full profile: 3 Raft orderers, 4 peers (LevelDB), 5 CAs.
 #   network.sh up        create everything that is missing and start it (idempotent)
 #   network.sh resume    restart stopped containers on existing volumes, verify (idempotent)
 #   network.sh down      stop and remove containers, keep volumes and crypto material
@@ -16,7 +16,7 @@ cmd_up() {
   "$NET_DIR/scripts/enroll.sh"
   "$NET_DIR/scripts/channels.sh" blocks
   log "starting orderer and peers"
-  dc up -d orderer1.setu.local peer0.fpo.setu.local peer0.bank.setu.local peer0.buyer.setu.local peer0.regulator.setu.local
+  dc up -d orderer1.setu.local orderer2.setu.local orderer3.setu.local peer0.fpo.setu.local peer0.bank.setu.local peer0.buyer.setu.local peer0.regulator.setu.local
   "$NET_DIR/scripts/channels.sh" orderer
   "$NET_DIR/scripts/channels.sh" peers
   "$NET_DIR/scripts/channels.sh" anchors
@@ -44,12 +44,16 @@ cmd_status() {
     [ -z "$chs" ] && { echo "  (not reachable or no channels)"; continue; }
     for c in $chs; do printf '  %-16s height=%s\n' "$c" "$(peer channel getinfo -c "$c" 2>/dev/null | sed 's/^Blockchain info: //' | jq -r .height 2>/dev/null || echo '?')"; done
   done
-  echo; echo "== orderer (osnadmin channel list)"
-  osn_json channel list | jq -c '.channels[]?' 2>/dev/null || echo "  (orderer admin endpoint not reachable)"
-  for c in "${CHANNELS[@]}"; do osn_json channel list --channelID "$c" | jq -c '{name,consensusRelation,status,height}' 2>/dev/null || true; done
-  echo; echo "== Raft leader (orderer metrics, 1 = this node leads the channel)"
-  curl -s localhost:9443/metrics 2>/dev/null | grep -E '^consensus_etcdraft_is_leader' || echo "  (metrics not reachable)"
-  curl -s localhost:9443/metrics 2>/dev/null | grep -E '^consensus_etcdraft_cluster_size' || true
+  echo; echo "== orderers (osnadmin channel list per node)"
+  for o in "${ORDERERS[@]}"; do
+    printf '%s:\n' "$o"
+    for c in "${CHANNELS[@]}"; do OSN_NODE=$o osn_json channel list --channelID "$c" | jq -c '{name,consensusRelation,status,height}' 2>/dev/null | sed 's/^/  /' || echo "  (not reachable)"; done
+  done
+  echo; echo "== Raft leader per channel (orderer metrics: is_leader=1 marks the leader)"
+  for o in "${ORDERERS[@]}"; do
+    curl -s "localhost:${ORD_OPS_PORT[$o]}/metrics" 2>/dev/null | grep -E '^consensus_etcdraft_is_leader' | sed "s/^/  $o /" || echo "  $o (metrics not reachable)"
+  done
+  echo "  cluster_size: $(curl -s localhost:9443/metrics 2>/dev/null | grep -E '^consensus_etcdraft_cluster_size' | head -1)"
   echo; echo "== docker stats"; docker stats --no-stream --format 'table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}' $(dc ps -q 2>/dev/null) 2>/dev/null || true
 }
 case "${1:-}" in

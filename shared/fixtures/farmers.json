@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.1",
+    "contractVersion": "1.0.2",
     "file": "farmers.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "note": "Farmer tokens other than Anima Das are illustrative: live tokens are HMACs of a server secret, so they differ per deployment. Anima Das and the contract example share FT-9c2e41a07b55d3f1 only in fixtures. Diary products, doses and PHI days are illustrative; cited values arrive with the seed (docs/DATA_SOURCES.md).",

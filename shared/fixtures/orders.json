@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.1",
+    "contractVersion": "1.0.2",
     "file": "orders.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "note": "Prices (pricePerQtl, totalAmount) are fixture placeholders. In the live system they are readable only through GET /orders/{id}/price by FPO and Buyer roles; the public order carries priceHash only. priceHash = sha256(canonicalJson({orderId, pricePerQtl, salt}))."

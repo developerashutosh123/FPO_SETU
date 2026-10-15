@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.1",
+    "contractVersion": "1.0.2",
     "file": "prices.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "warning": "These rows are NOT AGMARKNET data. They are round placeholder numbers so that charts can be laid out. The real series come from data.gov.in and AGMARKNET CSVs in phase C4. Never show them as market prices; any row whose source starts with FIXTURE must be rendered as placeholder.",

@@ -29,6 +29,9 @@ ORDERER_DOMAIN=setu.local
 ORD_HOME="$ORG_DIR/ordererOrganizations/$ORDERER_DOMAIN"
 ORD_TLS="$ORD_HOME/orderers/orderer1.$ORDERER_DOMAIN/tls"
 ORD_TLSCA="$ORD_TLS/ca.crt"
+ORDERERS=(orderer1 orderer2 orderer3)
+declare -A ORD_ADMIN_PORT=([orderer1]=7053 [orderer2]=8053 [orderer3]=9053)
+declare -A ORD_OPS_PORT=([orderer1]=9443 [orderer2]=9453 [orderer3]=9463)
 
 log()  { printf '\033[1;34m[%s]\033[0m %s\n' "$(date +%T)" "$*"; }
 warn() { printf '\033[1;33m[%s] WARN\033[0m %s\n' "$(date +%T)" "$*" >&2; }
@@ -66,6 +69,7 @@ use_peer() {
   export CORE_PEER_MSPCONFIGPATH="$ORG_DIR/peerOrganizations/$org.setu.local/users/orgadmin/msp"
   export CORE_PEER_ADDRESS="localhost:${PEERPORT[$org]}"
 }
-osn() { osnadmin "$@" -o localhost:7053 --ca-file "$ORD_TLSCA" --client-cert "$ORD_TLS/server.crt" --client-key "$ORD_TLS/server.key"; }
+# osn talks to the orderer named in OSN_NODE (default orderer1). Any orderer TLS cert is accepted as admin client cert (same CA).
+osn() { osnadmin "$@" -o "localhost:${ORD_ADMIN_PORT[${OSN_NODE:-orderer1}]}" --ca-file "$ORD_TLSCA" --client-cert "$ORD_TLS/server.crt" --client-key "$ORD_TLS/server.key"; }
 # osnadmin prints "Status: 200" then JSON; keep the JSON
 osn_json() { osn "$@" 2>/dev/null | sed '1{/^Status/d}'; }

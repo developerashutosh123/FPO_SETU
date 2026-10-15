@@ -10,7 +10,7 @@ Fabric 2.5 LTS line and Fabric CA 1.5 line. **No Fabric 3.x.** Pinned on 15-10-2
 | Chaincode runtime image `fabric-baseos` | 2.5.16 | `CORE_CHAINCODE_GOLANG_RUNTIME` in `docker-compose.yaml` |
 | State database | LevelDB (`goleveldb`) | `CORE_LEDGER_STATE_STATEDATABASE` |
 | Channel capabilities | Channel V2_0, Orderer V2_0, Application V2_5 | `configtx/configtx.yaml` |
-| Consensus | Raft (etcdraft), 1 consenter in the lite profile | `configtx/configtx.yaml` |
+| Consensus | Raft (etcdraft), 3 consenters (full profile) | `configtx/configtx.yaml` |
 | Installer | `scripts/install-fabric.sh`, sha256 `740eacc549dbb4c124bcddccc36c18ddd065bc8cb6eb8899030c9d83ea42ac3c`, copied from hyperledger/fabric `main` on 15-10-2026 | committed in this folder |
 
 Local image IDs when pinned (the install script also tags the same images `2.5`, `1.5` and `latest` locally; the compose file uses only the exact tags):

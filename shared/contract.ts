@@ -3,7 +3,7 @@
  * Owned by 00-core-ledger. Portals COPY this file via scripts/sync-contract.mjs; never edit the copy.
  * Any change: bump CONTRACT_VERSION and add a line to the changelog in shared/CONTRACT.md.
  */
-export const CONTRACT_VERSION = '1.0.1' as const;
+export const CONTRACT_VERSION = '1.0.2' as const;
 
 // ---------- Orgs, roles, channels ----------
 export type OrgMsp = 'FpoOrgMSP' | 'BankOrgMSP' | 'BuyerOrgMSP' | 'RegulatorOrgMSP';
@@ -75,7 +75,8 @@ export interface LedgerStatus {
   mode: LedgerMode;
   lastIndexedAt?: string;
   peers: { name: string; org: OrgMsp; up: boolean; heights: Partial<Record<Channel, number>> }[];
-  orderers: { name: string; up: boolean; raftLeader: boolean }[];
+  /** Raft elects a leader per channel. `leaderOf` lists the channels this orderer leads; `raftLeader` is true when it leads trace-channel. */
+  orderers: { name: string; up: boolean; raftLeader: boolean; leaderOf?: Channel[] }[];
   channels: { name: Channel; height: number; members: OrgMsp[] }[];
 }
 export interface BlockSummary { channel: Channel; number: number; dataHash: string; previousHash: string; txCount: number; time: string }
@@ -166,7 +167,9 @@ export interface Provenance {
   journey: { step: string; place: string; at: string; orgType: 'FPO' | 'COLD_STORAGE' | 'WAREHOUSE' | 'BUYER' | 'TRANSPORT' }[];
   proofs: Proof[]; ledgerMode: LedgerMode;
 }
-export interface Kpi { key: string; label: string; value: number | null; unit: string; target?: string; numerator?: number; denominator?: number; computedFrom: string; asOf: string }
+export interface KpiCriterion { key: string; label: string; met: boolean | null; evidence: string }
+/** `criteria` is set only on the month12_gate KPI: value = number of criteria met, `met: null` means not yet determinable. */
+export interface Kpi { key: string; label: string; value: number | null; unit: string; target?: string; numerator?: number; denominator?: number; computedFrom: string; asOf: string; criteria?: KpiCriterion[] }
 export interface PricePoint { date: string; market: string; commodity: string; min: number; max: number; modal: number; source: string }
 export interface Village {
   code: VillageCode; name: string; nameBn: string; block: string; gp?: string; lat: number; lon: number;

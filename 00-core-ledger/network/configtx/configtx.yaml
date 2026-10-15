@@ -1,5 +1,5 @@
 # Channel configuration for FPO-SETU (contract Section 7). MSP paths are relative to this file.
-# Lite profile: one Raft consenter. The full profile only adds consenters; channels, orgs and policies are identical.
+# Full profile: three Raft consenters. (The lite profile had one; channels, orgs and policies are identical.)
 Organizations:
   - &OrdererOrg
     Name: OrdererOrgMSP
@@ -11,6 +11,8 @@ Organizations:
       Admins:  { Type: Signature, Rule: "OR('OrdererOrgMSP.admin')" }
     OrdererEndpoints:
       - orderer1.setu.local:7050
+      - orderer2.setu.local:7050
+      - orderer3.setu.local:7050
 
   - &FpoOrg
     Name: FpoOrgMSP
@@ -71,6 +73,8 @@ Application: &ApplicationDefaults
 Orderer: &OrdererDefaults
   Addresses:
     - orderer1.setu.local:7050
+    - orderer2.setu.local:7050
+    - orderer3.setu.local:7050
   BatchTimeout: 1s
   BatchSize:
     MaxMessageCount: 20
@@ -83,6 +87,14 @@ Orderer: &OrdererDefaults
         Port: 7050
         ClientTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer1.setu.local/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer1.setu.local/tls/server.crt
+      - Host: orderer2.setu.local
+        Port: 7050
+        ClientTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer2.setu.local/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer2.setu.local/tls/server.crt
+      - Host: orderer3.setu.local
+        Port: 7050
+        ClientTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer3.setu.local/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer3.setu.local/tls/server.crt
     Options:
       TickInterval: 500ms
       ElectionTick: 10

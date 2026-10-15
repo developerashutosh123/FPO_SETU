@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.1",
+    "contractVersion": "1.0.2",
     "file": "provenance.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "note": "No names or phone numbers. UNVERIFIABLE lot 497 returns ERR_NOT_FOUND-like handling in live mode: origin link is broken after erasure."

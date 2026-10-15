@@ -1,14 +1,13 @@
 # Human steps for 00-core-ledger
 
-Environment: local WSL2 Ubuntu + Docker Desktop. Updated at CHECKPOINT C1 (your C0 answers are recorded in `docs/DECISIONS.md` D3).
+Environment: local WSL2 Ubuntu + Docker Desktop. Updated at C3 start (your C0 answers are recorded in `docs/DECISIONS.md` D3).
 
 ## Done
+- Git identity, credential helper and first push done. Month-12 criteria received. Full 3-orderer profile running.
 - Toolchain verified: go 1.23.4, node 22.23.3, pnpm 12.11.2, jq 1.8.1, yq 4.44.3, make 4.4.1, docker 29.7.2 + compose v5.4.0, git 2.53.0.
 
-## Do now (small)
-1. **Git identity (30 seconds).** `git config --global user.name "Your Name"` and `git config --global user.email you@example.com`. Until then my commits use the handle `developerashutosh123`. Push to `origin` needs credentials: if `git push` asks for a password, create a GitHub personal access token (classic, `repo` scope) or run `sudo apt install gh && gh auth login`.
-2. **Golgram and Gopalpur coordinates.** Neither village exists in OpenStreetMap, so `villages.json` shows the block centre for them. Please send, for each: latitude and longitude (from Google Maps, long-press the village) **or** the LGD code, and for Gopalpur confirm the gram panchayat in Keshiary block (Census 2011 village directory). Not blocking.
-3. **The four Month-12 gate criteria** from the mid-term report (one line each). Until then that KPI shows "criteria not provided". Not blocking.
+## Open (not blocking)
+- **Golgram and Gopalpur coordinates.** Both show the block centre, labelled. When you have them, send latitude and longitude (or LGD codes) for each, and confirm Gopalpur's gram panchayat in Keshiary block.
 
 ## Needed before C4 (gateway and seed)
 | What | Where | Goes into |

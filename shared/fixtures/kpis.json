@@ -1,9 +1,9 @@
 {
   "_meta": {
-    "contractVersion": "1.0.1",
+    "contractVersion": "1.0.2",
     "file": "kpis.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
-    "note": "KPIs here are computed from the small fixture world, not the real seed. KPIs that need data the fixtures do not have are null with the reason in computedFrom. month12_gate stays null: the four criteria are in the mid-term report, which was not provided."
+    "note": "KPIs here are computed from the small fixture world, not the real seed. KPIs that need data the fixtures do not have are null with the reason in computedFrom. month12_gate carries the four criteria given by the team; the fourth is null (needs AGMARKNET)."
   },
   "examples": [
     {
@@ -94,11 +94,39 @@
           {
             "key": "month12_gate",
             "label": "Month-12 gate",
-            "value": null,
+            "value": 2,
             "unit": "criteria met",
             "target": "all 4",
-            "computedFrom": "The four criteria come from the mid-term report, which was not provided",
-            "asOf": "2026-11-14T12:32:00Z"
+            "numerator": 2,
+            "denominator": 4,
+            "computedFrom": "fixture world (9 members, 16 lots): criteria as given by the team; the fourth cannot be computed without AGMARKNET prices",
+            "asOf": "2026-11-14T12:32:00Z",
+            "criteria": [
+              {
+                "key": "members_with_lot",
+                "label": "At least 60% of members have at least one recorded lot",
+                "met": true,
+                "evidence": "9 of 9 members in the fixture world (9 members, 16 lots)"
+              },
+              {
+                "key": "audit_divergence",
+                "label": "First-mile audit divergence below 5%",
+                "met": false,
+                "evidence": "1 divergent of 4 audited (25%)"
+              },
+              {
+                "key": "lender_disbursed",
+                "label": "At least one lender disbursed against a platform-evidenced e-NWR",
+                "met": true,
+                "evidence": "3 loans disbursed against e-NWRs on the ledger"
+              },
+              {
+                "key": "buyer_premium",
+                "label": "At least one buyer paid a measurable premium on a verified-origin consignment",
+                "met": null,
+                "evidence": "Needs the AGMARKNET modal price for the same week; not available in fixtures"
+              }
+            ]
           }
         ]
       }

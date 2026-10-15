@@ -1,4 +1,4 @@
-# FPO-SETU Shared Contract (v1.0.1)
+# FPO-SETU Shared Contract (v1.0.2)
 
 **Every Claude Code chat reads this file first.** It is the single source of truth that keeps the seven folders consistent. Only the **00-core-ledger** chat may change it, and every change must bump `CONTRACT_VERSION` in `shared/contract.ts` and add a line to the changelog at the bottom of this file. The portal chats never edit `shared/`. To request a change, a portal chat writes the request in its own `CONTRACT_REQUESTS.md` and tells the human.
 
@@ -199,7 +199,7 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 ## 7. Fabric network (implemented only by 00-core-ledger; everyone else must understand it)
 
 - **Fabric:** v2.5.x LTS (latest 2.5 patch, pinned in `00-core-ledger/network/VERSIONS.md`). Fabric CA 1.5.x.
-- **Orgs:** `FpoOrgMSP`, `BankOrgMSP`, `BuyerOrgMSP`, `RegulatorOrgMSP`, `OrdererOrgMSP`. One peer per org. **3 Raft orderers** (a 1-orderer "lite" profile is allowed for low-RAM Codespaces; see the core prompt).
+- **Orgs:** `FpoOrgMSP`, `BankOrgMSP`, `BuyerOrgMSP`, `RegulatorOrgMSP`, `OrdererOrgMSP`. One peer per org. **3 Raft orderers** (a 1-orderer "lite" profile is allowed for low-RAM hosts; the local network runs the full profile). Raft elects one leader per channel, so the explorer shows a leader per channel.
 - **Channels:**
   - `trace-channel`: FPO, Bank, Buyer, Regulator.
   - `finance-channel`: FPO, Bank, Regulator.
@@ -375,7 +375,13 @@ NEXT_PUBLIC_URL_BUYER        NEXT_PUBLIC_URL_CONSUMER   NEXT_PUBLIC_URL_GOV
 | Time to trace | p50 latency of `/public/provenance` | < 5 s |
 | Audit divergence | divergent re-inspections ÷ lots audited | < 5% |
 | Women's participation | women with ≥1 lot ÷ members with ≥1 lot | ≥ 40% |
-| Month-12 gate | the 4 criteria from the mid-term report, each shown as met / not met | all 4 |
+| Month-12 gate | the 4 criteria below, each shown as met / not met (`criteria[]` on the KPI; `value` = number met) | all 4 |
+
+Month-12 gate criteria (given by the team, 15-10-2026, not read from the mid-term report):
+1. At least 60% of members have at least one recorded lot.
+2. First-mile audit divergence is below 5%.
+3. At least one lender has disbursed against a platform-evidenced e-NWR.
+4. At least one buyer has paid a measurable premium on a verified-origin consignment (premium measured against the AGMARKNET modal price, as in the first KPI).
 
 ---
 
@@ -446,3 +452,4 @@ fpo-setu/                      (one GitHub repo)
   - New in Section 7: wire formats, price-hash definition, lot status mirror calls.
   - Patronage reconciliation stated precisely: sum(gross) = settlement amount and, per line, gross = net + sum(deductions), so sum(net) + sum(all deductions, FPO_MARGIN included) = settlement amount, within INR 1.
   - Portals affected: all six must re-sync `contract.ts`. 02 gains the operator login, `GET /storage/deposits` and `GET /patronage/runs`. 03 gains `GET /loans/:loanId`. 04 gains `GET /orders/:orderId`. 06 should expect `LotStatusChanged` in the explorer and SSE.
+- 1.0.2 (additive): `LedgerStatus.orderers[].leaderOf` (Raft leaders are per channel; `raftLeader` means "leads trace-channel"). `Kpi.criteria` with the four Month-12 gate criteria (Section 9.5). The network now runs the full 3-orderer profile, so `ledger.json` shows three orderers. Portals affected: 06 (explorer shows per-channel leaders; Month-12 gate shows four met / not met rows). Others only need to re-sync `contract.ts`.

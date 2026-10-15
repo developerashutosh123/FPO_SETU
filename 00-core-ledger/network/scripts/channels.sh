@@ -16,16 +16,20 @@ gen_blocks() {
 }
 
 wait_orderer() {
-  for i in $(seq 1 60); do osn_json channel list | jq -e . >/dev/null 2>&1 && return 0; sleep 1; done
-  die "orderer admin endpoint did not come up"
+  for o in "${ORDERERS[@]}"; do
+    for i in $(seq 1 60); do OSN_NODE=$o osn_json channel list | jq -e . >/dev/null 2>&1 && continue 2; sleep 1; done
+    die "$o admin endpoint did not come up"
+  done
 }
 
 join_orderer() {
-  local have; have=$(osn_json channel list | jq -r '.channels[]?.name')
-  for ch in "${CHANNELS[@]}"; do
-    if grep -qx "$ch" <<<"$have"; then log "orderer already has $ch"; continue; fi
-    log "orderer joins $ch"
-    osn channel join --channelID "$ch" --config-block "$ART_DIR/$ch.block" >/dev/null || die "osnadmin join $ch failed"
+  for o in "${ORDERERS[@]}"; do
+    local have; have=$(OSN_NODE=$o osn_json channel list | jq -r '.channels[]?.name')
+    for ch in "${CHANNELS[@]}"; do
+      if grep -qx "$ch" <<<"$have"; then log "$o already has $ch"; continue; fi
+      log "$o joins $ch"
+      OSN_NODE=$o osn channel join --channelID "$ch" --config-block "$ART_DIR/$ch.block" >/dev/null || die "osnadmin join $ch on $o failed"
+    done
   done
 }
 

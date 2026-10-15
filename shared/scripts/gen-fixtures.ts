@@ -488,11 +488,20 @@ function main() {
     { l: lotBySerial(470), status: 'MATCH' as const }, { l: lotBySerial(471), status: 'PENDING' as const },
   ];
   const audited = AUDIT.filter((a) => a.status !== 'PENDING').length, divergent = AUDIT.filter((a) => a.status === 'DIVERGENT').length;
+  const r1 = (n: number) => Math.round(n * 10) / 10;
+  const r1d = r1;
   const asOf = iso(0);
   const world = `fixture world (${members.length} members, ${LOTS.length} lots)`;
+  const lenderDisbursed = loanLots.length > 0;
+  const gate: Kpi['criteria'] = [
+    { key: 'members_with_lot', label: 'At least 60% of members have at least one recorded lot', met: withLots.length / members.length >= 0.6, evidence: `${withLots.length} of ${members.length} members in the ${world}` },
+    { key: 'audit_divergence', label: 'First-mile audit divergence below 5%', met: divergent / audited < 0.05, evidence: `${divergent} divergent of ${audited} audited (${r1d((divergent / audited) * 100)}%)` },
+    { key: 'lender_disbursed', label: 'At least one lender disbursed against a platform-evidenced e-NWR', met: lenderDisbursed, evidence: `${loanLots.length} loans disbursed against e-NWRs on the ledger` },
+    { key: 'buyer_premium', label: 'At least one buyer paid a measurable premium on a verified-origin consignment', met: null, evidence: 'Needs the AGMARKNET modal price for the same week; not available in fixtures' },
+  ];
+  const gateMet = gate.filter((c) => c.met === true).length;
   const kpi = (key: string, label: string, value: number | null, unit: string, computedFrom: string, target?: string, numerator?: number, denominator?: number): Kpi => ({ key, label, value, unit, ...(target ? { target } : {}), ...(numerator !== undefined ? { numerator } : {}), ...(denominator !== undefined ? { denominator } : {}), computedFrom, asOf });
-  const r1 = (n: number) => Math.round(n * 10) / 10;
-  write('kpis.json', { note: 'KPIs here are computed from the small fixture world, not the real seed. KPIs that need data the fixtures do not have are null with the reason in computedFrom. month12_gate stays null: the four criteria are in the mid-term report, which was not provided.' }, [
+  write('kpis.json', { note: 'KPIs here are computed from the small fixture world, not the real seed. KPIs that need data the fixtures do not have are null with the reason in computedFrom. month12_gate carries the four criteria given by the team; the fourth is null (needs AGMARKNET).' }, [
     ex('kpis', { asOf, items: [
       kpi('price_premium', 'Realised price premium', null, '%', 'Needs the AGMARKNET modal series for the same week; not in fixtures', '+8%'),
       kpi('post_harvest_loss', 'Post-harvest loss', r1((1 - accKg / commKg) * 100), '%', `${world}: accepted kg taken as graded net kg of delivered lots, weight-weighted`, '< 8%', accKg, commKg),
@@ -502,7 +511,7 @@ function main() {
       kpi('time_to_trace', 'Time to trace (p50)', null, 'ms', 'Measured on the live /public/provenance endpoint; not in fixtures', '< 5 s'),
       kpi('audit_divergence', 'Audit divergence', r1((divergent / audited) * 100), '%', `${world}: divergent re-inspections / lots audited`, '< 5%', divergent, audited),
       kpi('women_participation', "Women's participation", r1((women.length / withLots.length) * 100), '%', `${world}: women with at least one lot / members with at least one lot`, '>= 40%', women.length, withLots.length),
-      kpi('month12_gate', 'Month-12 gate', null, 'criteria met', 'The four criteria come from the mid-term report, which was not provided', 'all 4'),
+      { ...kpi('month12_gate', 'Month-12 gate', gateMet, 'criteria met', `${world}: criteria as given by the team; the fourth cannot be computed without AGMARKNET prices`, 'all 4', gateMet, 4), criteria: gate },
     ] }),
     ex('auditSample', { drawnOn: day(2 * D), sampleRatePct: 5, items: AUDIT.map((a) => ({ sscc: sscc(a.l), humanRef: humanRef(a.l), village: farmerOf(a.l.farmer).village, status: a.status, ...(a.status !== 'PENDING' ? { auditedOn: day(1 * D) } : {}), ...(a.note ? { note: a.note } : {}) })), audited, divergent, divergenceRatePct: r1((divergent / audited) * 100) }),
     ex('attestorReputation', [
@@ -535,7 +544,7 @@ function main() {
   const status: LedgerStatus = {
     mode: 'live',
     peers: peers.map(([n, org, chs]) => ({ name: `peer0.${n}.setu.local`, org, up: true, heights: Object.fromEntries(chs.map((c) => [c, HEIGHT[c]])) })),
-    orderers: [{ name: 'orderer1.setu.local', up: true, raftLeader: true }],
+    orderers: [{ name: 'orderer1.setu.local', up: true, raftLeader: false, leaderOf: ['trade-channel'] }, { name: 'orderer2.setu.local', up: true, raftLeader: false }, { name: 'orderer3.setu.local', up: true, raftLeader: true, leaderOf: ['trace-channel', 'finance-channel'] }],
     channels: [{ name: 'trace-channel', height: HEIGHT['trace-channel'], members: [FPO, BANK, BUYER, REG] }, { name: 'finance-channel', height: HEIGHT['finance-channel'], members: [FPO, BANK, REG] }, { name: 'trade-channel', height: HEIGHT['trade-channel'], members: [FPO, BUYER] }],
   };
   const blockOf = (label: string): BlockSummary => { const t = T(label); return { channel: t.channel, number: t.blockNumber, dataHash: fx(`dh:${t.channel}:${t.blockNumber}`), previousHash: fx(`dh:${t.channel}:${t.blockNumber - 1}`), txCount: 1, time: t.time }; };
@@ -545,7 +554,7 @@ function main() {
   const streamEv = (label: string): StreamEvent[] => { const t = T(label); return t.def.events.map((e) => ({ event: e.event, ...(e.sscc ? { sscc: e.sscc } : {}), ...(e.orderId ? { orderId: e.orderId } : {}), ...(e.enwr ? { enwr: e.enwr } : {}), txId: t.txId, blockNumber: t.blockNumber, channel: t.channel, at: t.time })); };
   const allLabels = [...TXS.keys()];
   const chronological = allLabels.sort((a, b) => T(b).def.minBefore - T(a).def.minBefore);
-  write('ledger.json', { note: 'All tx IDs and block/data hashes are FIXTURE- placeholders. Heights match the contract examples (trace 1,284, finance 311, trade 207). Only the newest blocks exist in the fixtures: older block numbers return ERR_NOT_FOUND from the mock. Lite profile: one Raft orderer, so there is no fault tolerance and raftLeader is that single node.' }, [
+  write('ledger.json', { note: 'All tx IDs and block/data hashes are FIXTURE- placeholders. Heights match the contract examples (trace 1,284, finance 311, trade 207). Only the newest blocks exist in the fixtures: older block numbers return ERR_NOT_FOUND from the mock. Full profile: three Raft orderers, one leader per channel (the fixture mirrors a real run: orderer3 leads trace and finance, orderer1 leads trade).' }, [
     ex('ledgerStatus', status),
     ex('ledgerBlocks', (['trace-channel', 'finance-channel', 'trade-channel'] as Channel[]).flatMap((c) => byChannel(c).slice(0, 5).map(([l]) => blockOf(l))).sort((a, b) => b.time.localeCompare(a.time))),
     ...(['trace-channel', 'finance-channel', 'trade-channel'] as Channel[]).map((c) => ex('ledgerBlocks', byChannel(c).slice(0, 10).map(([l]) => blockOf(l)), undefined, { channel: c })),

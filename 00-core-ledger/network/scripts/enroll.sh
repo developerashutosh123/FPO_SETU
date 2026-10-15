@@ -91,8 +91,10 @@ done
 log "CA orderer: enrolling identities"
 wait_ca orderer; registrar orderer
 org_msp orderer "$ORD_HOME"
-reg orderer orderer1 orderer
 reg orderer orgadmin admin
-enroll_node orderer orderer1 "orderer1.$ORDERER_DOMAIN" "$ORD_HOME/orderers/orderer1.$ORDERER_DOMAIN"
+for o in "${ORDERERS[@]}"; do
+  reg orderer "$o" orderer
+  enroll_node orderer "$o" "$o.$ORDERER_DOMAIN" "$ORD_HOME/orderers/$o.$ORDERER_DOMAIN"
+done
 enroll_user orderer orgadmin "$ORD_HOME/users/orgadmin"
 log "enrollment complete: $(find "$WALLET_DIR" -name cert.pem | wc -l) wallet identities"
