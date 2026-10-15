@@ -1,0 +1,14 @@
+{
+  "name": "fpo-setu-core-ledger",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/go:1": { "version": "1.22" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "hostRequirements": { "cpus": 4, "memory": "16gb" },
+  "forwardPorts": [8080],
+  "portsAttributes": { "8080": { "label": "gateway", "visibility": "public" } },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y jq make && sudo npm i -g pnpm @anthropic-ai/claude-code && sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq"
+}
