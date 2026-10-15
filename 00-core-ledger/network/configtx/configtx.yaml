@@ -1,0 +1,136 @@
+# Channel configuration for FPO-SETU (contract Section 7). MSP paths are relative to this file.
+# Lite profile: one Raft consenter. The full profile only adds consenters; channels, orgs and policies are identical.
+Organizations:
+  - &OrdererOrg
+    Name: OrdererOrgMSP
+    ID: OrdererOrgMSP
+    MSPDir: ../organizations/ordererOrganizations/setu.local/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('OrdererOrgMSP.member')" }
+      Writers: { Type: Signature, Rule: "OR('OrdererOrgMSP.member')" }
+      Admins:  { Type: Signature, Rule: "OR('OrdererOrgMSP.admin')" }
+    OrdererEndpoints:
+      - orderer1.setu.local:7050
+
+  - &FpoOrg
+    Name: FpoOrgMSP
+    ID: FpoOrgMSP
+    MSPDir: ../organizations/peerOrganizations/fpo.setu.local/msp
+    Policies: &FpoPolicies
+      Readers:     { Type: Signature, Rule: "OR('FpoOrgMSP.admin','FpoOrgMSP.peer','FpoOrgMSP.client')" }
+      Writers:     { Type: Signature, Rule: "OR('FpoOrgMSP.admin','FpoOrgMSP.client')" }
+      Admins:      { Type: Signature, Rule: "OR('FpoOrgMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('FpoOrgMSP.peer')" }
+
+  - &BankOrg
+    Name: BankOrgMSP
+    ID: BankOrgMSP
+    MSPDir: ../organizations/peerOrganizations/bank.setu.local/msp
+    Policies:
+      Readers:     { Type: Signature, Rule: "OR('BankOrgMSP.admin','BankOrgMSP.peer','BankOrgMSP.client')" }
+      Writers:     { Type: Signature, Rule: "OR('BankOrgMSP.admin','BankOrgMSP.client')" }
+      Admins:      { Type: Signature, Rule: "OR('BankOrgMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('BankOrgMSP.peer')" }
+
+  - &BuyerOrg
+    Name: BuyerOrgMSP
+    ID: BuyerOrgMSP
+    MSPDir: ../organizations/peerOrganizations/buyer.setu.local/msp
+    Policies:
+      Readers:     { Type: Signature, Rule: "OR('BuyerOrgMSP.admin','BuyerOrgMSP.peer','BuyerOrgMSP.client')" }
+      Writers:     { Type: Signature, Rule: "OR('BuyerOrgMSP.admin','BuyerOrgMSP.client')" }
+      Admins:      { Type: Signature, Rule: "OR('BuyerOrgMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('BuyerOrgMSP.peer')" }
+
+  - &RegulatorOrg
+    Name: RegulatorOrgMSP
+    ID: RegulatorOrgMSP
+    MSPDir: ../organizations/peerOrganizations/regulator.setu.local/msp
+    Policies:
+      Readers:     { Type: Signature, Rule: "OR('RegulatorOrgMSP.admin','RegulatorOrgMSP.peer','RegulatorOrgMSP.client')" }
+      Writers:     { Type: Signature, Rule: "OR('RegulatorOrgMSP.admin','RegulatorOrgMSP.client')" }
+      Admins:      { Type: Signature, Rule: "OR('RegulatorOrgMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('RegulatorOrgMSP.peer')" }
+
+Capabilities:
+  Channel: &ChannelCapabilities       { V2_0: true }
+  Orderer: &OrdererCapabilities       { V2_0: true }
+  Application: &ApplicationCapabilities { V2_5: true }
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:              { Type: ImplicitMeta, Rule: "ANY Readers" }
+    Writers:              { Type: ImplicitMeta, Rule: "ANY Writers" }
+    Admins:               { Type: ImplicitMeta, Rule: "MAJORITY Admins" }
+    LifecycleEndorsement: { Type: ImplicitMeta, Rule: "MAJORITY Endorsement" }
+    Endorsement:          { Type: ImplicitMeta, Rule: "MAJORITY Endorsement" }
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  Addresses:
+    - orderer1.setu.local:7050
+  BatchTimeout: 1s
+  BatchSize:
+    MaxMessageCount: 20
+    AbsoluteMaxBytes: 16 MB
+    PreferredMaxBytes: 2 MB
+  OrdererType: etcdraft
+  EtcdRaft:
+    Consenters:
+      - Host: orderer1.setu.local
+        Port: 7050
+        ClientTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer1.setu.local/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/setu.local/orderers/orderer1.setu.local/tls/server.crt
+    Options:
+      TickInterval: 500ms
+      ElectionTick: 10
+      HeartbeatTick: 1
+      MaxInflightBlocks: 5
+      SnapshotIntervalSize: 16 MB
+  Organizations:
+  Policies:
+    Readers:         { Type: ImplicitMeta, Rule: "ANY Readers" }
+    Writers:         { Type: ImplicitMeta, Rule: "ANY Writers" }
+    Admins:          { Type: ImplicitMeta, Rule: "MAJORITY Admins" }
+    BlockValidation: { Type: ImplicitMeta, Rule: "ANY Writers" }
+  Capabilities:
+    <<: *OrdererCapabilities
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers: { Type: ImplicitMeta, Rule: "ANY Readers" }
+    Writers: { Type: ImplicitMeta, Rule: "ANY Writers" }
+    Admins:  { Type: ImplicitMeta, Rule: "MAJORITY Admins" }
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Profiles:
+  # trace-channel: FPO, Bank, Buyer, Regulator
+  TraceChannel:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations: [*OrdererOrg]
+    Application:
+      <<: *ApplicationDefaults
+      Organizations: [*FpoOrg, *BankOrg, *BuyerOrg, *RegulatorOrg]
+  # finance-channel: FPO, Bank, Regulator
+  FinanceChannel:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations: [*OrdererOrg]
+    Application:
+      <<: *ApplicationDefaults
+      Organizations: [*FpoOrg, *BankOrg, *RegulatorOrg]
+  # trade-channel: FPO, Buyer (the Regulator is deliberately absent, so it never sees prices)
+  TradeChannel:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations: [*OrdererOrg]
+    Application:
+      <<: *ApplicationDefaults
+      Organizations: [*FpoOrg, *BuyerOrg]

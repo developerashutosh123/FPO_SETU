@@ -31,7 +31,18 @@ Reasons:
 
 Upgrade path: the full profile (3 orderers) needs about 2 extra orderer containers. If `docker stats` at CHECKPOINT C2 shows the lite stack well under 3 GiB, we can switch to full. Alternatively the human can raise the WSL limit with `C:\Users\ashut\.wslconfig` (`[wsl2] memory=11GB`, then `wsl --shutdown`). The host has 15.7 GB, so 11 GB leaves Windows about 4.7 GB. This is a human decision. The stack will be measured, not guessed, at C2.
 
-Memory figures per container are not yet measured. Real numbers will replace this paragraph at C2.
+**Measured at C2 (15-10-2026, lite stack idle, no chaincode containers yet):**
+
+| Container | Memory | Limit set |
+|---|---|---|
+| 4 peers | 50 to 56 MiB each | 640 MiB |
+| orderer | 28 MiB | 384 MiB |
+| 5 CAs | about 10 MiB each | 128 MiB |
+| **Total (10 containers)** | **288 MiB** | |
+
+The whole network uses about 4% of the 7.6 GiB the WSL VM has. The chaincode containers (up to 9, Go, roughly 20 to 40 MiB each, to be measured at C3) and load will add to this, but the stack is nowhere near the 3 GiB threshold in the upgrade note above. Two extra orderers would cost roughly 60 MiB. So the RAM argument for the lite profile no longer holds; only the human's decision (Q4) keeps it. Switching gives a real 3-node Raft cluster, a visible leader failover in the professor demo and an honest "fault tolerant" label in the explorer. Cost: change `docker-compose.yaml`, `configtx.yaml` consenters and `enroll.sh` for two more orderer identities, then `make rebuild` (about 25 s). Recommended, but not done without the human's say-so.
+
+Time to build from nothing: `make rebuild` takes 24 s for the network (images already pulled). Restart after `make down`: 6 to 17 s, heights and block hashes unchanged.
 
 ## D3. Human answers to the C0 questions (2026-10-15)
 - **Q1 Postgres:** Supabase, Mumbai region. Needs `DATABASE_URL` (pooled) and `DIRECT_URL` before C4.
