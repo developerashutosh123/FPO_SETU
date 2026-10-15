@@ -1,0 +1,35 @@
+/* FPO-SETU shared design tokens. Owned by 00-core-ledger; portals copy via scripts/sync-contract.mjs.
+   Each portal sets <html data-portal="farmer|fpo|bank|buyer|consumer|gov"> to pick its accent. */
+:root {
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-bn: "Noto Sans Bengali", "Hind Siliguri", sans-serif;
+  --font-hi: "Noto Sans Devanagari", sans-serif;
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
+  --radius-sm: 4px; --radius-md: 6px;
+  --text-xs: 12px; --text-sm: 14px; --text-md: 16px; --text-lg: 18px; --text-xl: 22px; --text-2xl: 28px; --text-3xl: 36px;
+
+  /* neutrals */
+  --ink: #1B1F23; --ink-2: #4A525A; --ink-3: #7A838C; --line: #DDE1E5; --surface: #FFFFFF; --canvas: #F6F7F8;
+
+  /* semantic (same meaning in every portal) */
+  --ok: #1F7A3F; --warn: #A15C00; --danger: #B42318; --info: #1F5FA8;
+  --grade-a: #1F7A3F; --grade-b: #A15C00; --grade-c: #7A3E9D;
+  --ledger-live: #1F7A3F; --ledger-index: #A15C00; --ledger-off: #B42318;
+
+  /* accent defaults (overridden per portal) */
+  --accent: #1E4D2B; --accent-2: #B5651D; --accent-ink: #FFFFFF;
+}
+[data-portal="farmer"]   { --accent: #1E4D2B; --accent-2: #B5651D; --canvas: #FAF7F0; }
+[data-portal="fpo"]      { --accent: #2F3E4C; --accent-2: #1E4D2B; --canvas: #F4F5F6; }
+[data-portal="bank"]     { --accent: #14213D; --accent-2: #3D5A80; --canvas: #F5F6F8; }
+[data-portal="buyer"]    { --accent: #24432F; --accent-2: #A67C52; --canvas: #F7F4EE; }
+[data-portal="consumer"] { --accent: #24432F; --accent-2: #B5651D; --canvas: #FBF9F4; }
+[data-portal="gov"]      { --accent: #0F5C5C; --accent-2: #4A525A; --canvas: #F5F6F7; }
+
+@media (prefers-color-scheme: dark) {
+  [data-portal="fpo"], [data-portal="gov"], [data-portal="bank"] {
+    --ink: #E8EAED; --ink-2: #B8BEC4; --ink-3: #8A929A; --line: #2E343A; --surface: #171B1F; --canvas: #101317;
+  }
+}
