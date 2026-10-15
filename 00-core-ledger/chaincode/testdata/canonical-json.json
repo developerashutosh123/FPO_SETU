@@ -1,0 +1,114 @@
+{
+  "contractVersion": "1.0.2",
+  "rules": "keys sorted by UTF-16 code unit (use ASCII keys), no whitespace, UTF-8 bytes, no HTML escaping, undefined properties dropped, NaN/Infinity/undefined array items rejected",
+  "cases": [
+    {
+      "name": "sorted keys, nested",
+      "input": {
+        "b": 1,
+        "a": {
+          "d": [
+            3,
+            2,
+            1
+          ],
+          "c": "x"
+        }
+      },
+      "canonical": "{\"a\":{\"c\":\"x\",\"d\":[3,2,1]},\"b\":1}",
+      "sha256": "6a612892896f060864370ed1dd091ec7f46fb643cbb634b5a40d1822a2cb8368"
+    },
+    {
+      "name": "f2 lot commission payload",
+      "input": {
+        "sscc": "089012340000004517",
+        "farmerToken": "FT-9c2e41a07b55d3f1",
+        "plotId": "PL-7Q2M9X4K1A",
+        "commodity": "POTATO",
+        "bagCount": 40,
+        "estWeightKg": 2000,
+        "harvestOrUnloadDate": "2026-11-02"
+      },
+      "canonical": "{\"bagCount\":40,\"commodity\":\"POTATO\",\"estWeightKg\":2000,\"farmerToken\":\"FT-9c2e41a07b55d3f1\",\"harvestOrUnloadDate\":\"2026-11-02\",\"plotId\":\"PL-7Q2M9X4K1A\",\"sscc\":\"089012340000004517\"}",
+      "sha256": "1fd555162f524dcc2f1f1bf9c78d893dcdf1ef206bef5664808fe4cad35bb3fe"
+    },
+    {
+      "name": "bengali text stays raw UTF-8",
+      "input": {
+        "name": "অনিমা দাস",
+        "note": "আমি নিশ্চিত করছি"
+      },
+      "canonical": "{\"name\":\"অনিমা দাস\",\"note\":\"আমি নিশ্চিত করছি\"}",
+      "sha256": "56d12dbce00cd393f6a9d541b94342f109386eb64629fbae70a038307455386f"
+    },
+    {
+      "name": "html characters are not escaped",
+      "note": "Go json.Marshal escapes < > & by default; the verifier must not.",
+      "input": {
+        "s": "<a href=\"x\">&</a>"
+      },
+      "canonical": "{\"s\":\"<a href=\\\"x\\\">&</a>\"}",
+      "sha256": "5d32d7875fe9eb9b8447eeaf03ecf3d5847763939b61423e16161f7c5831711e"
+    },
+    {
+      "name": "line and paragraph separators stay raw",
+      "note": "Go json.Marshal escapes U+2028 and U+2029; the verifier must not.",
+      "input": {
+        "s": "a b c"
+      },
+      "canonical": "{\"s\":\"a b c\"}",
+      "sha256": "5b2dc062ac2d05c4b51a388dd0e99e9b161c6c6f0fefeef39629890a42902b84"
+    },
+    {
+      "name": "control characters and quotes are escaped",
+      "input": {
+        "s": "line1\nline2\t\"q\"\\"
+      },
+      "canonical": "{\"s\":\"line1\\nline2\\t\\\"q\\\"\\\\\"}",
+      "sha256": "9f3e37dfaca39a16157a04bcaa3cb9bf9232e4dd9a0a83be45242efaa4de2756"
+    },
+    {
+      "name": "booleans and null",
+      "input": {
+        "t": true,
+        "f": false,
+        "n": null
+      },
+      "canonical": "{\"f\":false,\"n\":null,\"t\":true}",
+      "sha256": "22e00dc2f7b01420f940fbdbfbdf34fa0667cc6500186495023ba37722cbd05e"
+    },
+    {
+      "name": "integers only, no exponent",
+      "input": {
+        "a": 0,
+        "b": -7,
+        "c": 2000,
+        "d": 1234567890123
+      },
+      "canonical": "{\"a\":0,\"b\":-7,\"c\":2000,\"d\":1234567890123}",
+      "sha256": "bc4ae94d3098b8b1b4c285ddf6f148d681b2ef4b45b693e357fcf4510e1ff501"
+    },
+    {
+      "name": "empty containers",
+      "input": {
+        "a": [],
+        "o": {}
+      },
+      "canonical": "{\"a\":[],\"o\":{}}",
+      "sha256": "9bee7ebfc94b459dacb8cbc72cb2900e61f0aa42189df18329f84f92568f4f89"
+    },
+    {
+      "name": "array order is preserved",
+      "input": [
+        "b",
+        "a",
+        {
+          "z": 1,
+          "y": 2
+        }
+      ],
+      "canonical": "[\"b\",\"a\",{\"y\":2,\"z\":1}]",
+      "sha256": "c7778a0e5b6afb2e127170459f7ac78bd3e8f3a4e9c9290ad157d38e7f7c7c03"
+    }
+  ]
+}

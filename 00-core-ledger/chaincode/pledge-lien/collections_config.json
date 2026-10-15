@@ -1,0 +1,12 @@
+[
+  {
+    "name": "loanTermsPDC",
+    "policy": "OR('FpoOrgMSP.member', 'BankOrgMSP.member')",
+    "requiredPeerCount": 1,
+    "maxPeerCount": 1,
+    "blockToLive": 0,
+    "memberOnlyRead": true,
+    "memberOnlyWrite": true,
+    "endorsementPolicy": { "signaturePolicy": "AND('FpoOrgMSP.peer', 'BankOrgMSP.peer')" }
+  }
+]

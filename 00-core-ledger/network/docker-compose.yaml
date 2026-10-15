@@ -69,7 +69,7 @@ x-peer: &peer
   restart: unless-stopped
   working_dir: /root
   command: peer node start
-  deploy: { resources: { limits: { memory: 640M, cpus: "1.5" } } }
+  deploy: { resources: { limits: { memory: 1G, cpus: "1.5" } } }
   environment: &peer_env
     FABRIC_CFG_PATH: /etc/hyperledger/peercfg
     FABRIC_LOGGING_SPEC: INFO

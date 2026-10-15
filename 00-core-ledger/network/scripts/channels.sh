@@ -44,7 +44,12 @@ join_peers() {
       use_peer "$org"; wait_peer "$org"
       if peer channel list 2>/dev/null | grep -qx "$ch"; then log "peer0.$org already on $ch"; continue; fi
       log "peer0.$org joins $ch"
-      for try in 1 2 3 4 5; do peer channel join -b "$ART_DIR/$ch.block" >/dev/null 2>&1 && break; sleep 2; [ "$try" = 5 ] && die "peer0.$org join $ch failed"; done
+      # a freshly restarted peer may not list its channels yet; "already exists" then means the join is done
+      for try in 1 2 3 4 5; do
+        out=$(peer channel join -b "$ART_DIR/$ch.block" 2>&1) && break
+        grep -q "already exists" <<<"$out" && break
+        sleep 2; [ "$try" = 5 ] && { echo "$out" >&2; die "peer0.$org join $ch failed"; }
+      done
     done
   done
 }

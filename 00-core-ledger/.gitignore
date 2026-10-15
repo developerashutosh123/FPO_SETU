@@ -14,3 +14,7 @@ network/config/
 network/.fabric-install/
 chaincode/**/vendor/
 coverage/
+chaincode/*/vendor/
+chaincode/lot-lifecycle/lot-lifecycle
+chaincode/pledge-lien/pledge-lien
+chaincode/order-settlement/order-settlement
