@@ -10,7 +10,9 @@ export interface DbHandle { db: Db; sql: postgres.Sql; close(): Promise<void> }
  * Works unchanged against a plain Postgres.
  */
 export function createDb(url: string, opts: { max?: number } = {}): DbHandle {
-  const sql = postgres(url, { max: opts.max ?? 10, prepare: false, idle_timeout: 20, connect_timeout: 15, onnotice: () => {} });
+  // A remote pooler can drop a connection without telling us; a query on such a connection would wait forever. So: recycle connections
+  // often (max_lifetime), close idle ones early (idle_timeout), send TCP keep-alives, so a dead socket is noticed instead of waited on.
+  const sql = postgres(url, { max: opts.max ?? 10, prepare: false, idle_timeout: 8, max_lifetime: 120, keep_alive: 10, connect_timeout: 15, onnotice: () => {} });
   return { db: drizzle(sql, { schema }), sql, close: () => sql.end({ timeout: 5 }) };
 }
 export { schema };

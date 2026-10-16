@@ -114,7 +114,7 @@ export class FabricLedger implements Ledger {
     try { return decodeBlock(await this.qscc(user, channel).evaluateTransaction('GetBlockByNumber', channel, String(number))); }
     catch (e) {
       const m = mapFabricError(e);
-      throw /out of range|not found|Entry not found/i.test(m.message) ? new HttpError('ERR_NOT_FOUND', `Block ${number} does not exist on ${channel}.`) : m;
+      throw /out of range|not found|Entry not found|no such block/i.test(m.message) ? new HttpError('ERR_NOT_FOUND', `Block ${number} does not exist on ${channel}.`) : m;
     }
   }
 
@@ -122,7 +122,7 @@ export class FabricLedger implements Ledger {
     try { return decodeBlock(await this.qscc(user, channel).evaluateTransaction('GetBlockByTxID', channel, txId)); }
     catch (e) {
       const m = mapFabricError(e);
-      throw /not found|does not exist|Entry not found/i.test(m.message) ? new HttpError('ERR_NOT_FOUND', `Transaction ${txId} was not found on ${channel}.`) : m;
+      throw /not found|does not exist|Entry not found|no such transaction/i.test(m.message) ? new HttpError('ERR_NOT_FOUND', `Transaction ${txId} was not found on ${channel}.`) : m;
     }
   }
 
@@ -136,7 +136,7 @@ export class FabricLedger implements Ledger {
     try { bytes = await this.qscc(user, channel).evaluateTransaction('GetTransactionByID', channel, txId); }
     catch (e) {
       const m = mapFabricError(e);
-      throw /not found|does not exist|Entry not found/i.test(m.message) ? new HttpError('ERR_NOT_FOUND', `Transaction ${txId} was not found on ${channel}.`) : m;
+      throw /not found|does not exist|Entry not found|no such transaction/i.test(m.message) ? new HttpError('ERR_NOT_FOUND', `Transaction ${txId} was not found on ${channel}.`) : m;
     }
     const processed = peerProtos.ProcessedTransaction.deserializeBinary(bytes);
     const env = processed.getTransactionenvelope();

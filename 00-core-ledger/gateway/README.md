@@ -44,6 +44,6 @@ The e2e run uses `test/e2e-rates.json` and one TEST price row, both only in a th
 ```
 pnpm load:csv data/agmarknet/*.csv       # real price history
 pnpm seed --scale mini                   # check first: about 25 lots, every branch once
-pnpm seed                                # 150 members, about 540 lots in every state
+pnpm seed                                # 150 members, about 540 lots in every state; about 44 minutes against Supabase Mumbai (DECISIONS D27)
 ```
 The seed drives the same HTTP routes a portal uses, so every record on the ledger came from real transactions. It refuses to start while prices or deduction rates are missing, or if the database already has lots.
