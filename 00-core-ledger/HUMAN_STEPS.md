@@ -9,7 +9,14 @@ Environment: local WSL2 Ubuntu + Docker Desktop. Updated at C3 start (your C0 an
 ## Open (not blocking)
 - **Golgram and Gopalpur coordinates.** Both show the block centre, labelled. When you have them, send latitude and longitude (or LGD codes) for each, and confirm Gopalpur's gram panchayat in Keshiary block.
 
-## Needed before C4 (gateway and seed)
+## Needed before the seed (C4)
+In this order, when you have the keys:
+1. Put `DATABASE_URL`, `DIRECT_URL` and `DATAGOVIN_API_KEY` into `gateway/.env` (copy `.env.example`; generate the three secrets with `openssl rand -hex 32`). Never paste them into the chat.
+2. **Decide the deduction rates** (docs/DATA_SOURCES.md). I could not find the West Bengal notified cold-storage rent, the market fee, the commission or the hamali rate. Either send me the sourced figures (a notification, a circular or a market-committee rate card) or tell me to use labelled indicative values. Until then no statement, patronage run or settled-lot seed can run on the real configuration.
+3. Download the AGMARKNET CSVs, including **Brinjal and Cauliflower** as well as Potato, Tomato and Paddy (the seed prices vegetable orders from real data and refuses without it).
+4. I then run, with you watching: `make rebuild` (fresh ledger), `pnpm db:migrate`, `pnpm load:csv`, `pnpm seed --scale mini`, and only then the full `pnpm seed`.
+
+## Needed for the keys above (C4)
 | What | Where | Goes into |
 |---|---|---|
 | Supabase project, region Mumbai (ap-south-1). Send `DATABASE_URL` (pooled) and `DIRECT_URL` **by writing them into `00-core-ledger/gateway/.env`, never into the chat** | supabase.com, New project, Connect | gateway, indexer, read-API |

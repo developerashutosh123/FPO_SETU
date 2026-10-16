@@ -104,3 +104,30 @@ Needed for the flows to work, all role-checked and unit-tested: `RegisterDevice`
 
 ## D16. Measured memory with the full stack and chaincode (15-10-2026)
 12 containers (5 CAs, 3 orderers, 4 peers) 857 MiB; 9 chaincode containers 92 MiB (7 to 13 MiB each); total 949 MiB of 7.6 GiB. Peers grew from about 50 MiB idle to 160 to 430 MiB after the chaincode builds and smoke runs; the 640 MiB limit was too close, so peers now have 1 GiB. `make down` then `make resume` twice left the chaincode working and the smoke test green. `peer channel join` after a restart can report "already exists" before the peer lists its channels; `channels.sh` now treats that as success.
+
+## D17. A pledged lot can be listed and sold; only dispatch waits for the lien (corrects D5 and the C3 chaincode)
+CONTRACT.md Section 6 marks the lien at step 6, lists and sells the lot at step 7 and releases the lien at step 8, and Section 3.2 only says a PLEDGED lot cannot move to IN_TRANSIT until its lien is released. The C3 chaincode refused to list a pledged lot, so the contract's own journey could not run; it surfaced while writing the e2e. Fixed in the chaincode: PLEDGED may go to LISTED; the lot keeps its `lienRef`; `ProposeTransfer` fails with `ERR_LOT_PLEDGED` while `lienRef` is set; `SetPledged(false)` on a LISTED or SOLD lot clears the reference and keeps the status; `CreateOrder` accepts pledged lots. The catalogue still never shows a pledged lot (the buyer finds only unpledged lots), and a buyer cannot open a PLEDGED lot by SSCC. The smoke test and the e2e now follow the contract's order of events.
+
+## D18. Gateway is Node and Fastify, not FastAPI
+Fabric has no official Python gateway SDK; the official `@hyperledger/fabric-gateway` is Node, Go and Java. The mid-term report's FastAPI is replaced by Fastify with Zod validation, Drizzle ORM and the shared OpenAPI document served at `/docs`.
+
+## D19. Gateway copies of private-collection data, and what the index may hold
+Loan terms and agreed prices are authoritative in `loanTermsPDC` and `tradePricePDC`. The gateway (FPO, Bank and Buyer side) also keeps a copy in Postgres (`loan_terms`, `trade_prices`) so it can serve lists and statements and does not read the collection on every request; it is a cache that can be rebuilt from the collection, and the price route reads the collection itself through the caller's own peer, so the peer enforces membership. The read-only API can never serve a price or loan terms (the index does not hold them for it); it serves hashes and statuses.
+
+## D20. Rates policy: no guessing
+Deduction rates that could not be sourced (cold-storage rent, market fee, commission, hamali, transport) are `null` in `config/rates.json`, and `computeDeductions` refuses with ERR_VALIDATION naming them. FPO margin (2%) and the lender haircuts are policy parameters marked ASSUMPTION. See `docs/DATA_SOURCES.md`. The human decides whether to supply sourced values or approve labelled indicative ones.
+
+## D21. Honest numbers in the index
+`residueTested` is `false` everywhere because no residue-test data exists. Reputation scores exist only for attestors with at least one completed re-inspection. A KPI with no data is `null` with the reason. The seeded re-inspections are simulated and labelled as such. The seed does not fabricate statement-view telemetry beyond the one statement Anima opens.
+
+## D22. Errors and status codes
+HTTP status per error code is `ERROR_HTTP_STATUS` in `contract.ts`. The contract has no internal-error code, so an unexpected server fault answers HTTP 500 with `ERR_INVALID_STATE` and a generic message, and is logged. `GET /health` answers 503 with `ERR_LEDGER_UNAVAILABLE` while any channel is unreachable. A write whose follow-up status call fails still returns the primary receipt, adds the header `X-Mirror-Pending: <kind>`, and the follow-up is retried by the worker until it lands (`mirror_queue`).
+
+## D23. Things the e2e found that unit tests could not
+- After `ProposeTransfer`, every write to that lot (including a cold-chain digest) needs FPO and Buyer endorsement (state-based policy), so the gateway uses the buyer-inclusive endorser set for digests.
+- A hijacked SSE connection kept `app.close()` and the indexer's block stream waiting; both now end on shutdown.
+- An indexer started on a fresh database replays the whole chain, which is right for production and wrong for a repeatable test: the e2e starts it at the current height.
+- The ledger keeps lots between runs, so e2e counters start at random offsets.
+
+## D24. Gateway and the table in CONTRACT.md 9.4
+Where the endpoint list of Section 8 and the visibility table of 9.4 differ, the endpoint list is followed and tested: for example the crop diary endpoint allows the member and the VLE, while the table also ticks "FPO CEO/op"; the loan endpoints allow credit_officer and ceo. The role matrix test asserts the endpoint list for every endpoint and every role. If the team wants the CEO to read diaries, that is one line in the shared endpoint table and a contract version bump.

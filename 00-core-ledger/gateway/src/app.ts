@@ -17,7 +17,7 @@ export interface AppOptions { ctx: Ctx; extraHandlers?: (ctx: Ctx) => Partial<Re
 
 export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
   const { ctx } = opts;
-  const app = Fastify({ logger: opts.logger ?? { level: ctx.cfg.LOG_LEVEL }, trustProxy: true, bodyLimit: 1_048_576, disableRequestLogging: false });
+  const app = Fastify({ logger: opts.logger ?? { level: ctx.cfg.LOG_LEVEL }, trustProxy: true, bodyLimit: 1_048_576 });
   app.decorate('ctx', ctx);
   app.decorateRequest('user', undefined);
   app.decorateRequest('startedAt', 0);
