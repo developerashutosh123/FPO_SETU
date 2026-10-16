@@ -129,5 +129,5 @@ HTTP status per error code is `ERROR_HTTP_STATUS` in `contract.ts`. The contract
 - An indexer started on a fresh database replays the whole chain, which is right for production and wrong for a repeatable test: the e2e starts it at the current height.
 - The ledger keeps lots between runs, so e2e counters start at random offsets.
 
-## D24. Gateway and the table in CONTRACT.md 9.4
-Where the endpoint list of Section 8 and the visibility table of 9.4 differ, the endpoint list is followed and tested: for example the crop diary endpoint allows the member and the VLE, while the table also ticks "FPO CEO/op"; the loan endpoints allow credit_officer and ceo. The role matrix test asserts the endpoint list for every endpoint and every role. If the team wants the CEO to read diaries, that is one line in the shared endpoint table and a contract version bump.
+## D24. CEO and operator may read crop diaries (resolved in contract 1.0.3)
+The endpoint list of Section 8 allowed only the member and the VLE, while the 9.4 table ticks "FPO CEO/op" for crop diary detail. On 16-10-2026 the team chose the table: `GET /diary/inputs` is now open to `ceo` and `operator` (farmerId required), contract 1.0.3. The Bank, the Buyer, the Observer and the board still get 403. The role matrix and the visibility tests assert it. Portal 02 is the one that can use it.

@@ -56,7 +56,7 @@ test('helpers: formatINR uses lakh grouping; formatDateIST converts to IST', () 
   assert.equal(shortHash('3f2a91c4d5e6f7a8b9c0d1e2f3a4b5c6', 4), '3f2a…b5c6');
 });
 test('contract: version, event list and error status map are consistent', () => {
-  assert.equal(CONTRACT_VERSION, '1.0.2');
+  assert.equal(CONTRACT_VERSION, '1.0.3');
   assert.equal(new Set(LEDGER_EVENTS).size, LEDGER_EVENTS.length);
   assert.ok(LEDGER_EVENTS.includes('LotStatusChanged'));
   assert.equal(ERROR_HTTP_STATUS.ERR_LEDGER_UNAVAILABLE, 503);

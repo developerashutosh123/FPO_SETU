@@ -3,7 +3,7 @@
  * Owned by 00-core-ledger. Portals COPY this file via scripts/sync-contract.mjs; never edit the copy.
  * Any change: bump CONTRACT_VERSION and add a line to the changelog in shared/CONTRACT.md.
  */
-export const CONTRACT_VERSION = '1.0.2' as const;
+export const CONTRACT_VERSION = '1.0.3' as const;
 
 // ---------- Orgs, roles, channels ----------
 export type OrgMsp = 'FpoOrgMSP' | 'BankOrgMSP' | 'BuyerOrgMSP' | 'RegulatorOrgMSP';

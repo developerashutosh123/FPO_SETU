@@ -1,4 +1,4 @@
-# FPO-SETU Shared Contract (v1.0.2)
+# FPO-SETU Shared Contract (v1.0.3)
 
 **Every Claude Code chat reads this file first.** It is the single source of truth that keeps the seven folders consistent. Only the **00-core-ledger** chat may change it, and every change must bump `CONTRACT_VERSION` in `shared/contract.ts` and add a line to the changelog at the bottom of this file. The portal chats never edit `shared/`. To request a change, a portal chat writes the request in its own `CONTRACT_REQUESTS.md` and tells the human.
 
@@ -264,7 +264,7 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 
 **Crop diary**
 - `POST /diary/inputs` [member, vle] {product, activeIngredient, dose, appliedOn, phiDays, crop} → hash anchored
-- `GET /diary/inputs?farmerId=` [member self, vle]. The Bank **cannot** call this endpoint.
+- `GET /diary/inputs?farmerId=` [member self, vle, ceo, operator] (ceo and operator added in 1.0.3 to match Section 9.4). The Bank, the Buyer, the Observer and the board **cannot** call this endpoint.
 
 **Lots**
 - `POST /lots/drafts` [vle] {farmerId, plotId, commodity, variety, bagCount, estWeightKg, harvestOrUnloadDate} → {sscc, humanRef, payloadToSign}
@@ -453,3 +453,4 @@ fpo-setu/                      (one GitHub repo)
   - Patronage reconciliation stated precisely: sum(gross) = settlement amount and, per line, gross = net + sum(deductions), so sum(net) + sum(all deductions, FPO_MARGIN included) = settlement amount, within INR 1.
   - Portals affected: all six must re-sync `contract.ts`. 02 gains the operator login, `GET /storage/deposits` and `GET /patronage/runs`. 03 gains `GET /loans/:loanId`. 04 gains `GET /orders/:orderId`. 06 should expect `LotStatusChanged` in the explorer and SSE.
 - 1.0.2 (additive): `LedgerStatus.orderers[].leaderOf` (Raft leaders are per channel; `raftLeader` means "leads trace-channel"). `Kpi.criteria` with the four Month-12 gate criteria (Section 9.5). The network now runs the full 3-orderer profile, so `ledger.json` shows three orderers. Portals affected: 06 (explorer shows per-channel leaders; Month-12 gate shows four met / not met rows). Others only need to re-sync `contract.ts`.
+- 1.0.3 (access change, no type change): `GET /diary/inputs` is now also open to `ceo` and `operator`, matching the "FPO CEO/op" tick for crop diary detail in Section 9.4. Portal affected: 02 (FPO console) may now show diary detail to the CEO and the operator, with `farmerId` set. Others: re-sync `contract.ts` for the version number only.

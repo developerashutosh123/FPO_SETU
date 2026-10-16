@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import type { Commodity, Deduction } from '../contract/contract.js';
 import { HttpError } from '../errors.js';
 
-type Status = 'SOURCED' | 'ASSUMPTION' | 'UNSOURCED';
+type Status = 'SOURCED' | 'SECONDARY' | 'ASSUMPTION' | 'UNSOURCED';
 interface RateEntry { perQtl?: number | null; pct?: number | null; status: Status; source: string; candidate?: string | null }
 export interface Rates {
   ltvPct: { value: 70 };

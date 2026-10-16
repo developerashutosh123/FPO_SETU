@@ -33,7 +33,7 @@ export const ENDPOINTS = [
 
   // ---- Crop diary
   { id: 'createDiaryInput', method: 'POST', path: '/diary/inputs', roles: ['member', 'vle'], tag: 'diary', summary: 'Log an input application; its hash is anchored', req: 'DiaryInputRequest', res: 'Receipted<DiaryInput>', status: 201, errors: ['ERR_VALIDATION'] },
-  { id: 'listDiaryInputs', method: 'GET', path: '/diary/inputs', roles: ['member', 'vle'], tag: 'diary', summary: 'Diary entries. The Bank cannot call this.', query: ['farmerId', 'cursor', 'limit'], res: 'Page<DiaryInput>', errors: ['ERR_FORBIDDEN_ROLE'] },
+  { id: 'listDiaryInputs', method: 'GET', path: '/diary/inputs', roles: ['member', 'vle', 'ceo', 'operator'], tag: 'diary', summary: 'Diary entries (farmerId required except for a member). The Bank, Buyer and Observer cannot call this.', query: ['farmerId', 'cursor', 'limit'], res: 'Page<DiaryInput>', errors: ['ERR_FORBIDDEN_ROLE'] },
 
   // ---- Lots
   { id: 'createLotDraft', method: 'POST', path: '/lots/drafts', roles: ['vle'], tag: 'lots', summary: 'Create a lot draft awaiting the farmer signature', req: 'LotDraftRequest', res: 'LotDraft', status: 201, errors: ['ERR_VALIDATION'] },

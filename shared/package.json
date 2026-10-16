@@ -1,7 +1,7 @@
 {
   "name": "fpo-setu-shared",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Contract tooling only (typecheck, tests, fixtures validation, OpenAPI build). Portals copy contract.ts, they never depend on this package.",
   "type": "module",
   "engines": {

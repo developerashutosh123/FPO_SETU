@@ -31,10 +31,13 @@ describe('9.4 row: farmer name and phone', () => {
 });
 
 describe('9.4 row: crop diary detail', () => {
-  it('readable by the member (own) and the VLE; refused to everyone else, in particular the Bank', async () => {
+  it('readable by the member (own), the VLE, the FPO CEO and the operator; refused to everyone else, in particular the Bank', async () => {
     expect((await get('anima.das', `/diary/inputs`)).status).toBe(200);
-    expect((await get('subhankar.vle', `/diary/inputs?farmerId=${W.farmerId}`)).status).toBe(200);
-    for (const u of ['arindam.bank', 'rahul.buyer', 'observer.gov', 'sujata.ceo']) expect((await get(u, `/diary/inputs?farmerId=${W.farmerId}`)).status, u).toBe(403);
+    for (const u of ['subhankar.vle', 'sujata.ceo', 'debasis.ops']) expect((await get(u, `/diary/inputs?farmerId=${W.farmerId}`)).status, u).toBe(200);
+    for (const u of ['arindam.bank', 'rahul.buyer', 'observer.gov', 'board.fpo', 'ratan.store']) expect((await get(u, `/diary/inputs?farmerId=${W.farmerId}`)).status, u).toBe(403);
+  });
+  it('a member cannot read another member diary', async () => {
+    expect((await get('anima.das', `/diary/inputs?farmerId=${'0'.repeat(8)}-0000-4000-8000-${'0'.repeat(12)}`)).status).toBe(403);
   });
   it('the buyer and the consumer get only the PHI flag (phiCompliant), no products or doses', async () => {
     const p = (await get('rahul.buyer', `/lots/${W.sscc}`)).json();

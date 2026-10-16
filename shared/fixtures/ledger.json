@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.2",
+    "contractVersion": "1.0.3",
     "file": "ledger.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "note": "All tx IDs and block/data hashes are FIXTURE- placeholders. Heights match the contract examples (trace 1,284, finance 311, trade 207). Only the newest blocks exist in the fixtures: older block numbers return ERR_NOT_FOUND from the mock. Full profile: three Raft orderers, one leader per channel (the fixture mirrors a real run: orderer3 leads trace and finance, orderer1 leads trade)."

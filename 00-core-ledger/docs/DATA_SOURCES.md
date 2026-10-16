@@ -6,7 +6,7 @@ Checked 15 and 16 October 2026. **Status** is one of: SOURCED (a document was re
 
 | Item | Status | Source and how it is used |
 |---|---|---|
-| Mandi prices (potato, brinjal, cauliflower, tomato, paddy) at Medinipur (West), Ghatal, Garbeta, Purba Medinipur | SOURCED when loaded | data.gov.in resource "Current Daily Price of Various Commodities from Various Markets (Mandi)", id `9ef84268-d588-465a-a308-a864a43d0070` (AGMARKNET). The daily API gives only the current day, so `AgmarknetAdapter.snapshot()` appends each day to `price_series`. History: AGMARKNET CSV exports loaded with `pnpm load:csv`. **Nothing is loaded yet** (waiting for the data.gov.in key and the CSVs). The request filter `filters[state.keyword]=West Bengal` follows the data.gov.in API convention and is not yet verified against a live response. Prices are stored as published; rows that do not parse are dropped and counted, never repaired. No price is ever synthesised. |
+| Mandi prices (potato, brinjal, cauliflower, tomato, paddy) | SOURCED when loaded | data.gov.in resource "Current Daily Price of Various Commodities from Various Markets (Mandi)", id `9ef84268-d588-465a-a308-a864a43d0070` (AGMARKNET). **Current-day only; no history is available through the API.** History comes from AGMARKNET CSV exports (`pnpm load:csv`), which the team will add before the end-term; until then the series holds only the days the daily snapshot has run. Prices are stored as published (Rs per quintal); rows that do not parse are dropped and counted, never repaired. No price is ever synthesised. Probe of 16-10-2026 with the project key: the key works, `filters[state.keyword]=West Bengal` is accepted and returns 106 records from 15 markets in 8 districts. **No Paschim Medinipur market (Medinipur (West), Ghatal, Garbeta) reported that day.** The nearest reporting pilot-adjacent markets were in Purba Medinipur: Tamluk (Medinipur E) APMC (potato modal Rs 800, brinjal Rs 4,000, rice Rs 3,600) and Egra/Contai APMC (potato Rs 835, brinjal Rs 3,400, tomato Rs 1,900). **No cauliflower was reported anywhere in West Bengal that day**, and paddy appears as "Rice", not "Paddy(Dhan)". Which market is used as the valuation basis, and what happens to a commodity with no price, is recorded in DECISIONS D25. |
 | Paddy MSP, KMS 2025-26: common Rs 2,369, Grade A Rs 2,389 per quintal | SOURCED | PIB release of the Cabinet decision of 28-05-2025: https://www.pib.gov.in/PressReleasePage.aspx?PRID=2131983&reg=48&lang=2 (figures quoted from the release table by a search of pib.gov.in) |
 | Paddy MSP, KMS 2026-27: common Rs 2,441 per quintal | SOURCED | PIB release of the Cabinet decision of 13-05-2026: https://www.pib.gov.in/PressReleasePage.aspx?PRID=2260617&reg=3&lang=1 (common-grade figure quoted from the release by a search of pib.gov.in) |
 | Paddy MSP, KMS 2026-27: Grade A Rs 2,461 per quintal | SECONDARY | Press reports (Basis Point Insight, Swarajya, Deccan Chronicle). The PIB page answered HTTP 403 to an automated fetch. **Verify this one figure on the PIB page.** |
@@ -14,16 +14,18 @@ Checked 15 and 16 October 2026. **Status** is one of: SOURCED (a document was re
 
 ## Deductions (config/rates.json)
 
-| Deduction | Status | What was found |
-|---|---|---|
-| Cold-storage rent per quintal | **GAP** | The West Bengal government's notified rent for the season was not found in any government document. An industry guide (indianpotato.com, "cold storage rental rates in india") says Rs 168 to 172 per quintal, unchanged for four years as of February 2025, and that an expert committee recommended Rs 190 (south Bengal) and Rs 194 (north Bengal) pending state approval. This is unverified and **not used**. The state Department of Agriculture or the West Bengal Cold Storage Association holds the authoritative figure. |
-| Market fee | **GAP** | Levied under the West Bengal Agricultural Produce Marketing (Regulation) Act, 1972 (India Code: https://www.indiacode.nic.in/bitstream/123456789/14388/1/1972-35.pdf). The percentage is set by notification against the Schedule and was not found. |
-| Commission agent (arhatdar) commission | **GAP** | The Act defines the commission agent. No published rate found. |
-| Hamali (loading and unloading) | **GAP** | No published rate found. |
-| Transport | **GAP** | Depends on the vehicle quote; to be entered at dispatch. |
-| FPO margin | ASSUMPTION, 2% | The FPO board's own decision; shown on every statement. |
+All five rates below are **INDICATIVE placeholders** the team approved on 16-10-2026 so that statements and the seed can run. **Sourced figures replace them before the end-term.** Statements and the API show amounts computed from them, so any screenshot taken now carries this caveat.
 
-**Consequence:** with these rates unsourced, `computeDeductions` refuses (ERR_VALIDATION, naming the missing rates), so no preview, no patronage run and no seed of settled lots can run on the real configuration. Tests and the throwaway-database e2e use `test/e2e-rates.json`, which says TEST on every line. The human decides: supply sourced values, or approve labelled indicative ones.
+| Deduction | Value used | Status | Basis and what is still missing |
+|---|---|---|---|
+| Cold-storage rent | Rs 170 per quintal | SECONDARY | Midpoint of Rs 168 to 172 per quintal stated by an industry guide (indianpotato.com, "cold storage rental rates in india") as the West Bengal rate unchanged for four years as of February 2025; the same guide says an expert committee recommended Rs 190 (south Bengal) and Rs 194 (north Bengal) pending state approval. The state-notified rent for the season was not found; the Department of Agriculture or the West Bengal Cold Storage Association holds it. |
+| Commission agent (arhatdar) | 7% of gross | ASSUMPTION | Midpoint of the 6 to 8 percent range in the team's mid-term report. The report is not in the repository; the figure was given by the team. Not a notified rate. |
+| Market fee | 1.0% of gross | ASSUMPTION | Chosen by the team. The fee is set by notification under the West Bengal Agricultural Produce Marketing (Regulation) Act, 1972 (https://www.indiacode.nic.in/bitstream/123456789/14388/1/1972-35.pdf); the notified percentage was not found. |
+| Hamali (loading and unloading) | Rs 8 per quintal (about Rs 4 per 50 kg bag) | ASSUMPTION | Chosen by the team. No published rate found. |
+| Transport | Rs 30 per quintal | ASSUMPTION | Chosen by the team for Debra to Kolkata. A fifth value the team did not list but the statements need. In practice it comes from the vehicle quote at dispatch. |
+| FPO margin | 2% of gross | ASSUMPTION | The FPO board's own decision; shown on every statement. |
+
+Without these values `computeDeductions` refuses (ERR_VALIDATION, naming the missing rates); a test asserts that the shipped file claims no rate is SOURCED.
 
 ## Lender parameters
 

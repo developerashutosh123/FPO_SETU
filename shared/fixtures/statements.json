@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.2",
+    "contractVersion": "1.0.3",
     "file": "statements.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "note": "Deduction rates (hamali, market fee, commission, transport, cold-storage rent, FPO margin) are fixture placeholders. Cited, notified rates arrive with the seed (docs/DATA_SOURCES.md). UPI reference is simulated.",

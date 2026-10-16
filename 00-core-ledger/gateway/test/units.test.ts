@@ -118,8 +118,8 @@ describe('rates and deductions', () => {
     const d = computeDeductions(test, { kg: 1964, gross: 31031 });
     expect(Object.fromEntries(d.map((x) => [x.type, x.amount]))).toEqual({ HAMALI: 196, MARKET_FEE: 155, COMMISSION: 310, TRANSPORT: 491, COLD_STORAGE_RENT: 1964, FPO_MARGIN: 621 });
   });
-  it('refuses to compute while a rate is unsourced, and names the missing rates (config/rates.json ships unsourced)', () => {
-    const real = loadRates('config/rates.json');
+  it('refuses to compute while a rate is unsourced, and names the missing rates', () => {
+    const real = JSON.parse(JSON.stringify(test)); for (const k of Object.keys(real.deductions)) { real.deductions[k].perQtl = null; real.deductions[k].pct = null; } // every rate unsourced
     expect(() => computeDeductions(real, { kg: 1000, gross: 10000 })).toThrowError(/COLD_STORAGE_RENT.*HAMALI|HAMALI.*COLD_STORAGE_RENT/);
     try { computeDeductions(real, { kg: 1, gross: 1 }); } catch (e) { expect((e as HttpError).code).toBe('ERR_VALIDATION'); expect((e as HttpError).extra.details).toEqual({ missing: expect.arrayContaining(['HAMALI', 'MARKET_FEE', 'COMMISSION', 'TRANSPORT', 'COLD_STORAGE_RENT']) }); }
   });
@@ -192,5 +192,14 @@ describe('AGMARKNET CSV loader (the CSV text below is parser input only)', () =>
   it('reads quoted fields and date formats', () => {
     expect(parseCsv('a,"b,c","d""e"\n1,2,3')).toEqual([['a', 'b,c', 'd"e'], ['1', '2', '3']]);
     expect([csvDate('2026-11-14'), csvDate('14/11/2026'), csvDate('14-11-2026'), csvDate('14 Nov 2026'), csvDate('nope')]).toEqual(['2026-11-14', '2026-11-14', '2026-11-14', '2026-11-14', undefined]);
+  });
+});
+
+describe('shipped config/rates.json', () => {
+  it('has a value and an honest status for every deduction; nothing is called SOURCED that is not', () => {
+    const real = loadRates('config/rates.json');
+    for (const [k, v] of Object.entries(real.deductions)) { expect((v.perQtl ?? v.pct), k).not.toBeNull(); expect(['SECONDARY', 'ASSUMPTION'], `${k} must not claim SOURCED`).toContain(v.status); expect(v.source, k).toMatch(/INDICATIVE/); }
+    expect(real.deductions.COMMISSION.pct).toBe(7); expect(real.deductions.COLD_STORAGE_RENT.perQtl).toBe(170);
+    expect(() => computeDeductions(real, { kg: 1000, gross: 10000 })).not.toThrow();
   });
 });

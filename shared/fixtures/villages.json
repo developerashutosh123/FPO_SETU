@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.2",
+    "contractVersion": "1.0.3",
     "file": "villages.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "geocoding": "Nominatim (OpenStreetMap), 15-10-2026, 1 request/second, User-Agent FPO-SETU-academic-prototype/1.0. Block checks: each point lies inside its block bounding box from Nominatim (Kharagpur-II relation 9707865... see source URLs); Debra bbox 22.315-22.563 N, 87.489-87.691 E; Keshiary bbox 22.020-22.242 N, 87.135-87.324 E; Kharagpur-II bbox 22.238-22.459 N, 87.336-87.530 E.",

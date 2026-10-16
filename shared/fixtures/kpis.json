@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "contractVersion": "1.0.2",
+    "contractVersion": "1.0.3",
     "file": "kpis.json",
     "fixtureWarning": "FIXTURE DATA. Tx IDs and hashes are placeholders prefixed FIXTURE-. Never show as ledger data.",
     "note": "KPIs here are computed from the small fixture world, not the real seed. KPIs that need data the fixtures do not have are null with the reason in computedFrom. month12_gate carries the four criteria given by the team; the fourth is null (needs AGMARKNET)."
