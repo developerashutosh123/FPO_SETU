@@ -1,5 +1,6 @@
 // AGMARKNET prices through data.gov.in ("Current Daily Price of Various Commodities from Various Markets (Mandi)").
 // This is a REAL adapter. It only stores what the API returns. It never fills gaps and never invents a price.
+
 import { and, desc, eq, gte, lte } from 'drizzle-orm';
 import type { Db } from '../db/client.js';
 import { priceSeries } from '../db/schema.js';
@@ -8,8 +9,13 @@ export const DATAGOVIN_RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
 export const DATAGOVIN_URL = `https://api.data.gov.in/resource/${DATAGOVIN_RESOURCE_ID}`;
 
 /** Markets of the pilot area (CONTRACT.md Section 4.2 and the task brief) and the commodities we track. */
-export const TRACKED_MARKETS = ['Medinipur(West)', 'Ghatal', 'Garbeta', 'Purba Medinipur'] as const;
-export const TRACKED_COMMODITIES = ['Potato', 'Brinjal', 'Cauliflower', 'Tomato', 'Paddy(Dhan)(Common)', 'Rice'] as const;
+export const TRACKED_MARKETS = ['Medinipur(West)', 'Ghatal', 'Garbeta', 'Tamluk (Medinipur E)', 'Egra/Contai'] as const;
+/**
+ * Valuation preference: the Paschim Medinipur markets first, then the nearest reporting Purba Medinipur markets. On 16-10-2026 only the
+ * latter reported (DECISIONS D25). Anything but the first entry is shown as "nearest reporting market".
+ */
+export const MARKET_PREFERENCE = TRACKED_MARKETS;
+export const TRACKED_COMMODITIES = ['Potato', 'Brinjal', 'Cauliflower', 'Tomato', 'Paddy(Dhan)', 'Rice'] as const;
 
 export interface DataGovRecord { state: string; district: string; market: string; commodity: string; variety: string; grade?: string; arrival_date: string; min_price: string; max_price: string; modal_price: string }
 export interface PriceRow { date: string; market: string; commodity: string; variety: string; minPrice: number; maxPrice: number; modalPrice: number; source: string }
@@ -70,6 +76,17 @@ export class AgmarknetAdapter {
       n += chunk.length;
     }
     return n;
+  }
+
+  /**
+   * The valuation price for a commodity: the most preferred market (MARKET_PREFERENCE) that has a row within `maxAgeDays` of `onOrBefore`.
+   * Undefined if no tracked market reported recently. There is no fallback value.
+   */
+  async basisFor(commodity: string, onOrBefore: string, maxAgeDays = 7) {
+    const from = new Date(new Date(`${onOrBefore}T00:00:00Z`).getTime() - maxAgeDays * 86400000).toISOString().slice(0, 10);
+    const rows = await this.db.select().from(priceSeries).where(and(eq(priceSeries.commodity, commodity), lte(priceSeries.date, onOrBefore), gte(priceSeries.date, from))).orderBy(desc(priceSeries.date));
+    for (const m of MARKET_PREFERENCE) { const hit = rows.find((r) => norm(r.market).includes(norm(m))); if (hit) return { ...hit, preferred: m === MARKET_PREFERENCE[0] }; }
+    return undefined;
   }
 
   /** Latest modal price on or before `onOrBefore` for one market and commodity; undefined if the series has nothing (no fallback value). */

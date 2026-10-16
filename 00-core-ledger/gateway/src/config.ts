@@ -9,6 +9,8 @@ const schema = z.object({
   LOG_LEVEL: z.string().default('info'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required (Supabase pooled connection string)'),
   DIRECT_URL: z.string().optional(),
+  /** Postgres connections per process. Raise it for a remote database: every query costs a network round trip (57 ms to Supabase Mumbai from WSL). */
+  DB_POOL_MAX: z.coerce.number().int().min(1).max(60).default(10),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters (openssl rand -hex 32)'),
   FARMER_TOKEN_SECRET: z.string().min(32, 'FARMER_TOKEN_SECRET must be at least 32 characters'),
   PRICE_SALT_SECRET: z.string().min(32, 'PRICE_SALT_SECRET must be at least 32 characters'),

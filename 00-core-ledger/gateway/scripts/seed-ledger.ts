@@ -26,6 +26,7 @@ const argv = process.argv.slice(2);
 const scale = (argv.includes('--scale') ? argv[argv.indexOf('--scale') + 1] : 'full') as 'full' | 'mini' | 'golden';
 const testData = argv.includes('--test-data');
 const SEED = 20261015;
+const CONC = Number(process.env.SEED_CONCURRENCY ?? 16); // parallel lots; raise DB_POOL_MAX with it
 const started = Date.now();
 const log = (...a: unknown[]) => console.log(`[${((Date.now() - started) / 1000).toFixed(0).padStart(4)}s]`, ...a);
 
@@ -60,18 +61,16 @@ const problems: string[] = [];
 const missingRates = Object.entries(rates.deductions).filter(([, v]) => (v.perQtl ?? v.pct) == null).map(([k]) => k);
 if (missingRates.length) problems.push(`config/rates.json has unsourced deduction rates: ${missingRates.join(', ')}. Add sourced values (docs/DATA_SOURCES.md) or tell me to use labelled indicative ones.`);
 if (testData) for (const [commodity, modal] of [['Potato', 1350], ['Brinjal', 2100], ['Cauliflower', 1800]] as const) await ctx.db.insert(priceSeries).values({ date: today, market: 'Medinipur(West)', commodity, variety: 'SEED TEST', minPrice: 1, maxPrice: 1, modalPrice: modal, source: 'SEED TEST ROW (throwaway database, not market data)' }).onConflictDoNothing();
-const potatoBasis = await ctx.adapters.agmarknet.latestModal('Medinipur(West)', 'Potato', today).catch(() => undefined)
-  ?? (await ctx.db.select().from(priceSeries).where(sql`lower(commodity) = 'potato' and lower(replace(market,' ','')) like 'medinipur(west)%' and date <= ${today}`).orderBy(sql`date desc`).limit(1))[0];
-if (!potatoBasis && scale !== 'golden') problems.push('No AGMARKNET potato price for Medinipur (West) is loaded (price_series). Load the CSVs (pnpm load:csv) or run the data.gov.in snapshot.');
-if (!potatoBasis && scale === 'golden') problems.push('The golden journey needs a potato price basis too (pnpm load:csv).');
-if (scale !== 'golden') for (const c of ['Brinjal', 'Cauliflower']) {
-  const r = await ctx.db.select({ n: sql<number>`count(*)::int` }).from(priceSeries).where(sql`lower(commodity) = ${c.toLowerCase()}`);
-  if (!r[0]!.n) problems.push(`No AGMARKNET ${c} price is loaded: vegetable orders need a real price (pnpm load:csv).`);
-}
-if ((await ctx.db.select({ n: sql<number>`count(*)::int` }).from(sequences).where(eq(sequences.name, 'sscc')))[0]!.n > 0) problems.push('This database already has lots (the sscc counter exists). Seed a fresh database on a fresh ledger: make rebuild, then reset the database.');
+const potatoBasis = await ctx.adapters.agmarknet.basisFor('Potato', today);
+if (!potatoBasis) problems.push('No AGMARKNET potato price from a tracked market within the last 7 days is loaded (price_series). Run pnpm prices:snapshot, or load CSVs with pnpm load:csv.');
+if ((await ctx.db.select({ n: sql<number>`count(*)::int` }).from(sequences).where(eq(sequences.name, 'sscc')))[0]!.n > 0) problems.push('This database already has lots (the sscc counter exists). Seed a fresh database on a fresh ledger: make rebuild, then pnpm db:reset-seed.');
+// a commodity without a real recent price gets lots that are created and graded only: no orders, no prices (DECISIONS D25)
+const unpriced = new Set<Commodity>();
+if (scale !== 'golden') for (const [c, name] of [['BRINJAL', 'Brinjal'], ['CAULIFLOWER', 'Cauliflower']] as const) if (!(await ctx.adapters.agmarknet.basisFor(name, today))) unpriced.add(c);
 if (problems.length) { console.error('Seed cannot start:\n - ' + problems.join('\n - ')); await server.stop(); process.exit(1); }
 const basePotato = potatoBasis!.modalPrice;
-log(`scale ${scale}; potato modal basis Rs ${basePotato}/qtl (${potatoBasis!.market}, ${potatoBasis!.date}, ${potatoBasis!.source})`);
+log(`scale ${scale}; potato modal basis Rs ${basePotato}/qtl (${potatoBasis!.market}${potatoBasis!.preferred ? '' : ', nearest reporting market'}, ${potatoBasis!.date}, ${potatoBasis!.source})`);
+if (unpriced.size) log(`no real recent price for ${[...unpriced].join(', ')}: those lots are created and graded only, with no orders`);
 await ensureDevicesRegistered(ctx);
 
 // ---------------------------------------------------------------- api
@@ -155,6 +154,7 @@ function plan(fs: F[]): Lot[] {
     lots.push({ commodity: c as Commodity, stage: st, farmer, bags, variety: pick(VARIETY[c as Commodity]), breach: false, pledgeFirst: false, keepLien: false, grade });
     farmer.lots++;
   }
+  for (const l of lots) if (unpriced.has(l.commodity) && !['COMMISSIONED', 'GRADED'].includes(l.stage)) l.stage = 'GRADED';
   // mark which lots touch which branches (deterministic, by position)
   const sold = lots.filter((l) => ['SOLD', 'IN_TRANSIT', 'DELIVERED', 'SETTLED', 'CLOSED', 'REJECTED'].includes(l.stage) && l.commodity !== 'BRINJAL' && l.commodity !== 'CAULIFLOWER');
   sold.forEach((l, i) => { if (i % 4 === 1) { l.pledgeFirst = true; l.keepLien = l.stage === 'SOLD' && i % 8 === 1; } });
@@ -198,7 +198,7 @@ async function releaseLien(l: Lot) {
 const priceFor = async (c: Commodity) => {
   if (c === 'PADDY') return Math.round(2441 * (1 + R() * 0.03));
   if (c === 'POTATO') return Math.round(basePotato * (1 + R() * 0.12));
-  const own = (await ctx.db.select().from(priceSeries).where(sql`lower(commodity) = ${c.toLowerCase()}`).orderBy(sql`case when lower(replace(market,' ','')) like 'medinipur(west)%' then 0 else 1 end, date desc`).limit(1))[0];
+  const own = await ctx.adapters.agmarknet.basisFor(c === 'BRINJAL' ? 'Brinjal' : 'Cauliflower', today);
   if (!own) throw new Error(`no AGMARKNET price loaded for ${c}`);
   return Math.round(own.modalPrice * (1 + R() * 0.12));
 };
@@ -255,7 +255,7 @@ const total = scale === 'full' ? 150 : scale === 'mini' ? 12 : NAMED.length;
 const fs = buildFarmers(total);
 log(`registering ${fs.length} members`);
 await pool(fs.slice(0, 1), 1, registerFarmer);          // Anima first
-await pool(fs.slice(1), 8, async (f) => registerFarmer(f));
+await pool(fs.slice(1), Math.ceil(CONC / 2), async (f) => registerFarmer(f));
 log('members registered:', fs.length, '| women:', fs.filter((f) => f.gender === 'F').length);
 
 await golden(fs);
@@ -263,15 +263,15 @@ let lots: Lot[] = [];
 if (scale !== 'golden') {
   lots = plan(fs);
   log(`planned ${lots.length} lots`);
-  await pool(lots, 10, async (l, i) => { await draftSignGrade(l, l.stage !== 'COMMISSIONED'); if (i % 40 === 0) log(`  commissioned ${i + 1}/${lots.length}`); });
+  await pool(lots, CONC, async (l, i) => { await draftSignGrade(l, l.stage !== 'COMMISSIONED'); if (i % 40 === 0) log(`  commissioned ${i + 1}/${lots.length}`); });
   const needStore = lots.filter((l) => l.commodity !== 'BRINJAL' && l.commodity !== 'CAULIFLOWER' && !['COMMISSIONED', 'GRADED', 'TRANSFORMED'].includes(l.stage));
-  await pool(needStore, 10, async (l) => { await store(l); });
+  await pool(needStore, CONC, async (l) => { await store(l); });
   log('stored', needStore.length);
   const toPledge = lots.filter((l) => l.stage === 'PLEDGED' || l.pledgeFirst);
-  await pool(toPledge, 6, async (l) => { await pledge(l); });
+  await pool(toPledge, Math.ceil(CONC / 2), async (l) => { await pledge(l); });
   log('liens', toPledge.length);
   const transform = lots.filter((l) => l.stage === 'TRANSFORMED');
-  await pool(transform, 6, async (l) => { await ok('POST', `/lots/${l.sscc}/transform`, await tok.ceo(), { toProcessing: true, reason: 'Grade C: sent to the processing channel' }); });
+  await pool(transform, Math.ceil(CONC / 2), async (l) => { await ok('POST', `/lots/${l.sscc}/transform`, await tok.ceo(), { toProcessing: true, reason: 'Grade C: sent to the processing channel' }); });
   // orders: group by stage and commodity, up to three lots each
   const groups: Lot[][] = [];
   for (const st of ['LISTED', 'SOLD', 'IN_TRANSIT', 'DELIVERED', 'REJECTED', 'SETTLED', 'CLOSED'] as Stage[]) for (const c of ['POTATO', 'PADDY', 'BRINJAL', 'CAULIFLOWER'] as Commodity[]) {
@@ -279,7 +279,7 @@ if (scale !== 'golden') {
     for (let i = 0; i < ls.length; i += 3) groups.push(ls.slice(i, i + 3));
   }
   log(`orders: ${groups.length}`);
-  await pool(groups, 6, async (g, i) => { await tradeGroup(g); if (i % 10 === 0) log(`  orders ${i + 1}/${groups.length}`); });
+  await pool(groups, Math.ceil(CONC * 0.75), async (g, i) => { await tradeGroup(g); if (i % 10 === 0) log(`  orders ${i + 1}/${groups.length}`); });
 
   // simulated first-mile re-inspections (5% sample): a few divergences, as the contract's seed asks
   const graded = lots.filter((l) => l.sscc && l.stage !== 'COMMISSIONED');

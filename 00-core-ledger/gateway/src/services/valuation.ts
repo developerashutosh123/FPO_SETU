@@ -1,13 +1,14 @@
 // Collateral valuation: assessedValue = quantityQtl x modal price x (1 - haircut), eligibleLoan = 70% of that.
 // The modal price is a REAL AGMARKNET price from the index, or the paddy MSP. If neither exists the collateral is shown with no basis and no value.
-import { and, desc, eq, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, lte } from 'drizzle-orm';
 import type { Collateral, Commodity } from '../contract/contract.js';
 import type { Ctx } from '../context.js';
-import { mspEntries, priceSeries } from '../db/schema.js';
+import { mspEntries } from '../db/schema.js';
 import type { Rates } from './rates.js';
 
 const AGMARKNET_NAME: Partial<Record<Commodity, string>> = { POTATO: 'Potato', BRINJAL: 'Brinjal', CAULIFLOWER: 'Cauliflower' };
 
+/** MSP for paddy; for the other commodities the most preferred market with a recent AGMARKNET row (7 days), labelled when it is not Medinipur (West). */
 export async function priceBasis(ctx: Ctx, commodity: Commodity, today: string): Promise<Collateral['priceBasis'] | undefined> {
   if (commodity === 'PADDY') {
     const e = (await ctx.db.select().from(mspEntries).where(and(eq(mspEntries.crop, 'paddy'), eq(mspEntries.grade, 'COMMON'), lte(mspEntries.announcedOn, today))).orderBy(desc(mspEntries.announcedOn)).limit(1))[0];
@@ -15,8 +16,8 @@ export async function priceBasis(ctx: Ctx, commodity: Commodity, today: string):
   }
   const name = AGMARKNET_NAME[commodity];
   if (!name) return undefined;
-  const r = (await ctx.db.select().from(priceSeries).where(and(eq(priceSeries.commodity, name), lte(priceSeries.date, today), sql`lower(replace(${priceSeries.market}, ' ', '')) like 'medinipur(west)%'`)).orderBy(desc(priceSeries.date)).limit(1))[0];
-  return r ? { source: `AGMARKNET (${r.source})`, market: r.market, date: r.date, modalPerQtl: r.modalPrice } : undefined;
+  const r = await ctx.adapters.agmarknet.basisFor(name, today);
+  return r ? { source: `AGMARKNET (${r.source})${r.preferred ? '' : '. Nearest reporting market: no Paschim Medinipur market reported recently'}`, market: r.preferred ? r.market : `${r.market} (nearest reporting market)`, date: r.date, modalPerQtl: r.modalPrice } : undefined;
 }
 
 export const haircutOf = (rates: Rates, commodity: Commodity) => rates.haircutPct[commodity].value;

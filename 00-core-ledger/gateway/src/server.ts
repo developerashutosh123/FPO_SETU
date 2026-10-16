@@ -29,7 +29,7 @@ export interface ServerOptions { cfg?: Config; ledger?: Ledger; dbh?: DbHandle; 
 /** Wires the gateway: database, Fabric client, adapters, indexer, mirror worker and the HTTP app. */
 export async function createServer(opts: ServerOptions = {}): Promise<Server> {
   const cfg = opts.cfg ?? loadConfig();
-  const dbh = opts.dbh ?? createDb(cfg.DATABASE_URL);
+  const dbh = opts.dbh ?? createDb(cfg.DATABASE_URL, { max: cfg.DB_POOL_MAX });
   const ledger = opts.ledger ?? new FabricLedger(cfg);
   const bus = new EventBus();
   const rates = opts.rates ?? loadRates();
@@ -45,7 +45,12 @@ export async function createServer(opts: ServerOptions = {}): Promise<Server> {
   let timer: NodeJS.Timeout | undefined;
   if (opts.startIndexer) indexer.start();
   if (opts.startWorkers) timer = setInterval(() => { drainMirrorQueue(ctx, app.log).catch((e) => app.log.warn({ err: String(e) }, 'mirror worker')); }, 5000);
-  return { app, ctx, indexer, rates, dbh, async stop() { if (timer) clearInterval(timer); await indexer.stop(); await app.close(); ledger.close(); if (!opts.dbh) await dbh.close(); } };
+  let priceTimer: NodeJS.Timeout | undefined;
+  if (opts.startWorkers && adapters.agmarknet.configured) {
+    const snap = () => adapters.agmarknet.snapshot().then((r) => app.log.info(r, 'AGMARKNET snapshot')).catch((e) => app.log.warn({ err: String(e) }, 'AGMARKNET snapshot failed'));
+    void snap(); priceTimer = setInterval(snap, 6 * 3600_000); // the API serves the current day only: history is what this job has collected
+  }
+  return { app, ctx, indexer, rates, dbh, async stop() { if (timer) clearInterval(timer); if (priceTimer) clearInterval(priceTimer); await indexer.stop(); await app.close(); ledger.close(); if (!opts.dbh) await dbh.close(); } };
 }
 
 export { ensureDevicesRegistered };
