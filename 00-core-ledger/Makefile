@@ -1,6 +1,6 @@
 # FPO-SETU core ledger. Local WSL2 + Docker Desktop. See network/VERSIONS.md for pinned versions.
 NET := ./network/scripts/network.sh
-.PHONY: up resume rebuild down reset status logs stats test test-shared deploy smoke
+.PHONY: check-secrets up resume rebuild down reset status logs stats test test-shared deploy smoke
 
 up:        ## create what is missing and start the network (idempotent)
 	$(NET) up
@@ -30,3 +30,6 @@ smoke:     ## CLI smoke test: F1-F7 happy path and four negative cases
 
 test-db:   ## throwaway local Postgres for the gateway tests (never used for real data)
 	@docker start fposetu-test-pg >/dev/null 2>&1 || docker run -d --name fposetu-test-pg -e POSTGRES_PASSWORD=test -e POSTGRES_USER=test -p 127.0.0.1:54329:5432 --memory 384m postgres:16-alpine
+
+check-secrets: ## fail if a tracked file looks like a secret (run before every commit)
+	./scripts/check-secrets.sh

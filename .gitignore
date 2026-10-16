@@ -1,0 +1,10 @@
+# secrets and generated material anywhere in the repo (each folder may add more)
+.env
+.env.*
+!.env.example
+wallet/
+**/wallet/
+*.pem
+!**/testdata/**
+!**/test/fixtures/**
+node_modules/

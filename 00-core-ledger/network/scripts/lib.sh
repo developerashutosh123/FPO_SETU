@@ -5,7 +5,9 @@ ROOT_DIR="$(cd "$NET_DIR/.." && pwd)"
 export PATH="$NET_DIR/.fabric-install/bin:$PATH"
 ORG_DIR="$NET_DIR/organizations"
 ART_DIR="$NET_DIR/channel-artifacts"
-WALLET_DIR="${WALLET_DIR:-$ROOT_DIR/wallet}"
+# Fixed location. It is NOT read from the environment: a WALLET_DIR exported by the gateway .env (a relative path) once sent a rebuild
+# to the wrong folder and the keys ended up in a commit.
+WALLET_DIR="$ROOT_DIR/wallet"
 FABRIC_VERSION=2.5.16
 FABRIC_CA_VERSION=1.5.22
 
