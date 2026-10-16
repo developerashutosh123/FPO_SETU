@@ -107,8 +107,8 @@ func other(msp string) string {
 	return cc.FpoOrg
 }
 
-// CreateOrder opens an order for lots that are GRADED or IN_STORAGE. Each lot is read from trace-channel (query only).
-// A pledged lot gives ERR_LOT_PLEDGED.
+// CreateOrder opens an order for lots that are GRADED, IN_STORAGE or PLEDGED. Each lot is read from trace-channel (query only).
+// A pledged lot can be ordered and sold, but chaincode lot-lifecycle refuses its dispatch (ERR_LOT_PLEDGED) until the lien is released.
 func (c *OrderContract) CreateOrder(ctx contractapi.TransactionContextInterface, orderID, ssccsJSON, channel, deliveryBy string) error {
 	caller, err := requireTrader(ctx)
 	if err != nil {
@@ -132,9 +132,7 @@ func (c *OrderContract) CreateOrder(ctx contractapi.TransactionContextInterface,
 			return err
 		}
 		switch lot.Status {
-		case "GRADED", "IN_STORAGE":
-		case "PLEDGED":
-			return cc.Errf(cc.ErrLotPledged, "lot %s has an active lien and cannot be ordered", s)
+		case "GRADED", "IN_STORAGE", "PLEDGED": // a pledged lot may be ordered; dispatch waits until its lien is released
 		default:
 			return cc.Errf(cc.ErrInvalidState, "lot %s is %s; only GRADED or IN_STORAGE lots can be ordered", s, lot.Status)
 		}

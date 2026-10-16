@@ -1,0 +1,27 @@
+// The ledger port: everything the routes need from Fabric, so tests can swap in an in-memory implementation.
+import type { Channel, LedgerReceipt, OrgMsp } from '../contract/contract.js';
+import type { ChaincodeName } from './topology.js';
+import type { FabricUser } from './identities.js';
+import type { DecodedBlock, DecodedTx } from './decode.js';
+
+export interface SubmitOptions {
+  /** transient map entries; values are sent to the endorsing peers only and never written to the ledger */
+  transient?: Record<string, string>;
+  /** candidate endorsing org sets, tried in order */
+  endorse: OrgMsp[][];
+}
+export interface SubmitResult { receipt: LedgerReceipt; result: string }
+
+export interface Ledger {
+  readonly mode: 'live';
+  submit(user: FabricUser, channel: Channel, chaincode: ChaincodeName, fn: string, args: string[], opts: SubmitOptions): Promise<SubmitResult>;
+  evaluate(user: FabricUser, channel: Channel, chaincode: ChaincodeName, fn: string, args: string[]): Promise<string>;
+  chainHeight(channel: Channel, asUser: FabricUser): Promise<number>;
+  getBlock(channel: Channel, number: number, asUser: FabricUser): Promise<DecodedBlock>;
+  getTransaction(channel: Channel, txId: string, asUser: FabricUser): Promise<DecodedTx>;
+  getBlockByTxId(channel: Channel, txId: string, asUser: FabricUser): Promise<DecodedBlock>;
+  /** Streams decoded blocks from `start` (inclusive) until `signal` aborts. Used by the indexer. */
+  blocks(channel: Channel, start: number, asUser: FabricUser, signal: AbortSignal): AsyncIterable<DecodedBlock>;
+  peerStatus(): Promise<{ org: OrgMsp; name: string; up: boolean }[]>;
+  close(): void;
+}

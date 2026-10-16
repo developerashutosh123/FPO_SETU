@@ -1,0 +1,50 @@
+import type { FastifyRequest } from 'fastify';
+import type { ZodTypeAny, z } from 'zod';
+import { ENDPOINTS } from '../contract/endpoints.mjs';
+import type { LedgerReceipt, OrgMsp, Role, SessionUser } from '../contract/contract.js';
+import { HttpError, invalid } from '../errors.js';
+import { personaByUsername, SERVICE_IDENTITY } from '../auth/personas.js';
+import type { FabricUser } from '../fabric/identities.js';
+
+export type EndpointId = (typeof ENDPOINTS)[number]['id'];
+export interface Reply { status?: number; body: unknown; headers?: Record<string, string>; raw?: boolean }
+export type Handler = (req: FastifyRequest) => Promise<unknown | Reply>;
+export const reply = (body: unknown, status?: number, headers?: Record<string, string>): Reply => ({ body, status, headers, raw: true });
+
+export function parse<T extends ZodTypeAny>(schema: T, data: unknown, what = 'request'): z.infer<T> {
+  const r = schema.safeParse(data ?? {});
+  if (!r.success) throw invalid(`The ${what} is not valid: ${r.error.issues.map((i) => `${i.path.join('.') || '(body)'} ${i.message}`).join('; ')}`, r.error.issues);
+  return r.data;
+}
+
+export function user(req: FastifyRequest): SessionUser {
+  if (!req.user) throw new HttpError('ERR_UNAUTHENTICATED', 'Sign in first.');
+  return req.user;
+}
+
+export const receipted = <T>(receipt: LedgerReceipt, resource: T) => ({ ...receipt, resource });
+
+/** The Fabric identity that submits for a signed-in user. Members have their own identity only if they are a seeded persona. */
+export function fabricUserOf(u: SessionUser): FabricUser {
+  if (personaByUsername(u.username)) return { username: u.username, msp: u.org };
+  // other farmers act through the VLE identity (chaincode accepts role vle where a member may act)
+  return { username: SERVICE_IDENTITY.vle, msp: 'FpoOrgMSP' };
+}
+export const serviceUser = (kind: keyof typeof SERVICE_IDENTITY): FabricUser => ({ username: SERVICE_IDENTITY[kind], msp: 'FpoOrgMSP' });
+export const userNamed = (username: string): FabricUser => {
+  const p = personaByUsername(username);
+  if (!p) throw new Error(`unknown persona ${username}`);
+  return { username, msp: p.org };
+};
+
+export const isRole = (u: SessionUser, ...roles: Role[]) => roles.includes(u.role);
+export const orgOf = (u: SessionUser): OrgMsp => u.org;
+
+export function endpointDef(id: string) {
+  const e = ENDPOINTS.find((x) => x.id === id);
+  if (!e) throw new Error(`unknown endpoint ${id}`);
+  return e;
+}
+
+export const pageParams = (q: Record<string, unknown>) => ({ limit: Math.min(Math.max(Number(q.limit ?? 50) || 50, 1), 200), offset: Math.max(Number(q.cursor ?? 0) || 0, 0) });
+export const nextCursor = (offset: number, limit: number, got: number) => (got > limit ? String(offset + limit) : undefined);

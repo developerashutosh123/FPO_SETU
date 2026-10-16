@@ -118,8 +118,10 @@ func TestCreateOrderRules(t *testing.T) {
 	e.wantCode(create(e.buyer(), `["`+s1+`","`+s1+`"]`), cc.ErrValidation)
 	e.wantCode(e.c.CreateOrder(e.buyer(), "ORD-1", `["`+s1+`"]`, "DIRECT", "d"), cc.ErrValidation)
 	e.wantCode(e.c.CreateOrder(e.buyer(), oid, `["`+s1+`"]`, "FAX", "d"), cc.ErrValidation)
-	e.state[s2] = "PLEDGED"
-	e.wantCode(create(e.buyer(), `["`+s1+`","`+s2+`"]`), cc.ErrLotPledged)
+	e.state[s2] = "PLEDGED" // a pledged lot can be ordered; its dispatch waits for the lien (lot-lifecycle)
+	e.must(create(e.buyer(), `["`+s1+`","`+s2+`"]`))
+	e.l = testkit.NewLedger()
+	e.l.Members = map[string][]string{"tradePricePDC": {cc.FpoOrg, cc.BuyerOrg}}
 	e.state[s2] = "SOLD"
 	e.wantCode(create(e.buyer(), `["`+s2+`"]`), cc.ErrInvalidState)
 	delete(e.state, s2)

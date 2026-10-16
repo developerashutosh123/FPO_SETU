@@ -1,0 +1,44 @@
+import type { FastifyInstance } from 'fastify';
+import { asc, gt } from 'drizzle-orm';
+import type { StreamEvent, Channel, LedgerEventName } from '../contract/contract.js';
+import type { Ctx } from '../context.js';
+import { ledgerEvents } from '../db/schema.js';
+
+/** GET /events/stream: Server-Sent Events of every indexed chaincode event (no PII, no price). Resumes from Last-Event-ID. */
+export function sseRoute(app: FastifyInstance, ctx: Ctx) {
+  const open = new Set<{ end(): void }>();
+  app.addHook('onClose', async () => { for (const r of open) r.end(); open.clear(); }); // a hijacked stream would otherwise keep close() waiting
+  app.get('/events/stream', async (req, reply) => {
+    reply.hijack();
+    const res = reply.raw;
+    open.add(res);
+    const origin = req.headers.origin;
+    res.writeHead(200, {
+      'content-type': 'text/event-stream', 'cache-control': 'no-cache, no-transform', connection: 'keep-alive', 'x-accel-buffering': 'no', 'X-Ledger-Mode': 'live',
+      ...(origin && ctx.cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin' } : {}),
+    });
+    res.write('retry: 3000\n\n');
+    const write = (id: number, ev: StreamEvent) => res.write(`id: ${id}\nevent: ledger\ndata: ${JSON.stringify(ev)}\n\n`);
+    // subscribe first, then replay what the client missed, so nothing falls in the gap
+    const resumeFrom = req.headers['last-event-id'] ?? (req.query as Record<string, string>).lastEventId; // an explicit id, even 0, asks for a replay
+    let lastSent = Number(resumeFrom ?? 0) || 0;
+    const queue: { id: number; ev: StreamEvent }[] = [];
+    let replaying = resumeFrom !== undefined;
+    const unsub = ctx.bus.subscribe((m) => { if (replaying) queue.push(m); else if (m.id > lastSent) { lastSent = m.id; write(m.id, m.ev); } });
+    if (replaying) {
+      const rows = await ctx.db.select().from(ledgerEvents).where(gt(ledgerEvents.id, lastSent)).orderBy(asc(ledgerEvents.id)).limit(500);
+      for (const r of rows) { lastSent = r.id; write(r.id, toStreamEvent(r)); }
+      replaying = false;
+      for (const m of queue.splice(0)) if (m.id > lastSent) { lastSent = m.id; write(m.id, m.ev); }
+    }
+    const ping = setInterval(() => res.write(': keep-alive\n\n'), 15000);
+    req.raw.on('close', () => { clearInterval(ping); unsub(); open.delete(res); });
+  });
+}
+
+export function toStreamEvent(r: { event: string; sscc: string | null; orderId: string | null; enwr: string | null; txId: string; blockNumber: number; channel: string; at: Date }): StreamEvent {
+  return {
+    event: r.event as LedgerEventName, ...(r.sscc ? { sscc: r.sscc } : {}), ...(r.orderId ? { orderId: r.orderId } : {}), ...(r.enwr ? { enwr: r.enwr } : {}),
+    txId: r.txId, blockNumber: r.blockNumber, channel: r.channel as Channel, at: r.at.toISOString().replace(/\.\d{3}Z$/, 'Z'),
+  };
+}

@@ -1,0 +1,13 @@
+{
+  "_readme": "TEST VALUES ONLY, used by scripts/e2e-journey.ts against a throwaway local database. They are not sourced and must never be used for a demo or a real statement. See config/rates.json for the real table.",
+  "ltvPct": { "value": 70, "status": "SOURCED", "source": "CONTRACT.md Section 8" },
+  "haircutPct": {
+    "POTATO": { "value": 20, "status": "ASSUMPTION", "source": "TEST" }, "PADDY": { "value": 10, "status": "ASSUMPTION", "source": "TEST" },
+    "BRINJAL": { "value": 30, "status": "ASSUMPTION", "source": "TEST" }, "CAULIFLOWER": { "value": 30, "status": "ASSUMPTION", "source": "TEST" }
+  },
+  "deductions": {
+    "COLD_STORAGE_RENT": { "perQtl": 100, "status": "UNSOURCED", "source": "TEST" }, "HAMALI": { "perQtl": 10, "status": "UNSOURCED", "source": "TEST" },
+    "MARKET_FEE": { "pct": 0.5, "status": "UNSOURCED", "source": "TEST" }, "COMMISSION": { "pct": 1, "status": "UNSOURCED", "source": "TEST" },
+    "TRANSPORT": { "perQtl": 25, "status": "UNSOURCED", "source": "TEST" }, "FPO_MARGIN": { "pct": 2, "status": "ASSUMPTION", "source": "TEST" }
+  }
+}

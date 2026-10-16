@@ -1,0 +1,52 @@
+// Simulated weighbridge (WB-CHG-01) and quality meter (QM-CHG-01). The numbers are simulated; the signatures are real:
+// each reading is signed with the device's enrolled ECDSA P-256 key over canonicalJson(reading), and chaincode F3 verifies them.
+import { createHash, createPrivateKey, sign } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { canonicalJson, type Commodity, type QualityReading, type WeighbridgeReading } from '../contract/contract.js';
+import { isoSeconds } from './dates.js';
+
+export const DEVICES = { 'WB-CHG-01': { kind: 'weighbridge' }, 'QM-CHG-01': { kind: 'quality' } } as const;
+export type DeviceId = keyof typeof DEVICES;
+export const isDeviceId = (s: string): s is DeviceId => s in DEVICES;
+
+/** Deterministic PRNG (mulberry32) seeded from the lot, device and read counter, so a repeated seed gives the same readings. */
+function rng(seed: string) {
+  let a = createHash('sha256').update(seed).digest().readUInt32LE(0);
+  return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+const between = (r: () => number, lo: number, hi: number, dp = 1) => Number((lo + r() * (hi - lo)).toFixed(dp));
+
+/**
+ * Weighbridge: net weight is the bag count times the nominal 50 kg bag, with a spread of -2% to +1% (simulation parameter, not a sourced figure;
+ * the 50 kg bag is to be verified against a West Bengal source). Vehicle tare 1,100 to 1,500 kg (simulation parameter).
+ */
+export function simulateWeighbridge(lot: { sscc: string; bagCount: number }, n: number, now: Date): WeighbridgeReading {
+  const r = rng(`${lot.sscc}|WB-CHG-01|${n}`);
+  const netKg = Math.round(lot.bagCount * 50 * between(r, 0.98, 1.01, 4));
+  const tareKg = Math.round(between(r, 1100, 1500, 0));
+  return { deviceId: 'WB-CHG-01', grossKg: netKg + tareKg, tareKg, netKg, at: isoSeconds(now) };
+}
+
+/**
+ * Quality meter. Paddy ranges stay inside the Government of India uniform specification for paddy (moisture max 17.0%, foreign matter 1.0%
+ * inorganic and 1.0% organic, damaged and discoloured grains 5.0%), see docs/DATA_SOURCES.md. Potato and vegetable ranges are plausible
+ * simulation parameters: no Indian grade standard with size, greening and rot tolerances could be retrieved.
+ */
+export function simulateQuality(commodity: Commodity, sscc: string, n: number, now: Date): QualityReading {
+  const r = rng(`${sscc}|QM-CHG-01|${n}`);
+  const base = { deviceId: 'QM-CHG-01', at: isoSeconds(now) };
+  if (commodity === 'POTATO') {
+    const u = r();
+    const sizeGradeMm = u < 0.55 ? '45-55' : u < 0.75 ? '>55' : u < 0.95 ? '35-45' : '<35';
+    return { ...base, potato: { sizeGradeMm, greeningPct: between(r, 0, 3), rotPct: between(r, 0, 2), cutsPct: between(r, 0, 3) } };
+  }
+  if (commodity === 'PADDY') return { ...base, paddy: { moisturePct: between(r, 12.5, 16.8), foreignMatterPct: between(r, 0.2, 1.0), brokenPct: between(r, 1.0, 5.0) } };
+  return { ...base, vegetable: { uniformityPct: between(r, 80, 95, 0), damagePct: between(r, 1, 6, 0) } };
+}
+
+/** Signs canonicalJson(reading) with the device's enrolled key (wallet/FpoOrgMSP/<deviceId>/key.pem). Output: 128 hex chars, r||s. */
+export function signReading(walletDir: string, deviceId: DeviceId, reading: unknown): string {
+  const key = createPrivateKey(readFileSync(join(walletDir, 'FpoOrgMSP', deviceId, 'key.pem'), 'utf8'));
+  return sign('sha256', Buffer.from(canonicalJson(reading), 'utf8'), { key, dsaEncoding: 'ieee-p1363' }).toString('hex');
+}

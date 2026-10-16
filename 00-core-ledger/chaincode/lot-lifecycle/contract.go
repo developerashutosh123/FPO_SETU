@@ -34,7 +34,7 @@ var transitions = map[string][]string{
 	StCommissioned: {StGraded},
 	StGraded:       {StInStorage, StListed, StTransformed},
 	StInStorage:    {StPledged, StListed, StTransformed},
-	StPledged:      {StInStorage},
+	StPledged:      {StInStorage, StListed}, // a pledged lot may be listed and sold; only dispatch waits for the lien (CONTRACT.md 3.2, journey steps 6 to 8)
 	StListed:       {StSold},
 	StSold:         {StInTransit},
 	StInTransit:    {StDelivered},
@@ -51,9 +51,13 @@ func contains(list []string, s string) bool {
 	return false
 }
 
-// move changes the lot status if the state machine allows it. A pledged lot cannot go anywhere except back to IN_STORAGE.
+// move changes the lot status if the state machine allows it.
 func (l *Lot) move(to string) error {
-	if l.Status == StPledged && to != StInStorage {
+	// a lot with an active lien never goes on the road; and while its status is PLEDGED it can only be listed or released
+	if to == StInTransit && l.LienRef != "" {
+		return cc.Errf(cc.ErrLotPledged, "lot %s has an active lien; release it before dispatch", l.SSCC)
+	}
+	if l.Status == StPledged && to != StInStorage && to != StListed {
 		return cc.Errf(cc.ErrLotPledged, "lot %s has an active lien; release it before moving to %s", l.SSCC, to)
 	}
 	if !contains(transitions[l.Status], to) {
@@ -375,7 +379,8 @@ func (c *LotContract) SetInStorage(ctx contractapi.TransactionContextInterface, 
 	return c.statusChanged(ctx, l, from, facilityRef)
 }
 
-// SetPledged follows the lien: true after markLien (IN_STORAGE to PLEDGED), false after releaseLien (PLEDGED to IN_STORAGE).
+// SetPledged follows the lien: true after markLien (IN_STORAGE to PLEDGED); false after releaseLien. On release a PLEDGED lot goes back to
+// IN_STORAGE; a lot that was listed or sold while pledged keeps its status and only loses the lien reference (which unblocks dispatch).
 func (c *LotContract) SetPledged(ctx contractapi.TransactionContextInterface, sscc string, pledged bool, lienRef string) error {
 	if _, err := cc.Require(ctx, cc.FpoOrg, cc.RoleWarehouse); err != nil {
 		return err
@@ -386,7 +391,7 @@ func (c *LotContract) SetPledged(ctx contractapi.TransactionContextInterface, ss
 	}
 	from := l.Status
 	if pledged {
-		if l.Status == StPledged {
+		if l.LienRef != "" {
 			return cc.Errf(cc.ErrInvalidState, "lot %s is already pledged", sscc)
 		}
 		if err := l.move(StPledged); err != nil {
@@ -394,11 +399,15 @@ func (c *LotContract) SetPledged(ctx contractapi.TransactionContextInterface, ss
 		}
 		l.LienRef = lienRef
 	} else {
-		if l.Status != StPledged {
-			return cc.Errf(cc.ErrInvalidState, "lot %s is %s, not PLEDGED", sscc, l.Status)
-		}
-		if err := l.move(StInStorage); err != nil {
-			return err
+		switch {
+		case l.Status == StPledged:
+			if err := l.move(StInStorage); err != nil {
+				return err
+			}
+		case l.LienRef != "" && (l.Status == StListed || l.Status == StSold):
+			// status stays; only the lien goes
+		default:
+			return cc.Errf(cc.ErrInvalidState, "lot %s has no active lien to release (status %s)", sscc, l.Status)
 		}
 		l.LienRef = ""
 	}

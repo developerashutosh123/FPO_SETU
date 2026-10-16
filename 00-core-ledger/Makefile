@@ -27,3 +27,6 @@ deploy:    ## package, install, approve, commit the three chaincodes (idempotent
 	./scripts/deployCC.sh
 smoke:     ## CLI smoke test: F1-F7 happy path and four negative cases
 	./scripts/cli-smoke.sh
+
+test-db:   ## throwaway local Postgres for the gateway tests (never used for real data)
+	@docker start fposetu-test-pg >/dev/null 2>&1 || docker run -d --name fposetu-test-pg -e POSTGRES_PASSWORD=test -e POSTGRES_USER=test -p 127.0.0.1:54329:5432 --memory 384m postgres:16-alpine

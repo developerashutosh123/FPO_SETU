@@ -1,0 +1,66 @@
+[
+  {
+    "code": "CHANGUAL",
+    "name": "Changual",
+    "nameBn": "চাঙ্গুয়াল",
+    "block": "Kharagpur-II",
+    "gp": "Changual",
+    "lat": 22.3106292,
+    "lon": 87.3795312,
+    "role": "PILOT",
+    "precision": "LANDMARK",
+    "source": "https://nominatim.openstreetmap.org/search?q=Changual%2C%20Paschim%20Medinipur&format=jsonv2&addressdetails=1 -> OSM node 7199853335 \"Changual BPHC\", Kharagpur-II. Nominatim (OpenStreetMap), queried 15-10-2026 with a descriptive User-Agent at 1 request/second.",
+    "note": "Point is the Changual BPHC building, a landmark in the village, not the village centroid. Inside the Kharagpur-II bounding box (OSM relation 9707865... see block row of villages.json _meta)."
+  },
+  {
+    "code": "GOLGRAM",
+    "name": "Golgram",
+    "nameBn": "গোলগ্রাম",
+    "block": "Debra",
+    "gp": "Golgram",
+    "lat": 22.4392393,
+    "lon": 87.5915109,
+    "role": "PILOT",
+    "precision": "BLOCK_CENTROID",
+    "source": "https://nominatim.openstreetmap.org/search?q=Golgram%2C%20Paschim%20Medinipur&format=jsonv2&addressdetails=1 returned no result; Overpass search for names like Golgram in the district bounding box returned none. Fallback: Debra block centre, OSM relation 9707865 (https://nominatim.openstreetmap.org/search?q=Debra%2C%20Paschim%20Medinipur&format=jsonv2&addressdetails=1).",
+    "note": "Golgram is not mapped in OpenStreetMap. This is the Debra block centre, not the village. Human must supply village coordinates or an LGD code."
+  },
+  {
+    "code": "GOPALPUR",
+    "name": "Gopalpur",
+    "nameBn": "গোপালপুর",
+    "block": "Keshiary",
+    "lat": 22.1310979,
+    "lon": 87.2311939,
+    "role": "PILOT",
+    "precision": "BLOCK_CENTROID",
+    "source": "https://nominatim.openstreetmap.org/search?q=Gopalpur%2C%20Keshiary&format=jsonv2&addressdetails=1 returned no result; https://nominatim.openstreetmap.org/search?q=Gopalpur%2C%20West%20Bengal%2C%20India&format=jsonv2&addressdetails=1 lists Gopalpur villages only in Bankura, Birbhum, Maldah and South 24 Parganas, none in Paschim Medinipur. Fallback: Keshiary block centre, OSM relation 9707867 (https://nominatim.openstreetmap.org/search?q=Keshiary%2C%20West%20Bengal&format=jsonv2&addressdetails=1).",
+    "note": "Gopalpur (Keshiary) is not mapped in OpenStreetMap. This is the Keshiary block centre, not the village. Human must confirm the village on the Census 2011 directory or LGD and supply coordinates."
+  },
+  {
+    "code": "SANKOA",
+    "name": "Sankoa",
+    "nameBn": "শাঁকোয়া",
+    "block": "Kharagpur-II",
+    "gp": "Sankoa",
+    "lat": 22.2859564,
+    "lon": 87.4111218,
+    "role": "COMPARISON",
+    "precision": "LANDMARK",
+    "source": "https://nominatim.openstreetmap.org/search?q=Sankoa%2C%20Paschim%20Medinipur&format=jsonv2&addressdetails=1 -> OSM way 325360021 \"Sankoa GC High School\", Kharagpur-II. Nominatim (OpenStreetMap), queried 15-10-2026 with a descriptive User-Agent at 1 request/second.",
+    "note": "Point is Sankoa GC High School, a landmark in the village."
+  },
+  {
+    "code": "DUAN",
+    "name": "Duan",
+    "nameBn": "দুয়ান",
+    "block": "Debra",
+    "gp": "Duan",
+    "lat": 22.3547622,
+    "lon": 87.5849584,
+    "role": "COMPARISON",
+    "precision": "LANDMARK",
+    "source": "https://nominatim.openstreetmap.org/search?q=Duan%2C%20Debra&format=jsonv2&addressdetails=1 -> OSM node 2913390420 \"Duan\" railway halt on NH16, Debra block, postcode 721124. Nominatim (OpenStreetMap), queried 15-10-2026 with a descriptive User-Agent at 1 request/second.",
+    "note": "Point is Duan railway halt, a landmark at the village."
+  }
+]

@@ -1,0 +1,49 @@
+// Entity refresh: when an event names a lot, deposit, lien, loan, order or patronage run, ask the chaincode for its current state
+// and upsert the view. Chaincode is the source of truth; the views only make reads fast and survive the PC being off.
+import type { Channel } from '../contract/contract.js';
+import type { Ctx } from '../context.js';
+import { depositsView, liensView, lotsView, ordersView, patronageView } from '../db/schema.js';
+import type { FabricUser } from '../fabric/identities.js';
+import type { ChainLot } from '../services/passport.js';
+
+/** The index reads through the Regulator's peer where it can (an independent view), and through the FPO for trade-channel. */
+export const INDEXER_USER: Record<Channel, FabricUser> = {
+  'trace-channel': { username: 'observer.gov', msp: 'RegulatorOrgMSP' },
+  'finance-channel': { username: 'observer.gov', msp: 'RegulatorOrgMSP' },
+  'trade-channel': { username: 'sujata.ceo', msp: 'FpoOrgMSP' },
+};
+
+const q = async <T>(ctx: Ctx, channel: Channel, chaincode: 'lot-lifecycle' | 'pledge-lien' | 'order-settlement', fn: string, ...args: string[]): Promise<T> =>
+  JSON.parse(await ctx.ledger.evaluate(INDEXER_USER[channel], channel, chaincode, fn, args)) as T;
+
+export async function refreshLot(ctx: Ctx, sscc: string): Promise<ChainLot> {
+  const lot = await q<ChainLot>(ctx, 'trace-channel', 'lot-lifecycle', 'GetLot', sscc);
+  const row = {
+    sscc: lot.sscc, humanRef: lot.humanRef, commodity: lot.commodity, variety: lot.variety ?? '', village: lot.village, farmerToken: lot.farmerToken, plotId: lot.plotId,
+    status: lot.status, originStatus: lot.originStatus, grade: lot.grade ?? '', bagCount: lot.bagCount, estWeightKg: lot.estWeightKg, netKg: lot.netKg ?? 0,
+    harvestOrUnloadDate: lot.harvestOrUnloadDate, orderId: lot.orderId ?? '', lot, lastTxId: lot.lastTxId, updatedAt: new Date(),
+  };
+  await ctx.db.insert(lotsView).values(row).onConflictDoUpdate({ target: lotsView.sscc, set: { ...row } });
+  return lot;
+}
+
+export async function refreshDeposit(ctx: Ctx, depositId: string) {
+  const d = await q<{ depositId: string; sscc: string; txId: string }>(ctx, 'finance-channel', 'pledge-lien', 'GetDeposit', depositId);
+  await ctx.db.insert(depositsView).values({ depositId: d.depositId, sscc: d.sscc, deposit: d }).onConflictDoUpdate({ target: depositsView.depositId, set: { deposit: d } });
+}
+
+export async function refreshLien(ctx: Ctx, enwr: string, loanId: string) {
+  const lien = await q<{ sscc: string; loanId: string; active: boolean }>(ctx, 'finance-channel', 'pledge-lien', 'GetLien', enwr);
+  const loan = await q<{ loanId: string }>(ctx, 'finance-channel', 'pledge-lien', 'GetLoan', loanId || lien.loanId);
+  await ctx.db.insert(liensView).values({ enwr, sscc: lien.sscc, loanId: lien.loanId, active: lien.active, lien, loan }).onConflictDoUpdate({ target: liensView.enwr, set: { sscc: lien.sscc, loanId: lien.loanId, active: lien.active, lien, loan } });
+}
+
+export async function refreshOrder(ctx: Ctx, orderId: string) {
+  const o = await q<{ orderId: string; status: string }>(ctx, 'trade-channel', 'order-settlement', 'GetOrder', orderId);
+  await ctx.db.insert(ordersView).values({ orderId, status: o.status, order: o }).onConflictDoUpdate({ target: ordersView.orderId, set: { status: o.status, order: o } });
+}
+
+export async function refreshPatronage(ctx: Ctx, runId: string) {
+  const r = await q<{ runId: string; orderId: string; distributedAt: string }>(ctx, 'trace-channel', 'lot-lifecycle', 'GetPatronageRun', runId);
+  await ctx.db.insert(patronageView).values({ runId, orderId: r.orderId, run: r, distributedAt: new Date(r.distributedAt) }).onConflictDoUpdate({ target: patronageView.runId, set: { run: r } });
+}

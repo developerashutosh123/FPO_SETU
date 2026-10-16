@@ -1,0 +1,22 @@
+{
+  "_readme": "Deduction rates and lender parameters. A value of null means: not yet sourced. The gateway refuses to compute a statement that needs a null rate; it never guesses. status is SOURCED (cite it), ASSUMPTION (a policy parameter the FPO or the bank sets) or UNSOURCED (waiting for a notified figure). See docs/DATA_SOURCES.md.",
+  "ltvPct": { "value": 70, "status": "SOURCED", "source": "CONTRACT.md Section 8 (loan = 70% of assessed value)" },
+  "haircutPct": {
+    "POTATO": { "value": 20, "status": "ASSUMPTION", "source": "Lender policy parameter chosen by the prototype team. Not market data. The bank officer would set this per commodity." },
+    "PADDY": { "value": 10, "status": "ASSUMPTION", "source": "Lender policy parameter chosen by the prototype team. Not market data. Paddy is valued at the MSP, which is a floor price." },
+    "BRINJAL": { "value": 30, "status": "ASSUMPTION", "source": "Perishable: not accepted for pledge in the demo; value shown only for completeness." },
+    "CAULIFLOWER": { "value": 30, "status": "ASSUMPTION", "source": "Perishable: not accepted for pledge in the demo; value shown only for completeness." }
+  },
+  "deductions": {
+    "COLD_STORAGE_RENT": {
+      "perQtl": null, "status": "UNSOURCED",
+      "source": "West Bengal government notified rent per quintal for the season. Not found in a government document on 15-10-2026.",
+      "candidate": "indianpotato.com (industry guide) states Rs 168 to 172 per quintal, unchanged for four years as of February 2025, and an expert committee recommending Rs 190 (south Bengal) and Rs 194 (north Bengal), pending state approval. Unverified. If used it must be shown as 'indicative'."
+    },
+    "HAMALI": { "perQtl": null, "status": "UNSOURCED", "source": "Loading and unloading charge at the Medinipur (West), Ghatal or Garbeta market or the cold store. No published rate found.", "candidate": null },
+    "MARKET_FEE": { "pct": null, "status": "UNSOURCED", "source": "Set under the West Bengal Agricultural Produce Marketing (Regulation) Act, 1972 by notification. The percentage was not found in the Act text or a notification on 15-10-2026.", "candidate": null },
+    "COMMISSION": { "pct": null, "status": "UNSOURCED", "source": "Commission agent (arhatdar) commission at the market. No published rate found.", "candidate": null },
+    "TRANSPORT": { "perQtl": null, "status": "UNSOURCED", "source": "Freight Debra to Kolkata. Depends on the vehicle quote; to be entered at dispatch.", "candidate": null },
+    "FPO_MARGIN": { "pct": 2, "status": "ASSUMPTION", "source": "The FPO's own margin is a policy decision of its board. 2% is a placeholder for the prototype, shown to members on every statement." }
+  }
+}

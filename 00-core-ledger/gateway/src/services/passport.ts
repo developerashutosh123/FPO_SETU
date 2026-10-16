@@ -1,0 +1,104 @@
+// Builds the Lot Passport (CONTRACT.md LotPassport) from the index and filters it for the caller's role (Section 9.4).
+import { and, asc, eq, or } from 'drizzle-orm';
+import type { Commodity, Grade, LotPassport, LotStatus, Proof, Role, VillageCode, Channel, CustodyHop, OrgMsp } from '../contract/contract.js';
+import type { Db } from '../db/client.js';
+import { depositsView, farmers, ledgerEvents, liensView, lotsView, ordersView, diaryInputs } from '../db/schema.js';
+import { sha256Hex } from './crypto.js';
+
+/** The chaincode Lot as stored in lots_view.lot. */
+export interface ChainLot {
+  sscc: string; humanRef: string; commodity: Commodity; variety: string; village: VillageCode; farmerToken: string; plotId: string;
+  bagCount: number; estWeightKg: number; harvestOrUnloadDate: string; status: LotStatus; originStatus: string; grade: Grade | ''; netKg: number;
+  weighbridge: string; weighbridgeSigHex: string; quality: string; qualitySigHex: string; facility: string; facilityRef: string; lienRef: string;
+  orderId: string; priceHash: string; qualityOutcome: string;
+  custody: { from: OrgMsp; to: OrgMsp; vehicleHash: string; loggerId: string; proposedAt: string; acceptedAt: string }[];
+  digests: { window: string; minC: number; maxC: number; avgC: number; breaches: number; digestHash: string; at: string; txId: string }[];
+  patronageRunId: string; createdAt: string; updatedAt: string; lastTxId: string; farmerSignatureHex: string;
+}
+
+const proofOf = (e: { txId: string; blockNumber: number; channel: string }): Proof => ({ txId: e.txId, blockNumber: e.blockNumber, channel: e.channel as Channel });
+
+/** All transactions that touched a lot, oldest first: its own events plus the trade events of its order. */
+export async function proofsForLot(db: Db, sscc: string, orderId: string): Promise<Proof[]> {
+  const cond = orderId ? or(eq(ledgerEvents.sscc, sscc), eq(ledgerEvents.orderId, orderId)) : eq(ledgerEvents.sscc, sscc);
+  const rows = await db.select({ txId: ledgerEvents.txId, blockNumber: ledgerEvents.blockNumber, channel: ledgerEvents.channel, at: ledgerEvents.at }).from(ledgerEvents).where(cond).orderBy(asc(ledgerEvents.at), asc(ledgerEvents.id));
+  const seen = new Set<string>(); const out: Proof[] = [];
+  for (const r of rows) if (!seen.has(r.txId)) { seen.add(r.txId); out.push(proofOf(r)); }
+  return out;
+}
+
+export async function loadChainLot(db: Db, sscc: string): Promise<ChainLot | undefined> {
+  const r = await db.select({ lot: lotsView.lot }).from(lotsView).where(eq(lotsView.sscc, sscc));
+  return r[0]?.lot as ChainLot | undefined;
+}
+
+/** phiCompliant: no diary entry for this plot and crop whose PHI window still runs on the harvest or unload date. */
+export async function phiCompliantFor(db: Db, lot: ChainLot): Promise<boolean> {
+  const f = await db.select({ id: farmers.id }).from(farmers).where(eq(farmers.token, lot.farmerToken));
+  if (!f[0]) return true;
+  const rows = await db.select({ phiClearOn: diaryInputs.phiClearOn }).from(diaryInputs).where(and(eq(diaryInputs.farmerId, f[0].id), eq(diaryInputs.crop, lot.commodity), eq(diaryInputs.plotId, lot.plotId)));
+  return rows.every((r) => r.phiClearOn <= lot.harvestOrUnloadDate);
+}
+
+export async function buildPassport(db: Db, lot: ChainLot): Promise<LotPassport> {
+  const proofs = await proofsForLot(db, lot.sscc, lot.orderId);
+  const dep = (await db.select().from(depositsView).where(eq(depositsView.sscc, lot.sscc)))[0];
+  const lien = (await db.select().from(liensView).where(eq(liensView.sscc, lot.sscc)))[0];
+  const order = lot.orderId ? (await db.select().from(ordersView).where(eq(ordersView.orderId, lot.orderId)))[0] : undefined;
+  const depositData = dep?.deposit as { facility: 'COLD_STORAGE' | 'WAREHOUSE'; facilityName: string; depositedAt: string; enwr: string; repository: 'NERL' | 'CCRL' } | undefined;
+  const lienData = lien?.lien as { lienId: string; active: boolean; bank: OrgMsp; txId: string; markedAt: string } | undefined;
+  const orderData = order?.order as { channel: 'DIRECT' | 'ONDC' | 'ENAM'; status: string; priceHash: string } | undefined;
+
+  const p: LotPassport = {
+    sscc: lot.sscc, humanRef: lot.humanRef, commodity: lot.commodity, variety: lot.variety || undefined, status: lot.status, village: lot.village,
+    farmerToken: lot.farmerToken, plotId: lot.plotId, bagCount: lot.bagCount, estWeightKg: lot.estWeightKg, harvestOrUnloadDate: lot.harvestOrUnloadDate,
+    custody: [], integrity: { docs: [] }, proofs,
+  };
+  if (lot.grade) {
+    p.grade = lot.grade as Grade; p.netKg = lot.netKg; p.residueTested = false; p.phiCompliant = await phiCompliantFor(db, lot);
+    if (lot.weighbridge && lot.quality) {
+      const wb = JSON.parse(lot.weighbridge) as LotPassport['quality'] extends infer Q ? (Q extends { weighbridge: infer W } ? W : never) : never;
+      p.quality = { weighbridge: wb, reading: JSON.parse(lot.quality), deviceVerified: true };
+      p.integrity.docs.push({ name: 'Weighbridge reading (device-signed)', sha256: sha(lot.weighbridge), viewable: true }, { name: 'Quality meter reading (device-signed)', sha256: sha(lot.quality), viewable: true });
+    }
+  }
+  if (depositData) p.storage = { facility: depositData.facility, facilityName: depositData.facilityName, depositedAt: depositData.depositedAt, ...(depositData.enwr ? { enwr: depositData.enwr, repository: depositData.repository } : {}) };
+  p.lien = !lienData ? { status: 'NONE' } : lienData.active ? { status: 'ACTIVE', lienId: lienData.lienId, bank: lienData.bank, proof: proofOfTx(proofs, lienData.txId) } : { status: 'RELEASED', lienId: lienData.lienId, bank: lienData.bank };
+  p.custody = lot.custody.map((h): CustodyHop => ({ from: h.from, to: h.to, place: 'In transit', proposedAt: h.proposedAt, ...(h.acceptedAt ? { acceptedAt: h.acceptedAt } : {}) }));
+  if (lot.digests.length) {
+    p.coldChain = { continuous: lot.digests.every((d) => d.breaches === 0), breaches: lot.digests.reduce((a, d) => a + d.breaches, 0), digests: lot.digests.map((d) => ({ window: d.window, avgC: d.avgC, proof: proofOfTx(proofs, d.txId) ?? { txId: d.txId, blockNumber: 0, channel: 'trace-channel' as Channel } })) };
+  }
+  if (orderData) p.order = { orderId: lot.orderId, channel: orderData.channel, ...(orderData.priceHash ? { priceHash: orderData.priceHash } : {}), settled: orderData.status === 'SETTLED' };
+  return p;
+}
+
+const sha = (s: string) => sha256Hex(s);
+const proofOfTx = (proofs: Proof[], txId: string): Proof | undefined => proofs.find((x) => x.txId === txId);
+
+// ---------------------------------------------------------------- role filtering (CONTRACT.md Section 9.4)
+
+/**
+ * What each role may see of a passport (CONTRACT.md Section 9.4). The farmer name and phone are never part of a passport.
+ * Lien / loan: own lot status for the member; not the VLE; yes CEO, board and Bank; not the Buyer; observer sees status without terms
+ * (terms are not in a passport for anyone). The price hash is public to every role that can read the lot.
+ */
+export function filterPassport(p: LotPassport, role: Role): LotPassport {
+  const out: LotPassport = structuredClone(p);
+  switch (role) {
+    case 'buyer_manager': // no lien, no e-NWR number (a finance record)
+    case 'vle':
+      delete out.lien;
+      if (out.storage) { delete out.storage.enwr; delete out.storage.repository; }
+      break;
+    case 'member': // own lot: whether it is pledged, nothing about the lien itself
+      if (out.lien) out.lien = { status: out.lien.status };
+      break;
+    default: break;
+  }
+  return out;
+}
+
+export async function farmerIdOfToken(db: Db, token: string) {
+  const r = await db.select({ id: farmers.id }).from(farmers).where(eq(farmers.token, token));
+  return r[0]?.id;
+}

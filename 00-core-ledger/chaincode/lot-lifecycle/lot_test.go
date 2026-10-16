@@ -382,7 +382,7 @@ func TestStateMachineRejectsIllegalTransitions(t *testing.T) {
 	}
 }
 
-func TestPledgedLotCannotMove(t *testing.T) {
+func TestPledgedLotCanBeListedAndSoldButNotDispatched(t *testing.T) {
 	e := newEnv(t)
 	e.to(StInStorage)
 	e.wantCode(e.c.SetPledged(e.fpo(cc.RoleVLE), sscc, true, "LIEN-1"), cc.ErrForbiddenRole)
@@ -394,13 +394,33 @@ func TestPledgedLotCannotMove(t *testing.T) {
 		t.Errorf("%+v", p)
 	}
 	e.wantCode(e.c.SetPledged(e.fpo(cc.RoleWarehouse), sscc, true, "LIEN-X"), cc.ErrInvalidState)
-	e.wantCode(e.c.SetListed(e.fpo(cc.RoleCEO), sscc, "ORD-2026-00087"), cc.ErrLotPledged)
+	// while PLEDGED: no transformation, no jumping to SOLD, no dispatch
 	e.wantCode(e.c.RecordTransformation(e.fpo(cc.RoleCEO), sscc, "x"), cc.ErrLotPledged)
 	e.wantCode(e.c.SetSold(e.fpo(cc.RoleCEO), sscc, "ORD-2026-00087", hash64), cc.ErrLotPledged)
 	e.wantCode(e.c.ProposeTransfer(e.fpo(cc.RoleOperator), sscc, cc.BuyerOrg, "WB74A1234", "BLE-01"), cc.ErrLotPledged)
+	// journey steps 6 to 8 of CONTRACT.md: the pledged lot is listed and sold, the lien is still active
+	e.must(e.c.SetListed(e.fpo(cc.RoleCEO), sscc, "ORD-2026-00087"))
+	e.must(e.c.SetSold(e.fpo(cc.RoleCEO), sscc, "ORD-2026-00087", hash64))
+	if l := e.lot(); l.Status != StSold || l.LienRef != "LIEN-2026-00041" {
+		t.Fatalf("a sold lot keeps its lien reference: %+v", l)
+	}
+	e.wantCode(e.c.ProposeTransfer(e.fpo(cc.RoleOperator), sscc, cc.BuyerOrg, "WB74A1234", "BLE-01"), cc.ErrLotPledged) // the lien blocks dispatch
+	// lien released after repayment: status stays SOLD, the reference goes, dispatch is possible
 	e.must(e.c.SetPledged(e.fpo(cc.RoleWarehouse), sscc, false, ""))
-	if e.lot().Status != StInStorage || e.lot().LienRef != "" {
-		t.Fatal("not released")
+	if l := e.lot(); l.Status != StSold || l.LienRef != "" {
+		t.Fatalf("%+v", l)
+	}
+	e.must(e.c.ProposeTransfer(e.fpo(cc.RoleOperator), sscc, cc.BuyerOrg, "WB74A1234", "BLE-01"))
+	e.wantCode(e.c.SetPledged(e.fpo(cc.RoleWarehouse), sscc, false, ""), cc.ErrInvalidState) // nothing left to release
+}
+
+func TestReleaseOfAPledgedLotReturnsItToStorage(t *testing.T) {
+	e := newEnv(t)
+	e.to(StInStorage)
+	e.must(e.c.SetPledged(e.fpo(cc.RoleWarehouse), sscc, true, "LIEN-2026-00041"))
+	e.must(e.c.SetPledged(e.fpo(cc.RoleWarehouse), sscc, false, ""))
+	if l := e.lot(); l.Status != StInStorage || l.LienRef != "" {
+		t.Fatalf("%+v", l)
 	}
 	e.wantCode(e.c.SetPledged(e.fpo(cc.RoleWarehouse), sscc, false, ""), cc.ErrInvalidState)
 }

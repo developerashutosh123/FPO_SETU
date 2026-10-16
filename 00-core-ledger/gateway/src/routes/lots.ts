@@ -1,0 +1,232 @@
+import { and, asc, desc, eq, inArray, notInArray } from 'drizzle-orm';
+import { z } from 'zod';
+import { canonicalJson, type CatalogueItem, type Commodity, type Grade, type LotDraft, type LotListItem, type LotPassport, type LotStatus, type PendingLotDraft, type Proof, type VillageCode, type LedgerReceipt } from '../contract/contract.js';
+import type { Ctx } from '../context.js';
+import { HttpError, forbidden, invalid, notFound } from '../errors.js';
+import { depositsView, deviceReads, farmers, ledgerEvents, lotDrafts, lotsView, plots } from '../db/schema.js';
+import { refreshLot } from '../indexer/refresh.js';
+import { ENDORSE } from '../fabric/topology.js';
+import { BLOCK_OF_VILLAGE, humanRefOf, nextSequence, ssccFromSerial } from '../services/ids.js';
+import { isoSeconds } from '../services/dates.js';
+import { buildPassport, filterPassport, loadChainLot, phiCompliantFor, type ChainLot } from '../services/passport.js';
+import { submit, withLock } from '../services/chain.js';
+import { verifyP256 } from '../services/crypto.js';
+import { DEVICES, isDeviceId, signReading, simulateQuality, simulateWeighbridge } from '../services/devices.js';
+import { lotLabelPdf } from '../services/label.js';
+import { fabricUserOf, nextCursor, pageParams, parse, receipted, reply, serviceUser, user, type EndpointId, type Handler } from './helpers.js';
+
+const CROPS = ['POTATO', 'PADDY', 'BRINJAL', 'CAULIFLOWER'] as const;
+const draftBody = z.object({
+  farmerId: z.string().uuid(), plotId: z.string().min(3), commodity: z.enum(CROPS), variety: z.string().max(80).optional(),
+  bagCount: z.number().int().positive().max(2000), estWeightKg: z.number().int().positive().max(200000), harvestOrUnloadDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+const signBody = z.object({ signatureHex: z.string().regex(/^[0-9a-f]{128}$/, 'must be 128 lowercase hex chars (r||s)') });
+const wbReading = z.object({ deviceId: z.string(), grossKg: z.number(), tareKg: z.number(), netKg: z.number(), at: z.string() });
+const qReading = z.object({ deviceId: z.string(), at: z.string(), potato: z.object({ sizeGradeMm: z.enum(['>55', '45-55', '35-45', '<35']), greeningPct: z.number(), rotPct: z.number(), cutsPct: z.number() }).optional(), paddy: z.object({ moisturePct: z.number(), foreignMatterPct: z.number(), brokenPct: z.number() }).optional(), vegetable: z.object({ uniformityPct: z.number(), damagePct: z.number() }).optional() });
+const signed = <T extends z.ZodTypeAny>(r: T) => z.object({ reading: r, signatureHex: z.string().regex(/^[0-9a-f]{128}$/), deviceId: z.string() });
+const qualityBody = z.object({ weighbridgeReading: signed(wbReading), qualityReading: signed(qReading), grade: z.enum(['A', 'B', 'C']) });
+const transformBody = z.object({ toProcessing: z.literal(true), reason: z.string().min(3).max(300) });
+const proposeBody = z.object({ toOrg: z.enum(['FpoOrgMSP', 'BankOrgMSP', 'BuyerOrgMSP', 'RegulatorOrgMSP']), vehicleNo: z.string().min(4).max(20), loggerId: z.string().min(2).max(40) });
+const digestBody = z.object({ window: z.string().min(3), minC: z.number(), maxC: z.number(), avgC: z.number(), breaches: z.number().int().min(0), digestHash: z.string().regex(/^[0-9a-f]{64}$/) });
+const deviceReadBody = z.object({ sscc: z.string().regex(/^\d{18}$/) });
+
+const lastProofOf = async (ctx: Ctx, rows: { sscc: string; lastTxId: string }[]) => {
+  const ids = [...new Set(rows.map((r) => r.lastTxId))];
+  const ev = ids.length ? await ctx.db.select({ txId: ledgerEvents.txId, blockNumber: ledgerEvents.blockNumber, channel: ledgerEvents.channel }).from(ledgerEvents).where(inArray(ledgerEvents.txId, ids)) : [];
+  return new Map(ev.map((e) => [e.txId, { txId: e.txId, blockNumber: e.blockNumber, channel: e.channel } as Proof]));
+};
+
+export function lotsRoutes(ctx: Ctx): Partial<Record<EndpointId, Handler>> {
+  /** Re-reads the lot from chaincode (fresh), then builds the passport and makes sure the just-committed transaction is among its proofs. */
+  async function passportAfter(sscc: string, receipt?: LedgerReceipt): Promise<LotPassport> {
+    const lot = await refreshLot(ctx, sscc);
+    const p = await buildPassport(ctx.db, lot);
+    if (receipt && !p.proofs.some((x) => x.txId === receipt.txId)) p.proofs.push({ txId: receipt.txId, blockNumber: receipt.blockNumber, channel: receipt.channel });
+    return p;
+  }
+  const draftPassport = (d: typeof lotDrafts.$inferSelect, token: string): LotPassport => ({
+    sscc: d.sscc, humanRef: d.humanRef, commodity: d.commodity as Commodity, variety: d.variety ?? undefined, status: 'PENDING_FARMER_SIGNATURE', village: d.village as VillageCode, farmerToken: token, plotId: d.plotId,
+    bagCount: d.bagCount, estWeightKg: d.estWeightKg, harvestOrUnloadDate: d.harvestOrUnloadDate, custody: [], integrity: { docs: [] }, proofs: [],
+  });
+  const requireLot = async (sscc: string): Promise<ChainLot> => { const l = await loadChainLot(ctx.db, sscc); if (!l) throw notFound(`Lot ${sscc}`); return l; };
+
+  return {
+    async createLotDraft(req) {
+      const u = user(req);
+      const b = parse(draftBody, req.body, 'lot draft');
+      const f = (await ctx.db.select().from(farmers).where(eq(farmers.id, b.farmerId)))[0];
+      if (!f) throw notFound('Farmer');
+      if (f.erased) throw new HttpError('ERR_INVALID_STATE', 'This member has erased their data and cannot have new lots.');
+      const plot = (await ctx.db.select().from(plots).where(and(eq(plots.plotId, b.plotId), eq(plots.farmerId, f.id))))[0];
+      if (!plot) throw invalid('That plot does not belong to this member.');
+      if (!plot.crops.includes(b.commodity)) throw invalid(`This plot is not registered for ${b.commodity}.`);
+      const serial = await nextSequence(ctx.db, 'sscc', 451);
+      const sscc = ssccFromSerial(serial);
+      const village = f.village as VillageCode;
+      const humanRef = humanRefOf(village, b.commodity, serial, Number(b.harvestOrUnloadDate.slice(0, 4)));
+      const payloadToSign = canonicalJson({ sscc, farmerToken: f.token, plotId: plot.plotId, commodity: b.commodity, bagCount: b.bagCount, estWeightKg: b.estWeightKg, harvestOrUnloadDate: b.harvestOrUnloadDate });
+      await ctx.db.insert(lotDrafts).values({ sscc, humanRef, farmerId: f.id, plotId: plot.plotId, commodity: b.commodity, variety: b.variety ?? null, village, bagCount: b.bagCount, estWeightKg: b.estWeightKg, harvestOrUnloadDate: b.harvestOrUnloadDate, payloadToSign, createdBy: u.username });
+      return { sscc, humanRef, payloadToSign } satisfies LotDraft;
+    },
+
+    async listPendingDrafts(req) {
+      const u = user(req);
+      const rows = await ctx.db.select({ d: lotDrafts, token: farmers.token }).from(lotDrafts).innerJoin(farmers, eq(farmers.id, lotDrafts.farmerId)).where(and(eq(lotDrafts.farmerId, u.id), eq(lotDrafts.status, 'PENDING_FARMER_SIGNATURE'))).orderBy(asc(lotDrafts.createdAt));
+      return rows.map(({ d }): PendingLotDraft => ({
+        sscc: d.sscc, humanRef: d.humanRef, payloadToSign: d.payloadToSign, commodity: d.commodity as Commodity, ...(d.variety ? { variety: d.variety } : {}), village: d.village as VillageCode,
+        bagCount: d.bagCount, estWeightKg: d.estWeightKg, harvestOrUnloadDate: d.harvestOrUnloadDate, createdBy: d.createdBy, createdAt: isoSeconds(d.createdAt),
+      }));
+    },
+
+    async farmerSign(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      const b = parse(signBody, req.body, 'signature');
+      return withLock(sscc, async () => {
+        const d = (await ctx.db.select().from(lotDrafts).where(and(eq(lotDrafts.sscc, sscc), eq(lotDrafts.farmerId, u.id))))[0];
+        if (!d) throw notFound(`A draft ${sscc} awaiting your signature`);
+        if (d.status !== 'PENDING_FARMER_SIGNATURE') throw new HttpError('ERR_INVALID_STATE', 'This lot has already been signed.');
+        const f = (await ctx.db.select().from(farmers).where(eq(farmers.id, u.id)))[0]!;
+        if (!f.devicePublicKeyHex) throw new HttpError('ERR_BAD_FARMER_SIGNATURE', 'No device key is registered for this member. Register the phone key first.');
+        if (!verifyP256(f.devicePublicKeyHex, b.signatureHex, d.payloadToSign)) throw new HttpError('ERR_BAD_FARMER_SIGNATURE', 'The signature does not match the lot details. Sign again on this phone.');
+        const { receipt } = await submit(ctx, serviceUser('vle'), 'trace-channel', 'lot-lifecycle', 'CommissionLot',
+          [d.sscc, d.humanRef, f.token, d.plotId, d.commodity, d.variety ?? '', d.village, String(d.bagCount), String(d.estWeightKg), d.harvestOrUnloadDate, b.signatureHex], ENDORSE.trace);
+        await ctx.db.update(lotDrafts).set({ status: 'COMMISSIONED' }).where(eq(lotDrafts.sscc, sscc));
+        return receipted(receipt, filterPassport(await passportAfter(sscc, receipt), u.role));
+      });
+    },
+
+    async listLots(req) {
+      const q = req.query as { status?: string; grade?: string; village?: string; commodity?: string; farmerId?: string; cursor?: string; limit?: string };
+      const { limit, offset } = pageParams(q);
+      const conds = [q.status && q.status !== 'PENDING_FARMER_SIGNATURE' ? eq(lotsView.status, q.status) : undefined, q.grade ? eq(lotsView.grade, q.grade) : undefined, q.village ? eq(lotsView.village, q.village) : undefined, q.commodity ? eq(lotsView.commodity, q.commodity) : undefined].filter(Boolean) as ReturnType<typeof eq>[];
+      if (q.farmerId) { const f = (await ctx.db.select({ token: farmers.token }).from(farmers).where(eq(farmers.id, q.farmerId)))[0]; conds.push(eq(lotsView.farmerToken, f?.token ?? '-')); }
+      const items: LotListItem[] = [];
+      if (q.status !== 'PENDING_FARMER_SIGNATURE') {
+        const rows = await ctx.db.select().from(lotsView).where(conds.length ? and(...conds) : undefined).orderBy(asc(lotsView.sscc)).limit(limit + 1).offset(offset);
+        const proofs = await lastProofOf(ctx, rows.slice(0, limit));
+        for (const r of rows.slice(0, limit)) items.push({ sscc: r.sscc, humanRef: r.humanRef, commodity: r.commodity as Commodity, ...(r.variety ? { variety: r.variety } : {}), status: r.status as LotStatus, village: r.village as VillageCode, bagCount: r.bagCount, estWeightKg: r.estWeightKg, ...(r.netKg ? { netKg: r.netKg } : {}), ...(r.grade ? { grade: r.grade as Grade } : {}), harvestOrUnloadDate: r.harvestOrUnloadDate, ...(proofs.get(r.lastTxId) ? { proof: proofs.get(r.lastTxId) } : {}) });
+        if (!q.status && offset === 0 && !q.grade) {
+          const drafts = await ctx.db.select().from(lotDrafts).where(and(eq(lotDrafts.status, 'PENDING_FARMER_SIGNATURE'), q.village ? eq(lotDrafts.village, q.village) : undefined, q.commodity ? eq(lotDrafts.commodity, q.commodity) : undefined));
+          for (const d of drafts) items.push({ sscc: d.sscc, humanRef: d.humanRef, commodity: d.commodity as Commodity, ...(d.variety ? { variety: d.variety } : {}), status: 'PENDING_FARMER_SIGNATURE', village: d.village as VillageCode, bagCount: d.bagCount, estWeightKg: d.estWeightKg, harvestOrUnloadDate: d.harvestOrUnloadDate });
+        }
+        return { items, nextCursor: nextCursor(offset, limit, rows.length) };
+      }
+      const drafts = await ctx.db.select().from(lotDrafts).where(eq(lotDrafts.status, 'PENDING_FARMER_SIGNATURE')).orderBy(asc(lotDrafts.createdAt)).limit(limit);
+      return { items: drafts.map((d): LotListItem => ({ sscc: d.sscc, humanRef: d.humanRef, commodity: d.commodity as Commodity, status: 'PENDING_FARMER_SIGNATURE', village: d.village as VillageCode, bagCount: d.bagCount, estWeightKg: d.estWeightKg, harvestOrUnloadDate: d.harvestOrUnloadDate })) };
+    },
+
+    async getLot(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      const lot = await loadChainLot(ctx.db, sscc);
+      if (!lot) {
+        const d = (await ctx.db.select({ d: lotDrafts, token: farmers.token }).from(lotDrafts).innerJoin(farmers, eq(farmers.id, lotDrafts.farmerId)).where(eq(lotDrafts.sscc, sscc)))[0];
+        if (!d || d.d.status !== 'PENDING_FARMER_SIGNATURE') throw notFound(`Lot ${sscc}`);
+        if (u.role === 'member' && d.d.farmerId !== u.id) throw forbidden('A member can open only their own lots.');
+        if (!['member', 'vle', 'ceo', 'operator', 'board'].includes(u.role)) throw notFound(`Lot ${sscc}`);
+        return draftPassport(d.d, d.token);
+      }
+      if (u.role === 'member') {
+        const f = (await ctx.db.select({ token: farmers.token }).from(farmers).where(eq(farmers.id, u.id)))[0];
+        if (f?.token !== lot.farmerToken) throw forbidden('A member can open only their own lots.');
+      }
+      if (u.role === 'buyer_manager' && !['GRADED', 'IN_STORAGE', 'LISTED', 'SOLD', 'IN_TRANSIT', 'DELIVERED', 'SETTLED', 'CLOSED', 'REJECTED'].includes(lot.status)) throw notFound(`Lot ${sscc}`);
+      return filterPassport(await buildPassport(ctx.db, lot), u.role);
+    },
+
+    async deviceRead(req) {
+      const { deviceId } = req.params as { deviceId: string };
+      if (!isDeviceId(deviceId)) throw notFound(`Device ${deviceId}`);
+      const b = parse(deviceReadBody, req.body, 'device read');
+      const lot = await requireLot(b.sscc);
+      if (lot.status !== 'COMMISSIONED') throw new HttpError('ERR_INVALID_STATE', `Lot ${b.sscc} is ${lot.status}. Devices are read once, before grading.`);
+      const n = (await ctx.db.select({ id: deviceReads.id }).from(deviceReads).where(and(eq(deviceReads.deviceId, deviceId), eq(deviceReads.sscc, b.sscc)))).length;
+      const reading = DEVICES[deviceId].kind === 'weighbridge' ? simulateWeighbridge(lot, n, ctx.now()) : simulateQuality(lot.commodity, lot.sscc, n, ctx.now());
+      const signatureHex = signReading(ctx.cfg.walletDir, deviceId, reading);
+      await ctx.db.insert(deviceReads).values({ deviceId, sscc: b.sscc, reading, signatureHex });
+      return { reading, signatureHex, deviceId };
+    },
+
+    async attestQuality(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      const b = parse(qualityBody, req.body, 'quality attestation');
+      return withLock(sscc, async () => {
+        await requireLot(sscc);
+        const { receipt } = await submit(ctx, fabricUserOf(u), 'trace-channel', 'lot-lifecycle', 'AttestQuality',
+          [sscc, canonicalJson(b.weighbridgeReading.reading), b.weighbridgeReading.signatureHex, canonicalJson(b.qualityReading.reading), b.qualityReading.signatureHex, b.grade], ENDORSE.trace);
+        return receipted(receipt, filterPassport(await passportAfter(sscc, receipt), u.role));
+      });
+    },
+
+    async transformLot(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      const b = parse(transformBody, req.body, 'transformation');
+      return withLock(sscc, async () => {
+        const { receipt } = await submit(ctx, fabricUserOf(u), 'trace-channel', 'lot-lifecycle', 'RecordTransformation', [sscc, b.reason], ENDORSE.trace);
+        return receipted(receipt, filterPassport(await passportAfter(sscc, receipt), u.role));
+      });
+    },
+
+    async proposeCustody(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      const b = parse(proposeBody, req.body, 'custody proposal');
+      return withLock(sscc, async () => {
+        const { receipt } = await submit(ctx, fabricUserOf(u), 'trace-channel', 'lot-lifecycle', 'ProposeTransfer', [sscc, b.toOrg, b.vehicleNo, b.loggerId], ENDORSE.trace);
+        return receipted(receipt, filterPassport(await passportAfter(sscc, receipt), u.role));
+      });
+    },
+
+    async acceptCustody(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      return withLock(sscc, async () => {
+        const { receipt } = await submit(ctx, fabricUserOf(u), 'trace-channel', 'lot-lifecycle', 'AcceptTransfer', [sscc], ENDORSE.traceWithBuyer);
+        return receipted(receipt, filterPassport(await passportAfter(sscc, receipt), u.role));
+      });
+    },
+
+    async anchorConditionDigest(req) {
+      const u = user(req);
+      const { sscc } = req.params as { sscc: string };
+      const b = parse(digestBody, req.body, 'condition digest');
+      return withLock(sscc, async () => {
+        const { receipt } = await submit(ctx, fabricUserOf(u), 'trace-channel', 'lot-lifecycle', 'AnchorConditionDigest', [sscc, b.window, String(b.minC), String(b.maxC), String(b.avgC), String(b.breaches), b.digestHash], ENDORSE.traceWithBuyer); // custody in progress: the lot's own policy needs FPO and Buyer
+        return receipted(receipt, filterPassport(await passportAfter(sscc, receipt), u.role));
+      });
+    },
+
+    async lotLabel(req) {
+      const { sscc } = req.params as { sscc: string };
+      const lot = await requireLot(sscc);
+      const pdf = await lotLabelPdf({ sscc, humanRef: lot.humanRef, commodity: lot.commodity, variety: lot.variety, grade: lot.grade || undefined, netKg: lot.netKg || undefined, village: lot.village, consumerUrl: ctx.cfg.URL_CONSUMER });
+      return reply(Buffer.from(pdf), 200, { 'content-type': 'application/pdf', 'content-disposition': `inline; filename="${lot.humanRef}.pdf"` });
+    },
+
+    async listCatalogue(req) {
+      const q = req.query as { commodity?: string; grade?: string; minQtl?: string; village?: string; cursor?: string; limit?: string };
+      const { limit, offset } = pageParams(q);
+      const conds = [inArray(lotsView.status, ['GRADED', 'IN_STORAGE']), notInArray(lotsView.status, ['PLEDGED']), q.commodity ? eq(lotsView.commodity, q.commodity) : undefined, q.grade ? eq(lotsView.grade, q.grade) : undefined, q.village ? eq(lotsView.village, q.village) : undefined].filter(Boolean) as ReturnType<typeof eq>[];
+      let rows = await ctx.db.select().from(lotsView).where(and(...conds)).orderBy(desc(lotsView.netKg), asc(lotsView.sscc));
+      if (q.minQtl) rows = rows.filter((r) => r.netKg / 100 >= Number(q.minQtl));
+      const page = rows.slice(offset, offset + limit);
+      const proofs = await lastProofOf(ctx, page);
+      const deps = page.length ? await ctx.db.select().from(depositsView).where(inArray(depositsView.sscc, page.map((r) => r.sscc))) : [];
+      const facilityOf = new Map(deps.map((d) => [d.sscc, (d.deposit as { facilityName: string }).facilityName]));
+      const items: CatalogueItem[] = [];
+      for (const r of page) {
+        const lot = r.lot as ChainLot;
+        items.push({
+          sscc: r.sscc, humanRef: r.humanRef, commodity: r.commodity as Commodity, ...(r.variety ? { variety: r.variety } : {}), grade: r.grade as Grade, netKg: r.netKg, quantityQtl: r.netKg / 100, village: r.village as VillageCode,
+          block: BLOCK_OF_VILLAGE[r.village as VillageCode].name, harvestOrUnloadDate: r.harvestOrUnloadDate, residueTested: false, phiCompliant: await phiCompliantFor(ctx.db, lot),
+          coldChain: { continuous: lot.digests.every((d) => d.breaches === 0), breaches: lot.digests.reduce((a, d) => a + d.breaches, 0) },
+          ...(facilityOf.get(r.sscc) ? { facilityName: facilityOf.get(r.sscc) } : {}), ...(proofs.get(r.lastTxId) ? { proof: proofs.get(r.lastTxId) } : {}),
+        });
+      }
+      return { items, nextCursor: nextCursor(offset, limit, rows.length > offset + limit ? limit + 1 : 0) };
+    },
+  };
+}

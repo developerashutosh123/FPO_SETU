@@ -99,11 +99,8 @@ if grep -Eq '[0-9a-f]{64}' <<<"$LAST"; then ok "the Regulator can see the terms 
 qry bank arindam.bank $FI pledge-lien GetLoanTerms "$(jq -nc --arg l "$LOAN" '[$l]')"
 expect "the Bank reads the terms" '"amount":21700'
 step "RecordDisbursement" bank arindam.bank $FI pledge-lien "fpo bank" RecordDisbursement "$(jq -nc --arg l "$LOAN" '[$l]')"
-step "RecordRepayment (amount in transient map)" bank arindam.bank $FI pledge-lien "fpo bank" RecordRepayment "$(jq -nc --arg l "$LOAN" '[$l]')" '{"amount":21700}' repayment
-step "ReleaseLien" bank arindam.bank $FI pledge-lien "fpo bank" ReleaseLien "$(jq -nc --arg l "$LOAN" '[$l]')"
-step "mirror: SetPledged(false)" fpo ratan.store $TR lot-lifecycle "$M3" SetPledged '["'"$SA"'","false",""]'
 
-echo "== order and F6 private price agreement"
+echo "== order and F6 private price agreement (the lot is still pledged: listing and selling are allowed, dispatch is not)"
 step "CreateOrder on trade-channel (buyer Rahul)" buyer rahul.buyer $TD order-settlement "fpo buyer" CreateOrder "$(jq -nc --arg o "$ORD" --arg s "$(jq -nc --arg s "$SA" '[$s]')" '[$o,$s,"DIRECT","2026-11-18"]')"
 step "mirror: SetListed" fpo sujata.ceo $TR lot-lifecycle "$M3" SetListed "$(jq -nc --arg s "$SA" --arg o "$ORD" '[$s,$o]')"
 HASH=$(printf '%s' "$(node --experimental-strip-types -e "import {canonicalJson} from '$ROOT/../shared/contract.ts'; process.stdout.write(canonicalJson({orderId:'$ORD',pricePerQtl:$PRICE,salt:'$SALT'}))")" | sha256sum | cut -d' ' -f1)
@@ -119,6 +116,12 @@ if grep -q "$PRICE" <<<"$LAST"; then bad "the public order must not contain the 
 qry fpo sujata.ceo $TD order-settlement GetOrderPrice "$(jq -nc --arg o "$ORD" '[$o]')"
 expect "FPO reads the price from tradePricePDC" "\"pricePerQtl\":$PRICE"
 step "mirror: SetSold (price hash only)" fpo sujata.ceo $TR lot-lifecycle "$M3" SetSold "$(jq -nc --arg s "$SA" --arg o "$ORD" --arg h "$HASH" '[$s,$o,$h]')"
+
+echo "== lien repaid and released after the sale (journey step 8), then dispatch"
+negative "sold lot with an active lien cannot be dispatched" ERR_LOT_PLEDGED fpo debasis.ops $TR lot-lifecycle "$M3" ProposeTransfer "$(jq -nc --arg s "$SA" '[$s,"BuyerOrgMSP","WB74A1234","BLE-01"]')"
+step "RecordRepayment (amount in transient map)" bank arindam.bank $FI pledge-lien "fpo bank" RecordRepayment "$(jq -nc --arg l "$LOAN" '[$l]')" '{"amount":21700}' repayment
+step "ReleaseLien" bank arindam.bank $FI pledge-lien "fpo bank" ReleaseLien "$(jq -nc --arg l "$LOAN" '[$l]')"
+step "mirror: SetPledged(false)" fpo ratan.store $TR lot-lifecycle "$M3" SetPledged '["'"$SA"'","false",""]'
 
 echo "== F4 custody with state-based endorsement"
 step "F4 ProposeTransfer to BuyerOrgMSP (sets two-org endorsement policy)" fpo debasis.ops $TR lot-lifecycle "$M3" ProposeTransfer "$(jq -nc --arg s "$SA" '[$s,"BuyerOrgMSP","WB74A1234","BLE-01"]')"

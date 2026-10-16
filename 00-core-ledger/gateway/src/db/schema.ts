@@ -1,0 +1,261 @@
+// Postgres schema (Drizzle). Personal data lives only here, never on the ledger (CONTRACT.md Section 2.3).
+import { sql } from 'drizzle-orm';
+import { bigint, boolean, date, doublePrecision, index, integer, jsonb, pgTable, primaryKey, serial, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+
+// ---------------------------------------------------------------- off-chain master data (PII)
+export const farmers = pgTable('farmers', {
+  id: uuid('id').primaryKey(),
+  token: text('token').notNull().unique(),
+  name: text('name').notNull().default(''),
+  nameLocal: text('name_local').notNull().default(''),
+  gender: text('gender').notNull(),
+  phone: text('phone').notNull().default(''),
+  village: text('village').notNull(),
+  preferredLang: text('preferred_lang').notNull().default('bn'),
+  devicePublicKeyHex: text('device_public_key_hex').notNull().default(''),
+  consent: jsonb('consent'),
+  joinedOn: date('joined_on').notNull(),
+  erased: boolean('erased').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('farmers_phone_idx').on(t.phone), index('farmers_village_idx').on(t.village)]);
+
+export const plots = pgTable('plots', {
+  plotId: text('plot_id').primaryKey(),
+  farmerId: uuid('farmer_id').notNull().references(() => farmers.id),
+  areaHa: doublePrecision('area_ha').notNull(),
+  crops: jsonb('crops').$type<string[]>().notNull(),
+  geojson: jsonb('geojson'),
+  polygonHash: text('polygon_hash').notNull(),
+});
+
+export const diaryInputs = pgTable('diary_inputs', {
+  id: uuid('id').primaryKey(),
+  farmerId: uuid('farmer_id').notNull().references(() => farmers.id),
+  plotId: text('plot_id'),
+  crop: text('crop').notNull(),
+  product: text('product').notNull(),
+  activeIngredient: text('active_ingredient').notNull(),
+  dose: text('dose').notNull(),
+  appliedOn: date('applied_on').notNull(),
+  phiDays: integer('phi_days').notNull(),
+  phiClearOn: date('phi_clear_on').notNull(),
+  hash: text('hash').notNull(),
+  txId: text('tx_id'),
+  blockNumber: bigint('block_number', { mode: 'number' }),
+});
+
+export const lotDrafts = pgTable('lot_drafts', {
+  sscc: text('sscc').primaryKey(),
+  humanRef: text('human_ref').notNull().unique(),
+  farmerId: uuid('farmer_id').notNull().references(() => farmers.id),
+  plotId: text('plot_id').notNull(),
+  commodity: text('commodity').notNull(),
+  variety: text('variety'),
+  village: text('village').notNull(),
+  bagCount: integer('bag_count').notNull(),
+  estWeightKg: integer('est_weight_kg').notNull(),
+  harvestOrUnloadDate: date('harvest_or_unload_date').notNull(),
+  payloadToSign: text('payload_to_sign').notNull(),
+  createdBy: text('created_by').notNull(),
+  status: text('status').notNull().default('PENDING_FARMER_SIGNATURE'), // or COMMISSIONED
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const sequences = pgTable('sequences', { name: text('name').primaryKey(), value: bigint('value', { mode: 'number' }).notNull() });
+
+// ---------------------------------------------------------------- gateway copies of private-data collection records (FPO/Bank/Buyer only)
+export const loanTerms = pgTable('loan_terms', {
+  loanId: text('loan_id').primaryKey(),
+  enwr: text('enwr').notNull(),
+  sscc: text('sscc').notNull(),
+  amount: bigint('amount', { mode: 'number' }).notNull(),
+  tenureDays: integer('tenure_days').notNull(),
+  ratePct: doublePrecision('rate_pct').notNull(),
+  salt: text('salt').notNull(),
+  repaidAmount: bigint('repaid_amount', { mode: 'number' }).notNull().default(0),
+});
+
+export const tradePrices = pgTable('trade_prices', {
+  orderId: text('order_id').primaryKey(),
+  pricePerQtl: doublePrecision('price_per_qtl').notNull(),
+  salt: text('salt').notNull(),
+  priceHash: text('price_hash').notNull(),
+  proposedBy: text('proposed_by'), // first step, before the counterparty matches
+  agreed: boolean('agreed').notNull().default(false),
+  settlementAmount: bigint('settlement_amount', { mode: 'number' }),
+  upiRef: text('upi_ref'),
+});
+
+// ---------------------------------------------------------------- index built from the ledger (also served by the read-only API)
+export const indexerCheckpoints = pgTable('indexer_checkpoints', {
+  channel: text('channel').primaryKey(),
+  nextBlock: bigint('next_block', { mode: 'number' }).notNull().default(0),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const blocksView = pgTable('blocks_view', {
+  channel: text('channel').notNull(),
+  number: bigint('number', { mode: 'number' }).notNull(),
+  dataHash: text('data_hash').notNull(),
+  previousHash: text('previous_hash').notNull(),
+  blockHash: text('block_hash').notNull(),
+  txCount: integer('tx_count').notNull(),
+  time: timestamp('time', { withTimezone: true }).notNull(),
+}, (t) => [primaryKey({ columns: [t.channel, t.number] })]);
+
+export const txView = pgTable('tx_view', {
+  txId: text('tx_id').primaryKey(),
+  channel: text('channel').notNull(),
+  blockNumber: bigint('block_number', { mode: 'number' }).notNull(),
+  txIndex: integer('tx_index').notNull(),
+  chaincode: text('chaincode').notNull(),
+  fn: text('fn').notNull(),
+  validationCode: text('validation_code').notNull(),
+  timestamp: timestamp('timestamp', { withTimezone: true }).notNull(),
+  creatorMsp: text('creator_msp').notNull(),
+  endorsers: jsonb('endorsers').$type<string[]>().notNull(),
+  reads: jsonb('reads').$type<string[]>().notNull(),
+  writes: jsonb('writes').$type<string[]>().notNull(),
+}, (t) => [index('tx_view_block_idx').on(t.channel, t.blockNumber)]);
+
+export const ledgerEvents = pgTable('ledger_events', {
+  id: serial('id').primaryKey(),
+  channel: text('channel').notNull(),
+  blockNumber: bigint('block_number', { mode: 'number' }).notNull(),
+  txId: text('tx_id').notNull(),
+  seq: integer('seq').notNull().default(0), // position inside the transaction (alsoEmitted expands to several rows)
+  event: text('event').notNull(),
+  sscc: text('sscc'),
+  orderId: text('order_id'),
+  enwr: text('enwr'),
+  at: timestamp('at', { withTimezone: true }).notNull(),
+  payload: jsonb('payload').notNull(),
+}, (t) => [uniqueIndex('ledger_events_tx_seq').on(t.txId, t.seq), index('ledger_events_sscc_idx').on(t.sscc), index('ledger_events_order_idx').on(t.orderId)]);
+
+/** One row per lot, refreshed from chaincode (GetLot) whenever an event names the lot. */
+export const lotsView = pgTable('lots_view', {
+  sscc: text('sscc').primaryKey(),
+  humanRef: text('human_ref').notNull(),
+  commodity: text('commodity').notNull(),
+  variety: text('variety').notNull().default(''),
+  village: text('village').notNull(),
+  farmerToken: text('farmer_token').notNull(),
+  plotId: text('plot_id').notNull(),
+  status: text('status').notNull(),
+  originStatus: text('origin_status').notNull(),
+  grade: text('grade').notNull().default(''),
+  bagCount: integer('bag_count').notNull(),
+  estWeightKg: integer('est_weight_kg').notNull(),
+  netKg: integer('net_kg').notNull().default(0),
+  harvestOrUnloadDate: text('harvest_or_unload_date').notNull(),
+  orderId: text('order_id').notNull().default(''),
+  lot: jsonb('lot').notNull(), // full chaincode Lot
+  proofs: jsonb('proofs').$type<{ txId: string; blockNumber: number; channel: string }[]>().notNull().default(sql`'[]'::jsonb`),
+  lastTxId: text('last_tx_id').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('lots_view_status_idx').on(t.status), index('lots_view_farmer_idx').on(t.farmerToken), index('lots_view_order_idx').on(t.orderId)]);
+
+export const depositsView = pgTable('deposits_view', {
+  depositId: text('deposit_id').primaryKey(),
+  sscc: text('sscc').notNull(),
+  deposit: jsonb('deposit').notNull(),
+  proof: jsonb('proof'),
+});
+
+export const liensView = pgTable('liens_view', {
+  enwr: text('enwr').primaryKey(),
+  sscc: text('sscc').notNull(),
+  loanId: text('loan_id').notNull(),
+  active: boolean('active').notNull(),
+  lien: jsonb('lien').notNull(),
+  loan: jsonb('loan').notNull(),
+  proofs: jsonb('proofs').$type<{ txId: string; blockNumber: number; channel: string }[]>().notNull().default(sql`'[]'::jsonb`),
+}, (t) => [uniqueIndex('liens_view_loan_idx').on(t.loanId)]);
+
+export const ordersView = pgTable('orders_view', {
+  orderId: text('order_id').primaryKey(),
+  status: text('status').notNull(),
+  order: jsonb('order').notNull(),
+  proofs: jsonb('proofs').$type<{ txId: string; blockNumber: number; channel: string }[]>().notNull().default(sql`'[]'::jsonb`),
+});
+
+export const patronageView = pgTable('patronage_view', {
+  runId: text('run_id').primaryKey(),
+  orderId: text('order_id').notNull(),
+  run: jsonb('run').notNull(),
+  distributedAt: timestamp('distributed_at', { withTimezone: true }).notNull(),
+  proof: jsonb('proof'),
+});
+
+// ---------------------------------------------------------------- market data (real: AGMARKNET via data.gov.in and CSV; never synthesised)
+export const priceSeries = pgTable('price_series', {
+  date: date('date').notNull(),
+  market: text('market').notNull(),
+  commodity: text('commodity').notNull(),
+  variety: text('variety').notNull().default(''),
+  minPrice: doublePrecision('min_price').notNull(),
+  maxPrice: doublePrecision('max_price').notNull(),
+  modalPrice: doublePrecision('modal_price').notNull(),
+  source: text('source').notNull(), // e.g. "data.gov.in resource <id>" or "AGMARKNET CSV <file>"
+  fetchedAt: timestamp('fetched_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [primaryKey({ columns: [t.date, t.market, t.commodity, t.variety] })]);
+
+export const mspEntries = pgTable('msp_entries', {
+  crop: text('crop').notNull(),
+  season: text('season').notNull(),
+  grade: text('grade').notNull(),
+  pricePerQtl: integer('price_per_qtl').notNull(),
+  announcedOn: date('announced_on').notNull(),
+  source: text('source').notNull(),
+  sourceUrl: text('source_url'),
+}, (t) => [primaryKey({ columns: [t.crop, t.season, t.grade] })]);
+
+// ---------------------------------------------------------------- telemetry and simulated-adapter state
+export const telemetry = pgTable('telemetry', {
+  id: serial('id').primaryKey(),
+  kind: text('kind').notNull(), // MemberStatementViewed, ProvenanceQueried, ScanReport
+  subject: text('subject'),
+  detail: jsonb('detail'),
+  latencyMs: integer('latency_ms'),
+  at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('telemetry_kind_idx').on(t.kind)]);
+
+export const audits = pgTable('audits', {
+  sscc: text('sscc').primaryKey(),
+  drawnOn: date('drawn_on').notNull(),
+  status: text('status').notNull().default('PENDING'), // PENDING | MATCH | DIVERGENT
+  auditedOn: date('audited_on'),
+  note: text('note'),
+});
+
+export const deviceReads = pgTable('device_reads', {
+  id: serial('id').primaryKey(),
+  deviceId: text('device_id').notNull(),
+  sscc: text('sscc').notNull(),
+  reading: jsonb('reading').notNull(),
+  signatureHex: text('signature_hex').notNull(),
+  at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const adapterRegistry = pgTable('adapter_registry', {
+  key: text('key').primaryKey(), // e.g. enwr:ENWR-NERL-2026-004211, upi:604512339876
+  kind: text('kind').notNull(),
+  data: jsonb('data').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Follow-up lot-lifecycle calls (status mirrors, DECISIONS D5) that did not succeed at once. A worker retries them; nothing is hidden. */
+export const mirrorQueue = pgTable('mirror_queue', {
+  id: serial('id').primaryKey(),
+  kind: text('kind').notNull(), // SetInStorage | SetPledged | SetListed | SetSold | SetSettled | RecordQualityOutcome
+  sscc: text('sscc').notNull(),
+  args: jsonb('args').$type<string[]>().notNull(),
+  identity: text('identity').notNull(), // username of the Fabric identity that must submit it
+  endorseSet: text('endorse_set').notNull(), // trace | traceWithBuyer
+  cause: text('cause').notNull(), // tx id of the transaction that made this follow-up necessary
+  attempts: integer('attempts').notNull().default(0),
+  lastError: text('last_error'),
+  done: boolean('done').notNull().default(false),
+  doneTxId: text('done_tx_id'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('mirror_queue_open_idx').on(t.done)]);
