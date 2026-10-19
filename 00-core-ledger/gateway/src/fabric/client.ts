@@ -101,7 +101,8 @@ export class FabricLedger implements Ledger {
     } catch (e) { throw mapFabricError(e); }
   }
 
-  private qscc(user: FabricUser, channel: Channel) { return this.gateway(user).getNetwork(channel).getContract('qscc'); }
+  /** The query system chaincode of a channel. Protected so a test can stand in for the peer. */
+  protected qscc(user: FabricUser, channel: Channel) { return this.gateway(user).getNetwork(channel).getContract('qscc'); }
 
   async chainHeight(channel: Channel, user: FabricUser): Promise<number> {
     try {
