@@ -93,6 +93,8 @@ export const indexerCheckpoints = pgTable('indexer_checkpoints', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+export interface ConfigTx { index: number; txId: string; chaincode: string; fn: string; validationCode: string; creatorMsp: string; timestamp: string }
+
 export const blocksView = pgTable('blocks_view', {
   channel: text('channel').notNull(),
   number: bigint('number', { mode: 'number' }).notNull(),
@@ -101,6 +103,8 @@ export const blocksView = pgTable('blocks_view', {
   blockHash: text('block_hash').notNull(),
   txCount: integer('tx_count').notNull(),
   time: timestamp('time', { withTimezone: true }).notNull(),
+  /** Transactions that are not chaincode invocations (channel configuration). tx_view holds only invocations, so these keep a block's transaction list whole. */
+  configTxs: jsonb('config_txs').$type<ConfigTx[]>().notNull().default([]),
 }, (t) => [primaryKey({ columns: [t.channel, t.number] })]);
 
 export const txView = pgTable('tx_view', {

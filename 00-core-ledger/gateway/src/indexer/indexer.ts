@@ -5,7 +5,7 @@ import { eq, sql } from 'drizzle-orm';
 import type { Channel, LedgerEventName, StreamEvent } from '../contract/contract.js';
 import { LEDGER_EVENTS } from '../contract/contract.js';
 import type { Ctx, IndexerPort } from '../context.js';
-import { blocksView, indexerCheckpoints, ledgerEvents, txView } from '../db/schema.js';
+import { blocksView, indexerCheckpoints, ledgerEvents, txView, type ConfigTx } from '../db/schema.js';
 import type { DecodedBlock, DecodedTx } from '../fabric/decode.js';
 import { CHANNELS } from '../fabric/topology.js';
 import { INDEXER_USER, refreshDeposit, refreshLien, refreshLot, refreshOrder, refreshPatronage } from './refresh.js';
@@ -76,8 +76,8 @@ export class Indexer implements IndexerPort {
   async processBlock(channel: Channel, b: DecodedBlock) {
     const inserted: { id: number; row: EventRow }[] = [];
     await this.ctx.db.transaction(async (tx) => {
-      await tx.insert(blocksView).values({ channel, number: b.number, dataHash: b.dataHash, previousHash: b.previousHash, blockHash: b.blockHash, txCount: b.txs.length, time: new Date(b.time) })
-        .onConflictDoUpdate({ target: [blocksView.channel, blocksView.number], set: { dataHash: b.dataHash } });
+      await tx.insert(blocksView).values({ channel, number: b.number, dataHash: b.dataHash, previousHash: b.previousHash, blockHash: b.blockHash, txCount: b.txs.length, time: new Date(b.time), configTxs: configTxsOf(b) })
+        .onConflictDoUpdate({ target: [blocksView.channel, blocksView.number], set: { dataHash: b.dataHash, configTxs: configTxsOf(b) } });
       for (const [i, t] of b.txs.entries()) {
         if (t.type !== 3) continue;
         const row = { txId: t.txId, channel, blockNumber: b.number, txIndex: i, chaincode: t.chaincode, fn: t.fn, validationCode: t.validationCode, timestamp: new Date(t.timestamp), creatorMsp: t.creatorMsp, endorsers: [...new Set(t.endorsers)], reads: [...new Set(t.reads)].map(printable), writes: [...new Set(t.writes)].map(printable) };
@@ -111,4 +111,8 @@ export class Indexer implements IndexerPort {
     this.em.emit('processed', channel, b.number);
   }
 }
+/** The transactions of a block that are not chaincode invocations (a channel's configuration), with their position in the block. */
+export const configTxsOf = (b: DecodedBlock): ConfigTx[] =>
+  b.txs.flatMap((t, index) => (t.type === 3 ? [] : [{ index, txId: t.txId, chaincode: t.chaincode, fn: t.fn, validationCode: t.validationCode, creatorMsp: t.creatorMsp, timestamp: t.timestamp }]));
+
 const printable = (k: string) => k.replace(/\u0000/g, '~').replace(/^~+|~+$/g, '');

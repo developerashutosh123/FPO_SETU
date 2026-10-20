@@ -56,6 +56,7 @@ export function systemRoutes(ctx: Ctx): Partial<Record<EndpointId, Handler>> {
     for (const part of ctx.cfg.ORDERER_OPS.split(',').map((s) => s.trim()).filter(Boolean)) {
       const [name, url] = part.split('=');
       if (!name || !url) continue;
+      if (ctx.ledger.mode === 'index-only') { out.push({ name, up: false, leaderOf: [] }); continue; } // no peer or orderer is asked from the read-only API
       try {
         const res = await fetch(`${url}/metrics`, { signal: AbortSignal.timeout(1500) });
         const text = await res.text();
@@ -102,7 +103,7 @@ export function systemRoutes(ctx: Ctx): Partial<Record<EndpointId, Handler>> {
       if (healthCache && Date.now() - healthCache.at < 1000) return healthCache.body;
       const channels = await heights();
       const ok = CHANNELS.every((c) => channels[c]);
-      const body: HealthResponse = { ok, ledgerMode: 'live', contractVersion: CONTRACT_VERSION, channels };
+      const body: HealthResponse = { ok, ledgerMode: ctx.ledger.mode, contractVersion: CONTRACT_VERSION, channels };
       if (!ok) throw new HttpError('ERR_LEDGER_UNAVAILABLE', `The ledger is not fully reachable (${Object.keys(channels).length} of ${CHANNELS.length} channels answered).`, { details: body });
       healthCache = { at: Date.now(), body };
       return body;
@@ -125,8 +126,11 @@ export function systemRoutes(ctx: Ctx): Partial<Record<EndpointId, Handler>> {
       }));
       const leaders = await raftLeaders();
       const channelHeights = await heights();
+      const indexOnly = ctx.ledger.mode === 'index-only';
       return {
-        mode: 'live', peers: rows,
+        mode: ctx.ledger.mode,
+        ...(indexOnly ? { lastIndexedAt: await ctx.ledger.lastIndexedAt?.(), note: 'Index-only: this is the last indexed chain state read from the database, not a live query of a peer. The ledger node is asleep, so nothing here is newer than the last indexed block.' } : {}),
+        peers: rows,
         orderers: leaders.map((o) => ({ name: o.name, up: o.up, raftLeader: o.leaderOf.includes('trace-channel'), leaderOf: o.leaderOf })),
         channels: CHANNELS.map((c) => ({ name: c, height: channelHeights[c]?.height ?? 0, members: CHANNEL_MEMBERS[c] })),
       } satisfies LedgerStatus;

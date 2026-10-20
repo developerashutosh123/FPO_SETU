@@ -1,17 +1,19 @@
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
-import swagger from '@fastify/swagger';
-import swaggerUi from '@fastify/swagger-ui';
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
-import { fileURLToPath } from 'node:url';
 import { ENDPOINTS } from './contract/endpoints.mjs';
 import type { Ctx } from './context.js';
 import { HttpError } from './errors.js';
 import { verifySession } from './auth/jwt.js';
+import { originAllowed } from './services/origin.js';
 import type { Handler, Reply } from './routes/helpers.js';
 import { systemRoutes } from './routes/system.js';
 import { sseRoute } from './routes/events.js';
+
+/** Sign-in writes nothing to the ledger, so it keeps working in index-only mode (a role-scoped page needs a token). */
+const SIGN_IN = new Set(['login', 'otpRequest', 'otpVerify']);
+const ASLEEP = 'The ledger node is asleep. You are seeing the last indexed state. Actions that write to the ledger are paused.';
 
 export interface AppOptions { ctx: Ctx; extraHandlers?: (ctx: Ctx) => Partial<Record<string, Handler>>[]; rateLimitMax?: number; logger?: boolean | object }
 
@@ -24,14 +26,10 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
 
   await app.register(helmet, { contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } });
   await app.register(cors, {
-    origin: (origin, cb) => cb(null, !origin || ctx.cfg.corsOrigins.includes(origin)),
-    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], allowedHeaders: ['authorization', 'content-type', 'last-event-id'], exposedHeaders: ['X-Ledger-Mode'], maxAge: 600,
+    origin: (origin, cb) => cb(null, !origin || originAllowed(ctx.cfg.corsOrigins, origin)),
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], allowedHeaders: ['authorization', 'content-type', 'last-event-id', 'ngrok-skip-browser-warning'], exposedHeaders: ['X-Ledger-Mode'], maxAge: 600,
   });
   await app.register(rateLimit, { max: opts.rateLimitMax ?? 600, timeWindow: '1 minute' });
-
-  // OpenAPI: the contract's openapi.yaml, served as the API documentation
-  await app.register(swagger, { mode: 'static', specification: { path: fileURLToPath(new URL('./contract/openapi.yaml', import.meta.url)), baseDir: fileURLToPath(new URL('./contract/', import.meta.url)) } });
-  await app.register(swaggerUi, { routePrefix: '/docs' });
 
   // portals may send Content-Type: application/json with an empty body on action endpoints (POST /loans/:id/disburse): treat it as {}
   app.addContentTypeParser('application/json', { parseAs: 'string' }, (_req, body, done) => {
@@ -44,7 +42,7 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
     const h = req.headers.authorization;
     if (h?.toLowerCase().startsWith('bearer ')) req.user = await verifySession(ctx.cfg.JWT_SECRET, h.slice(7).trim());
   });
-  app.addHook('onSend', async (_req, reply) => { reply.header('X-Ledger-Mode', 'live'); });
+  app.addHook('onSend', async (_req, reply) => { reply.header('X-Ledger-Mode', ctx.ledger.mode); });
 
   app.setErrorHandler((err: Error & { statusCode?: number; code?: string; validation?: unknown }, req, reply) => {
     if (err instanceof HttpError) return reply.status(err.status).send(err.toBody());
@@ -67,6 +65,7 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
     app.route({
       method: e.method, url, config: authRoute ? { rateLimit: { max: 30, timeWindow: '1 minute' } } : undefined,
       handler: async (req: FastifyRequest, rep: FastifyReply) => {
+        if (ctx.ledger.mode === 'index-only' && e.method !== 'GET' && !SIGN_IN.has(e.id)) throw new HttpError('ERR_LEDGER_UNAVAILABLE', ASLEEP);
         if (!e.roles.includes('public')) {
           if (!req.user) throw new HttpError('ERR_UNAUTHENTICATED', 'Sign in first. Send Authorization: Bearer <token> from POST /auth/login.');
           if (!e.roles.includes('authenticated') && !e.roles.includes(req.user.role)) {

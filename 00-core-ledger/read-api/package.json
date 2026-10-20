@@ -1,0 +1,44 @@
+{
+  "name": "fpo-setu-read-api",
+  "version": "1.0.4",
+  "private": true,
+  "description": "Read-only fallback API (index-only mode). Serves every GET of the gateway contract from the Postgres index while the Fabric host sleeps.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "sync:gateway": "node scripts/sync-gateway.mjs",
+    "predev": "node scripts/sync-gateway.mjs",
+    "dev": "next dev -p 8081",
+    "prebuild": "node scripts/sync-gateway.mjs",
+    "build": "next build",
+    "start": "next start -p 8081",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.1",
+    "@fastify/helmet": "^13.2.0",
+    "@fastify/rate-limit": "^11.2.1",
+    "drizzle-orm": "^0.45.4",
+    "fastify": "^5.12.7",
+    "jose": "^6.2.12",
+    "next": "15.5.28",
+    "pdf-lib": "^1.17.1",
+    "postgres": "^3.4.9",
+    "qrcode": "^1.5.4",
+    "react": "19.1.10",
+    "react-dom": "19.1.10",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@grpc/grpc-js": "^1.14.6",
+    "@hyperledger/fabric-gateway": "^1.13.0",
+    "@hyperledger/fabric-protos": "^0.2.2",
+    "@types/node": "^22.20.5",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.1.0",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -26,10 +26,10 @@ export class StubLedger implements Ledger {
   close() { /* nothing */ }
 }
 
-export async function testServer(opts: { ratesFile?: string; ledger?: Ledger } = {}) {
+export async function testServer(opts: { ratesFile?: string; ledger?: Ledger; env?: Record<string, string> } = {}) {
   const tdb = await createTestDb();
   const hex = () => randomBytes(32).toString('hex');
-  const cfg = loadConfig({ DATABASE_URL: tdb.url, JWT_SECRET: hex(), FARMER_TOKEN_SECRET: hex(), PRICE_SALT_SECRET: hex(), LOG_LEVEL: 'silent' } as NodeJS.ProcessEnv);
+  const cfg = loadConfig({ DATABASE_URL: tdb.url, JWT_SECRET: hex(), FARMER_TOKEN_SECRET: hex(), PRICE_SALT_SECRET: hex(), LOG_LEVEL: 'silent', ...opts.env } as NodeJS.ProcessEnv);
   const ledger = (opts.ledger ?? new StubLedger()) as StubLedger;
   const server: Server = await createServer({ cfg, dbh: tdb, ledger, rates: loadRates(opts.ratesFile ?? 'test/e2e-rates.json'), logger: false, rateLimitMax: 1_000_000 });
   const token = async (username: string) => { const p = PERSONAS.find((x) => x.username === username)!; return signSession(cfg.JWT_SECRET, sessionUserOf(p, p.portals[0]!)); };

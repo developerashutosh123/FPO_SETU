@@ -1,0 +1,67 @@
+{
+  "_readme": "Deduction rates and lender parameters. null means not yet sourced: the gateway refuses to compute a statement that needs it and never guesses. status: SOURCED (cite it), SECONDARY (one non-official published figure), ASSUMPTION (an indicative or policy value chosen by the team). Every value below that is not SOURCED is an INDICATIVE placeholder: sourced figures replace them before the end-term. See docs/DATA_SOURCES.md.",
+  "ltvPct": {
+    "value": 70,
+    "status": "SOURCED",
+    "source": "CONTRACT.md Section 8 (loan = 70% of assessed value)"
+  },
+  "haircutPct": {
+    "POTATO": {
+      "value": 20,
+      "status": "ASSUMPTION",
+      "source": "Lender policy parameter chosen by the prototype team. Not market data. The bank officer would set this per commodity."
+    },
+    "PADDY": {
+      "value": 10,
+      "status": "ASSUMPTION",
+      "source": "Lender policy parameter chosen by the prototype team. Not market data. Paddy is valued at the MSP, which is a floor price."
+    },
+    "BRINJAL": {
+      "value": 30,
+      "status": "ASSUMPTION",
+      "source": "Perishable: not accepted for pledge in the demo; value shown only for completeness."
+    },
+    "CAULIFLOWER": {
+      "value": 30,
+      "status": "ASSUMPTION",
+      "source": "Perishable: not accepted for pledge in the demo; value shown only for completeness."
+    }
+  },
+  "deductions": {
+    "COLD_STORAGE_RENT": {
+      "perQtl": 170,
+      "status": "SECONDARY",
+      "source": "INDICATIVE. Midpoint of Rs 168 to 172 per quintal stated by an industry guide (indianpotato.com, cold storage rental rates in india) as the West Bengal rate unchanged for four years as of February 2025. Not the notified rate; the notified rate was not found.",
+      "candidate": null
+    },
+    "HAMALI": {
+      "perQtl": 8,
+      "status": "ASSUMPTION",
+      "source": "INDICATIVE value chosen by the team for the prototype (Rs 8 per quintal, about Rs 4 per 50 kg bag). No published rate found.",
+      "candidate": null
+    },
+    "MARKET_FEE": {
+      "pct": 1.0,
+      "status": "ASSUMPTION",
+      "source": "INDICATIVE value chosen by the team for the prototype. The market fee is set by notification under the West Bengal Agricultural Produce Marketing (Regulation) Act, 1972; the notified percentage was not found.",
+      "candidate": null
+    },
+    "COMMISSION": {
+      "pct": 7,
+      "status": "ASSUMPTION",
+      "source": "INDICATIVE. Midpoint of the 6 to 8 percent range in the team mid-term report (the report is not in the repository; the figure was given by the team on 16-10-2026). Not a notified commission rate.",
+      "candidate": null
+    },
+    "TRANSPORT": {
+      "perQtl": 30,
+      "status": "ASSUMPTION",
+      "source": "INDICATIVE value chosen by the team for the prototype (Rs 30 per quintal for Debra to Kolkata). In practice it comes from the vehicle quote at dispatch.",
+      "candidate": null
+    },
+    "FPO_MARGIN": {
+      "pct": 2,
+      "status": "ASSUMPTION",
+      "source": "INDICATIVE. The FPO's own margin is a policy decision of its board; 2% is a placeholder for the prototype, shown to members on every statement."
+    }
+  }
+}

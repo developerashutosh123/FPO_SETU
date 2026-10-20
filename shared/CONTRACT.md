@@ -1,4 +1,4 @@
-# FPO-SETU Shared Contract (v1.0.3)
+# FPO-SETU Shared Contract (v1.0.4)
 
 **Every Claude Code chat reads this file first.** It is the single source of truth that keeps the seven folders consistent. Only the **00-core-ledger** chat may change it, and every change must bump `CONTRACT_VERSION` in `shared/contract.ts` and add a line to the changelog at the bottom of this file. The portal chats never edit `shared/`. To request a change, a portal chat writes the request in its own `CONTRACT_REQUESTS.md` and tells the human.
 
@@ -233,7 +233,7 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
   ```
 - **Every record a read returns** carries `proof?: {txId, blockNumber, channel}` for the transaction that last changed it.
 - **Errors:** `{error:{code, message, txId?, details?}}`. Codes: `ERR_UNAUTHENTICATED, ERR_FORBIDDEN_ROLE, ERR_FORBIDDEN_ORG, ERR_VALIDATION, ERR_NOT_FOUND, ERR_INVALID_STATE, ERR_BAD_FARMER_SIGNATURE, ERR_BAD_DEVICE_SIGNATURE, ERR_DOUBLE_FINANCING, ERR_LOT_PLEDGED, ERR_UNILATERAL_CUSTODY, ERR_PRICE_HASH_MISMATCH, ERR_PATRONAGE_UNBALANCED, ERR_LEDGER_UNAVAILABLE`.
-- **Ledger mode:** every response has header `X-Ledger-Mode: live | index-only`. In `index-only` mode (served by the read-API while the Fabric host sleeps), writes return `503 ERR_LEDGER_UNAVAILABLE`. **All portals must show the offline banner (Section 9.3) and disable write actions.**
+- **Ledger mode:** every response has header `X-Ledger-Mode: live | index-only`. In `index-only` mode (served by the read-API while the Fabric host sleeps), writes return `503 ERR_LEDGER_UNAVAILABLE`. Only the three sign-in calls (`POST /auth/login`, `/auth/otp/request`, `/auth/otp/verify`) still work there, because they write nothing to the ledger and a role-scoped page cannot be shown without a token; the read-API validates the same JWT as the gateway. `POST /public/scan-report` also returns 503 there. `GET /health` in index-only mode reports the heights of the last indexed blocks. `GET /events/stream` in index-only mode replays and then follows the index, closing about every minute; `EventSource` reconnects with `Last-Event-ID`. `GET /orders/:id/price` is answered from the gateway's off-chain copy of the price for the same two roles. **All portals must show the offline banner (Section 9.3) and disable write actions.**
 - Paginated lists use `?cursor=&limit=` and return `{items, nextCursor}`.
 - **Live updates:** `GET /events/stream` is Server-Sent Events of `{event, sscc?, orderId?, enwr?, txId, blockNumber, channel, at}` for every indexed chaincode event, with no PII. Portals subscribe to it so that actions in one portal appear in the others within ~3 seconds.
 
@@ -249,7 +249,7 @@ Seed farmer names are realistic Bengali names (and Santali names for some Keshia
 - `GET /config/public` → {portalUrls, contractVersion, adapterModes} [public]
 
 **Ledger explorer** [public, read-only]
-- `GET /ledger/status` → peers[], orderers[] (raftLeader), channels[] with height and members
+- `GET /ledger/status` → peers[], orderers[] (raftLeader), channels[] with height and members. In index-only mode it also carries `lastIndexedAt` and a plain-language `note` (added in 1.0.4): the data is the last indexed chain state, not a live peer query.
 - `GET /ledger/blocks?channel=&limit=` → latest blocks {number, dataHash, previousHash, txCount, time}
 - `GET /ledger/blocks/:channel/:number` → block detail + tx list
 - `GET /ledger/tx/:txId` → {txId, channel, chaincode, fn, blockNumber, blockHash, validationCode, timestamp, creatorMsp, endorsers[], rwset:{reads:[key], writes:[key]}} (keys only, never values)
@@ -454,3 +454,4 @@ fpo-setu/                      (one GitHub repo)
   - Portals affected: all six must re-sync `contract.ts`. 02 gains the operator login, `GET /storage/deposits` and `GET /patronage/runs`. 03 gains `GET /loans/:loanId`. 04 gains `GET /orders/:orderId`. 06 should expect `LotStatusChanged` in the explorer and SSE.
 - 1.0.2 (additive): `LedgerStatus.orderers[].leaderOf` (Raft leaders are per channel; `raftLeader` means "leads trace-channel"). `Kpi.criteria` with the four Month-12 gate criteria (Section 9.5). The network now runs the full 3-orderer profile, so `ledger.json` shows three orderers. Portals affected: 06 (explorer shows per-channel leaders; Month-12 gate shows four met / not met rows). Others only need to re-sync `contract.ts`.
 - 1.0.3 (access change, no type change): `GET /diary/inputs` is now also open to `ceo` and `operator`, matching the "FPO CEO/op" tick for crop diary detail in Section 9.4. Portal affected: 02 (FPO console) may now show diary detail to the CEO and the operator, with `farmerId` set. Others: re-sync `contract.ts` for the version number only.
+- 1.0.4 (additive, optional field): `LedgerStatus.note`, set by the read-API in index-only mode. The read-API itself (C5) changes no detail of the failover rule in Section 8 or PORTAL_COMMON.md, so this is a patch release, not v1.1. Clarified in Section 8: the three sign-in POSTs work in index-only mode (the mock server already behaved this way). Portals: re-sync `contract.ts`; showing `note` in the explorer is optional.

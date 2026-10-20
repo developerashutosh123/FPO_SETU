@@ -1,0 +1,13 @@
+import type { Ctx } from '../context.js';
+import type { Rates } from '../services/rates.js';
+import { analyticsRoutes } from './analytics.js';
+import { farmersRoutes } from './farmers.js';
+import { financeRoutes } from './finance.js';
+import { lotsRoutes } from './lots.js';
+import { patronageRoutes } from './patronage.js';
+import { publicRoutes } from './public.js';
+import { tradeRoutes } from './trade.js';
+
+/** Every route set except the system routes, in one place: the gateway and the read-only API register the same handlers. */
+export const routeSets = (rates: Rates) => (c: Ctx) =>
+  [farmersRoutes(c), lotsRoutes(c), financeRoutes(c, rates), tradeRoutes(c), patronageRoutes(c, rates), analyticsRoutes(c), publicRoutes(c)] as never;

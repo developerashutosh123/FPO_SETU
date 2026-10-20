@@ -3,7 +3,7 @@
  * Owned by 00-core-ledger. Portals COPY this file via scripts/sync-contract.mjs; never edit the copy.
  * Any change: bump CONTRACT_VERSION and add a line to the changelog in shared/CONTRACT.md.
  */
-export const CONTRACT_VERSION = '1.0.3' as const;
+export const CONTRACT_VERSION = '1.0.4' as const;
 
 // ---------- Orgs, roles, channels ----------
 export type OrgMsp = 'FpoOrgMSP' | 'BankOrgMSP' | 'BuyerOrgMSP' | 'RegulatorOrgMSP';
@@ -74,6 +74,8 @@ export interface Page<T> { items: T[]; nextCursor?: string }
 export interface LedgerStatus {
   mode: LedgerMode;
   lastIndexedAt?: string;
+  /** Present in index-only mode: says plainly that this is the last indexed chain state, not a live peer query. */
+  note?: string;
   peers: { name: string; org: OrgMsp; up: boolean; heights: Partial<Record<Channel, number>> }[];
   /** Raft elects a leader per channel. `leaderOf` lists the channels this orderer leads; `raftLeader` is true when it leads trace-channel. */
   orderers: { name: string; up: boolean; raftLeader: boolean; leaderOf?: Channel[] }[];

@@ -1,6 +1,6 @@
 # FPO-SETU core ledger. Local WSL2 + Docker Desktop. See network/VERSIONS.md for pinned versions.
 NET := ./network/scripts/network.sh
-.PHONY: check-secrets up resume rebuild down reset status logs stats test test-shared deploy smoke
+.PHONY: check-secrets up resume rebuild down reset status logs stats test test-shared deploy smoke tunnel tunnel-cf
 
 up:        ## create what is missing and start the network (idempotent)
 	$(NET) up
@@ -27,6 +27,11 @@ deploy:    ## package, install, approve, commit the three chaincodes (idempotent
 	./scripts/deployCC.sh
 smoke:     ## CLI smoke test: F1-F7 happy path and four negative cases
 	./scripts/cli-smoke.sh
+
+tunnel:    ## publish the gateway (8080) on the reserved ngrok static domain: this is the canonical API_URL (NGROK_DOMAIN in gateway/.env)
+	./scripts/tunnel.sh
+tunnel-cf: ## no-account fallback: Cloudflare quick tunnel, a random URL that changes on every run
+	./scripts/tunnel.sh cloudflared
 
 test-db:   ## throwaway local Postgres for the gateway tests (never used for real data)
 	@docker start fposetu-test-pg >/dev/null 2>&1 || docker run -d --name fposetu-test-pg -e POSTGRES_PASSWORD=test -e POSTGRES_USER=test -p 127.0.0.1:54329:5432 --memory 384m postgres:16-alpine

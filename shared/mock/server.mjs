@@ -179,7 +179,7 @@ const server = createServer(async (req, res) => {
   }
 
   // writes in index-only mode
-  const isWrite = route.method !== 'GET' && !['login', 'otpRequest', 'otpVerify', 'scanReport'].includes(route.id);
+  const isWrite = route.method !== 'GET' && !['login', 'otpRequest', 'otpVerify'].includes(route.id);
   if (INDEX_ONLY && isWrite) return err(res, 'ERR_LEDGER_UNAVAILABLE', 'The ledger node is asleep. You are seeing the last indexed state. Actions that write to the ledger are paused.');
 
   const body = route.method === 'GET' ? {} : await readBody(req);
@@ -203,7 +203,7 @@ const server = createServer(async (req, res) => {
   if (route.id === 'otpRequest') return /^\d{10}$/.test(body.phone ?? '') ? send(res, 200, byEndpoint('otpRequest')[0].body) : err(res, 'ERR_VALIDATION', 'Phone must be 10 digits.');
   if (route.id === 'otpVerify') return body.phone === '9000000001' && body.otp === '123456' ? send(res, 200, byEndpoint('otpVerify')[0].body) : err(res, 'ERR_UNAUTHENTICATED', 'Wrong OTP. The demo OTP is 123456 and works for phone 9000000001.');
   if (route.id === 'health') { const b = deepClone(byEndpoint('health')[0].body); b.ledgerMode = INDEX_ONLY ? 'index-only' : 'live'; return send(res, 200, b); }
-  if (route.id === 'ledgerStatus') { const b = deepClone(byEndpoint('ledgerStatus')[0].body); if (INDEX_ONLY) { b.mode = 'index-only'; b.lastIndexedAt = '2026-11-14T12:32:00Z'; b.peers.forEach((p) => (p.up = false)); b.orderers.forEach((o) => { o.up = false; o.raftLeader = false; }); } return send(res, 200, b); }
+  if (route.id === 'ledgerStatus') { const b = deepClone(byEndpoint('ledgerStatus')[0].body); if (INDEX_ONLY) { b.mode = 'index-only'; b.lastIndexedAt = '2026-11-14T12:32:00Z'; b.note = 'Index-only: this is the last indexed chain state, not a live query of a peer. The ledger node is asleep.'; b.peers.forEach((p) => (p.up = false)); b.orderers.forEach((o) => { o.up = false; o.raftLeader = false; }); } return send(res, 200, b); }
   if (route.id === 'ledgerTx') {
     const m = state.minted.get(params.txId);
     const fx = byEndpoint('ledgerTx').find((e) => e.params.txId === params.txId);

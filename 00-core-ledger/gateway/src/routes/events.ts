@@ -3,6 +3,7 @@ import { asc, gt } from 'drizzle-orm';
 import type { StreamEvent, Channel, LedgerEventName } from '../contract/contract.js';
 import type { Ctx } from '../context.js';
 import { ledgerEvents } from '../db/schema.js';
+import { originAllowed } from '../services/origin.js';
 
 /** GET /events/stream: Server-Sent Events of every indexed chaincode event (no PII, no price). Resumes from Last-Event-ID. */
 export function sseRoute(app: FastifyInstance, ctx: Ctx) {
@@ -15,7 +16,7 @@ export function sseRoute(app: FastifyInstance, ctx: Ctx) {
     const origin = req.headers.origin;
     res.writeHead(200, {
       'content-type': 'text/event-stream', 'cache-control': 'no-cache, no-transform', connection: 'keep-alive', 'x-accel-buffering': 'no', 'X-Ledger-Mode': 'live',
-      ...(origin && ctx.cfg.corsOrigins.includes(origin) ? { 'access-control-allow-origin': origin, vary: 'Origin' } : {}),
+      ...(origin && originAllowed(ctx.cfg.corsOrigins, origin) ? { 'access-control-allow-origin': origin, vary: 'Origin' } : {}),
     });
     res.write('retry: 3000\n\n');
     const write = (id: number, ev: StreamEvent) => res.write(`id: ${id}\nevent: ledger\ndata: ${JSON.stringify(ev)}\n\n`);

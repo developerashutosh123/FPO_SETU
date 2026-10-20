@@ -1,0 +1,1 @@
+ALTER TABLE "blocks_view" ADD COLUMN "config_txs" jsonb DEFAULT '[]'::jsonb NOT NULL;

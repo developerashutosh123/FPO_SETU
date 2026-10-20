@@ -25,9 +25,13 @@ In this order, when you have the keys:
 
 I generate `JWT_SECRET`, `FARMER_TOKEN_SECRET` and `PRICE_SALT_SECRET` myself (`openssl rand -hex 32`) into the gitignored `.env`.
 
-## Needed before C5 (public URL and deploy)
-- **ngrok** (your choice, Q3): free account at ngrok.com, claim the free static domain (dashboard, Domains), install the agent (`snap install ngrok` or the apt repo) and run `ngrok config add-authtoken <token>` yourself. Tell me the domain name.
-- **Vercel** account for the read-only API (and optionally `VERCEL_TOKEN`).
+## Needed to finish C5 (public URL and deploy) — blocked on these, in this order
+Found on 20-10-2026 in the Ubuntu distro: no `ngrok` binary, no `~/.config/ngrok`, no `cloudflared`, no Vercel CLI or token. If ngrok is installed on another machine or distro, run the steps there, or do them here:
+1. **ngrok**: install the agent in Ubuntu (https://ngrok.com/download), then `ngrok config add-authtoken <token>` (yourself; I never read the token). Claim the free static domain (dashboard, Domains).
+2. Add one line to `gateway/.env`: `NGROK_DOMAIN=<name>.ngrok-free.app` (no https://). Tell me the domain. Then `make tunnel` publishes the gateway; `https://<that domain>` is the canonical **API_URL**.
+3. **Vercel**: push the repo (I commit locally; say "push" or tell me to continue), create a project from it with **Root Directory `00-core-ledger/read-api`**, and set in Production and Preview: `DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET` (same value as the gateway's), and `CORS_ORIGINS` (required in practice, see docs/RUNBOOK.md section 6). Give me the project URL, or a `VERCEL_TOKEN` and I deploy it.
+4. **CORS_ORIGINS** in `gateway/.env` and in the Vercel read-api project: the six portal production domains (exact), `https://<NGROK_DOMAIN>`, localhost ports 3001-3006, and one `https://<portal>-*-<team>.vercel.app` pattern per portal for previews. The portals are not deployed yet, so I do not know these names.
+Then I run: the cross-origin GET and SSE from a real Vercel preview origin, the ngrok interstitial check, the deployed read-API `/health` and POST 503, and report CHECKPOINT C5.
 
 ## Optional
 - Raise WSL memory later only if you want the full 3-orderer profile (DECISIONS D2). Not needed now.

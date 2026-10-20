@@ -13,7 +13,10 @@ export interface SubmitOptions {
 export interface SubmitResult { receipt: LedgerReceipt; result: string }
 
 export interface Ledger {
-  readonly mode: 'live';
+  /** 'live' talks to the peers; 'index-only' answers from the Postgres index and refuses every write (the read-only fallback API). */
+  readonly mode: 'live' | 'index-only';
+  /** index-only mode: when the indexer last committed a block (ISO). */
+  lastIndexedAt?(): Promise<string | undefined>;
   submit(user: FabricUser, channel: Channel, chaincode: ChaincodeName, fn: string, args: string[], opts: SubmitOptions): Promise<SubmitResult>;
   evaluate(user: FabricUser, channel: Channel, chaincode: ChaincodeName, fn: string, args: string[]): Promise<string>;
   chainHeight(channel: Channel, asUser: FabricUser): Promise<number>;

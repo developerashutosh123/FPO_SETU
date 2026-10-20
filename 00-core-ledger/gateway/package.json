@@ -21,6 +21,7 @@
     "e2e": "tsx --env-file-if-exists=.env scripts/e2e-journey.ts",
     "prices:snapshot": "tsx --env-file-if-exists=.env scripts/snapshot-prices.ts",
     "db:reset-seed": "tsx --env-file-if-exists=.env scripts/reset-seed.ts",
+    "db:backfill-config": "tsx --env-file-if-exists=.env scripts/backfill-config-txs.ts",
     "verify:index": "tsx --env-file-if-exists=.env scripts/verify-index.ts",
     "load:csv": "tsx --env-file-if-exists=.env scripts/load-agmarknet-csv.ts",
     "check": "pnpm typecheck && pnpm test"
