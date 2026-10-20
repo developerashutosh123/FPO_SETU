@@ -10,8 +10,8 @@ const gw = join(root, '..', 'gateway');
 const out = join(root, 'src', 'gateway');
 if (!existsSync(join(gw, 'src'))) { console.log('../gateway not present (deploy build): keeping the committed copies'); process.exit(0); }
 
-/** Not copied: the live Fabric client, the indexer, the process entry points and the startup that needs a wallet. */
-export const EXCLUDE = new Set(['index.ts', 'server.ts', 'fabric/client.ts', 'indexer/indexer.ts', 'services/startup.ts', 'docs.ts', 'contract/openapi.yaml']);
+/** Not copied: the live Fabric client, the key loader that needs the Fabric SDK (fabric/identities.ts; the FabricUser type is in fabric/user.ts), the indexer, the process entry points and the startup that needs a wallet. */
+export const EXCLUDE = new Set(['index.ts', 'server.ts', 'fabric/client.ts', 'fabric/identities.ts', 'indexer/indexer.ts', 'services/startup.ts', 'docs.ts', 'contract/openapi.yaml']);
 
 export function sourceFiles() {
   const files = [];

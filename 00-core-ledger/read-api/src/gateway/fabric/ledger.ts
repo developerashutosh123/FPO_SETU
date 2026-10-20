@@ -2,7 +2,7 @@
 // The ledger port: everything the routes need from Fabric, so tests can swap in an in-memory implementation.
 import type { Channel, LedgerReceipt, OrgMsp } from '../contract/contract.js';
 import type { ChaincodeName } from './topology.js';
-import type { FabricUser } from './identities.js';
+import type { FabricUser } from './user.js';
 import type { DecodedBlock, DecodedTx } from './decode.js';
 
 export interface SubmitOptions {

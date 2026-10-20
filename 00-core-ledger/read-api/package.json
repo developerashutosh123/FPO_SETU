@@ -4,7 +4,9 @@
   "private": true,
   "description": "Read-only fallback API (index-only mode). Serves every GET of the gateway contract from the Postgres index while the Fabric host sleeps.",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "packageManager": "pnpm@12.11.2",
   "scripts": {
     "sync:gateway": "node scripts/sync-gateway.mjs",
@@ -32,8 +34,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@grpc/grpc-js": "^1.14.6",
-    "@hyperledger/fabric-gateway": "^1.13.0",
     "@hyperledger/fabric-protos": "^0.2.2",
     "@types/node": "^22.20.5",
     "@types/qrcode": "^1.5.6",

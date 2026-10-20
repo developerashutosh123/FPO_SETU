@@ -5,7 +5,7 @@ import { ENDPOINTS } from '../contract/endpoints.mjs';
 import type { LedgerReceipt, OrgMsp, Role, SessionUser } from '../contract/contract.js';
 import { HttpError, invalid } from '../errors.js';
 import { personaByUsername, SERVICE_IDENTITY } from '../auth/personas.js';
-import type { FabricUser } from '../fabric/identities.js';
+import type { FabricUser } from '../fabric/user.js';
 
 export type EndpointId = (typeof ENDPOINTS)[number]['id'];
 export interface Reply { status?: number; body: unknown; headers?: Record<string, string>; raw?: boolean }

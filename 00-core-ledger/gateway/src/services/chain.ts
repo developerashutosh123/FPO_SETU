@@ -4,7 +4,7 @@ import type { Channel, OrgMsp } from '../contract/contract.js';
 import type { Ctx } from '../context.js';
 import { mirrorQueue } from '../db/schema.js';
 import { HttpError } from '../errors.js';
-import type { FabricUser } from '../fabric/identities.js';
+import type { FabricUser } from '../fabric/user.js';
 import type { SubmitResult } from '../fabric/ledger.js';
 import { ENDORSE, type ChaincodeName } from '../fabric/topology.js';
 import { SERVICE_IDENTITY, personaByUsername } from '../auth/personas.js';

@@ -2,9 +2,9 @@ import { createPrivateKey, X509Certificate } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { signers, type Identity, type Signer } from '@hyperledger/fabric-gateway';
-import type { OrgMsp } from '../contract/contract.js';
+import type { FabricUser } from './user.js';
 
-export interface FabricUser { username: string; msp: OrgMsp }
+export type { FabricUser };
 
 export interface LoadedIdentity { identity: Identity; signer: Signer; certPem: string; privateKeyPem: string }
 

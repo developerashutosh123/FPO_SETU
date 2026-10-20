@@ -4,7 +4,7 @@
 import type { Channel } from '../contract/contract.js';
 import type { Ctx } from '../context.js';
 import { depositsView, liensView, lotsView, ordersView, patronageView } from '../db/schema.js';
-import type { FabricUser } from '../fabric/identities.js';
+import type { FabricUser } from '../fabric/user.js';
 import type { ChainLot } from '../services/passport.js';
 
 /** The index reads through the Regulator's peer where it can (an independent view), and through the FPO for trade-channel. */
