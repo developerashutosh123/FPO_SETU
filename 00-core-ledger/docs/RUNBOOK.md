@@ -91,7 +91,18 @@ Free ngrok domains can answer a **browser** with an HTML "You are about to visit
 2. **`EventSource` cannot set headers.** If `/events/stream` shows the interstitial in a browser, read the stream with `fetch()` plus a stream reader (for example `@microsoft/fetch-event-source`) and send the header there. The gateway's SSE response needs nothing else.
 3. Last resort: use the cloudflared fallback (section 4), which has no interstitial, or a paid ngrok plan.
 
-**Status:** items 1 and 2 are the documented ngrok behaviour; they have **not** been exercised against a live ngrok domain from a browser yet, because the tunnel was not available when this was written. Run the check below the first time the tunnel is up, from a Vercel preview, and write the result here.
+**Verified on 20-10-2026 against `repaying-chant-consumer.ngrok-free.dev` (ngrok 3.39.11, free plan), with `curl` sending a Chrome User-Agent:**
+
+| Request | Result |
+|---|---|
+| `curl` default User-Agent, no header | 200, the API's JSON (no interstitial) |
+| Browser User-Agent, `Accept: application/json`, no header | **intercepted**: `ngrok-error-code: ERR_NGROK_6024`, not the API's body |
+| Browser User-Agent, `Accept: text/html`, no header | intercepted (HTML warning page) |
+| Browser User-Agent + `ngrok-skip-browser-warning: 1` | 200, the API's JSON, `x-ledger-mode: live` |
+| Browser User-Agent, `Accept: text/event-stream`, no header | **intercepted** (`text/plain`, no `retry:` line): a native `EventSource` cannot work through free ngrok |
+| Browser User-Agent + header + `Origin` of a portal | CORS preflight 204, `access-control-allow-headers` includes the ngrok header; GET and SSE carry `access-control-allow-origin`; real events replayed through the tunnel |
+
+So fix 1 (header on every `fetch`) is required, and fix 2 is required for SSE: use `fetch()` streaming with the header (for example `@microsoft/fetch-event-source`), not `new EventSource(...)`. This is a `curl` emulation of a browser; it has not yet been run from a real browser tab on a deployed portal.
 
 Check from a browser console on any portal origin (replace the domain):
 
