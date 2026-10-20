@@ -1,0 +1,8 @@
+# Vercel installs with CI=1, and pnpm then fails with ERR_PNPM_IGNORED_BUILDS when a dependency has an unapproved build script.
+# None of these three is needed to build or run the read-only API (esbuild: vitest only; pkcs11js and protobufjs: type-only dev
+# dependencies of the Fabric SDK). Denying them explicitly makes the install succeed. This file also makes read-api its own pnpm
+# root, so it installs standalone from its own pnpm-lock.yaml.
+allowBuilds:
+  esbuild: false
+  pkcs11js: false
+  protobufjs: false
