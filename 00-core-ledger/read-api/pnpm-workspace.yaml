@@ -6,3 +6,9 @@
 allowBuilds:
   esbuild: true
   protobufjs: true
+
+# light-my-request (what fastify.inject() uses) depends on cookie ^2, which is ESM-only. Vercel's Node 22 Lambda has no require(esm), so
+# require('cookie') throws ERR_REQUIRE_ESM and every request is a 500. cookie 1.1.1 is CommonJS and has the stringifySetCookie that
+# light-my-request imports. (0.7.x is CommonJS too but has no stringifySetCookie.) Remove this when light-my-request ships a CJS-safe cookie.
+overrides:
+  cookie: 1.1.1
