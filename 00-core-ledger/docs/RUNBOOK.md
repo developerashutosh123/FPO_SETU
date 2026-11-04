@@ -17,7 +17,9 @@ All commands run in the **Ubuntu (WSL)** terminal, in `~/FPO_SETU/00-core-ledger
 | `API_URL` | `https://<NGROK_DOMAIN>` | your reserved ngrok static domain (section 3). Stable across restarts. |
 | `READ_API_URL` | `https://<read-api project>.vercel.app` | the Vercel URL of the `read-api` project (section 6) |
 
-Fill the two blanks once and keep them here: **API_URL = `https://________________.ngrok-free.app`**, **READ_API_URL = `https://________________.vercel.app`**.
+**API_URL = `https://repaying-chant-consumer.ngrok-free.dev`**, **READ_API_URL = `https://read-api-ten.vercel.app`** (both verified on 04-11-2026: the gateway answered `ledgerMode: live` through the tunnel, the read-API answered `index-only` with the same channel heights).
+
+Portal production domains are expected to be `https://fposetu-{farmer,fpo,bank,buyer,consumer,gov}.vercel.app` (create the six Vercel projects with exactly those names; if Vercel appends a suffix because a name is taken, use the real URL and add it to `CORS_ORIGINS`). One allowlist entry, `https://fposetu-*.vercel.app`, covers all six and their preview deployments (section 5).
 
 Name the variables like this in each portal's Vercel project (Settings, Environment Variables, Production and Preview; `NEXT_PUBLIC_*` values are baked in at build time, so redeploy after changing them):
 
