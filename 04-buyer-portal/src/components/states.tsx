@@ -9,7 +9,7 @@ export function Skeleton({ className = '' }: { className?: string }) {
 export function StateShell({ kind, title, body, action }: { kind: 'loading' | 'empty' | 'error' | 'notfound'; title: string; body?: string; action?: ReactNode }) {
   if (kind === 'loading') {
     return (
-      <div className="card p-6" role="status" aria-live="polite" aria-label={title}>
+      <div className="card p-6 sm:p-8" role="status" aria-live="polite" aria-label={title}>
         <span className="sr-only">{title}</span>
         <Skeleton className="h-5 w-48" />
         <Skeleton className="mt-4 h-4 w-full" />
@@ -20,9 +20,9 @@ export function StateShell({ kind, title, body, action }: { kind: 'loading' | 'e
   }
   const Icon = kind === 'error' ? AlertTriangle : kind === 'notfound' ? SearchX : Inbox;
   return (
-    <div className="card p-6 sm:p-8" role={kind === 'error' ? 'alert' : undefined}>
-      <div className="flex items-start gap-3">
-        <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${kind === 'error' ? 'text-danger' : 'text-ink-3'}`} aria-hidden />
+    <div className="card p-6 sm:p-10" role={kind === 'error' ? 'alert' : undefined}>
+      <div className="flex items-start gap-4">
+        <span aria-hidden className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${kind === 'error' ? 'bg-danger/10 text-danger' : 'bg-surface-2 text-ink-3 ring-1 ring-line'}`}><Icon className="h-5 w-5" /></span>
         <div className="min-w-0">
           <h2 className="text-lg font-semibold">{title}</h2>
           {body && <p className="mt-1 max-w-prose text-ink-2">{body}</p>}

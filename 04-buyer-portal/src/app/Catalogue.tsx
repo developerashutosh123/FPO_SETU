@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Filter, ShoppingCart, Snowflake, ShieldCheck, FlaskConical, Sprout } from 'lucide-react';
+import { ArrowRight, Carrot, Filter, ShoppingCart, Snowflake, ShieldCheck, FlaskConical, Sprout, Wheat } from 'lucide-react';
 import type { CatalogueItem, Village } from '@/contract/contract';
 import { api, asApiError, type ApiClientError, type CatalogueQuery } from '@/lib/api';
 import { RequireAuth } from '@/lib/auth';
@@ -76,37 +76,39 @@ function Inner() {
         Graded and stored lots from the FPO. Lots under a lien never appear here: the gateway leaves them out. Open a spec sheet to see the proofs each party signed.
       </PageHeader>
 
-      <form className="card mb-5 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[repeat(5,1fr)_auto]" role="search" aria-label="Filter the catalogue"
+      <div className="grid items-start gap-6 lg:grid-cols-[17rem_1fr]">
+      <form className="card grid gap-4 p-5 sm:grid-cols-2 lg:sticky lg:top-4 lg:grid-cols-1" role="search" aria-label="Filter the catalogue"
         onSubmit={(e) => { e.preventDefault(); setApplied(form); cat.restart(); }}>
         <Select label="Commodity" value={form.commodity} onChange={(v) => setForm({ ...form, commodity: v })} options={COMMODITIES.map((c) => ({ value: c.value, label: c.label }))} />
-        <label className="text-sm font-medium">Variety
+        <label className="text-sm font-semibold">Variety
           <input className="field mt-1" placeholder="e.g. Kufri" value={form.variety} onChange={(e) => setForm({ ...form, variety: e.target.value })} />
         </label>
         <Select label="Grade" value={form.grade} onChange={(v) => setForm({ ...form, grade: v })} options={['A', 'B', 'C'].map((g) => ({ value: g, label: `Grade ${g}` }))} />
-        <label className="text-sm font-medium">Minimum quintals
+        <label className="text-sm font-semibold">Minimum quintals
           <input className="field mt-1" inputMode="decimal" type="number" min="0" step="any" placeholder="e.g. 25" value={form.minQtl} onChange={(e) => setForm({ ...form, minQtl: e.target.value })} />
         </label>
         <Select label="Village" value={form.village} onChange={(v) => setForm({ ...form, village: v })} options={villageOptions.map((v) => ({ value: v.code, label: v.name }))} />
-        <div className="flex items-end gap-2">
-          <button className="btn" data-variant="primary"><Filter className="h-4 w-4" aria-hidden />Apply</button>
+        <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
+          <button className="btn flex-1" data-variant="primary"><Filter className="h-4 w-4" aria-hidden />Apply</button>
           {filtered && <button type="button" className="btn" onClick={() => { setForm(NONE); setApplied(NONE); cat.restart(); }}>Clear</button>}
         </div>
       </form>
 
+      <div className="min-w-0">
       {cat.error && !cat.items.length ? (
         <ErrorState error={cat.error} onRetry={cat.reset} />
       ) : cat.loading && !cat.items.length ? (
-        <div className="space-y-3" data-testid="catalogue-loading" role="status" aria-label="Loading lots">
-          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-28 w-full" />)}
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3" data-testid="catalogue-loading" role="status" aria-label="Loading lots">
+          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-72 w-full !rounded-xl" />)}
         </div>
       ) : shown.length === 0 ? (
         <StateShell kind="empty" title={filtered ? 'No lot matches these filters' : 'No lots are on offer right now'}
           body={filtered ? 'Widen the filters, or clear them to list every lot on offer.' : 'A lot appears here once the FPO has graded it and it is not under a lien.'}
           action={filtered ? <button className="btn" onClick={() => { setForm(NONE); setApplied(NONE); cat.restart(); }}>Clear filters</button> : undefined} />
       ) : (
-        <ul className="space-y-3" aria-label="Lots on offer" data-testid="catalogue-list">
+        <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3" aria-label="Lots on offer" data-testid="catalogue-list">
           {shown.map((lot) => (
-            <li key={lot.sscc}><LotRow lot={lot} village={villageName(lot.village)} checked={selected.includes(lot.sscc)} onToggle={() => toggle(lot.sscc)} /></li>
+            <li key={lot.sscc} className="flex"><LotRow lot={lot} village={villageName(lot.village)} checked={selected.includes(lot.sscc)} onToggle={() => toggle(lot.sscc)} /></li>
           ))}
         </ul>
       )}
@@ -118,7 +120,7 @@ function Inner() {
       )}
 
       {selected.length > 0 && (
-        <div className="sticky bottom-3 z-20 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-line bg-surface p-3 shadow-md" data-testid="order-bar">
+        <div className="sticky bottom-3 z-20 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line-strong bg-surface p-3.5 shadow-lg" data-testid="order-bar">
           <p className="text-sm"><strong>{selected.length}</strong> {selected.length === 1 ? 'lot' : 'lots'} selected{chosen.length === selected.length && ` · ${formatQtl(chosenQtl)}`}</p>
           <div className="flex gap-2">
             <button className="btn" onClick={() => setSelected([])}>Clear selection</button>
@@ -128,13 +130,15 @@ function Inner() {
           </div>
         </div>
       )}
+      </div>
+      </div>
     </>
   );
 }
 
 function Select({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: { value: string; label: string }[] }) {
   return (
-    <label className="text-sm font-medium">{label}
+    <label className="text-sm font-semibold">{label}
       <select className="field mt-1" value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="">All</option>
         {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -161,35 +165,33 @@ export function TrustChips({ lot }: { lot: Pick<CatalogueItem, 'coldChain' | 'ph
 }
 
 function LotRow({ lot, village, checked, onToggle }: { lot: CatalogueItem; village: string; checked: boolean; onToggle: () => void }) {
+  const Icon = lot.commodity === 'PADDY' ? Wheat : lot.commodity === 'POTATO' ? Sprout : Carrot;
   return (
-    <article className="card flex overflow-hidden" data-testid="lot-card" data-sscc={lot.sscc}>
-      <div className="w-1.5 shrink-0" style={{ background: 'var(--accent-2)' }} aria-hidden />
-      <div className="grid min-w-0 flex-1 gap-x-6 gap-y-3 p-4 md:grid-cols-[1.4fr_1fr_1fr_auto]">
+    <article className="card flex w-full flex-col overflow-hidden transition-shadow hover:shadow-md" data-testid="lot-card" data-sscc={lot.sscc}
+      style={checked ? { borderColor: 'var(--accent)', boxShadow: '0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent)' } : undefined}>
+      <div className="relative flex h-28 items-center justify-center" style={{ background: 'color-mix(in srgb, var(--accent-2) 16%, var(--surface))' }} aria-hidden>
+        <Icon className="h-12 w-12" style={{ color: 'color-mix(in srgb, var(--accent-2) 70%, var(--ink))' }} strokeWidth={1.5} />
+        <span className="absolute left-3 top-3"><GradeChip grade={lot.grade} /></span>
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-3 p-5">
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <GradeChip grade={lot.grade} />
-            <h2 className="text-base font-semibold">{commodityLabel(lot.commodity)}{lot.variety ? ` · ${lot.variety}` : ''}</h2>
-          </div>
+          <h2 className="text-[17px] font-semibold leading-snug">{commodityLabel(lot.commodity)}{lot.variety ? ` · ${lot.variety}` : ''}</h2>
           <p className="mono mt-1 break-all text-ink-2">{lot.humanRef}</p>
-          <div className="mt-2"><TrustChips lot={lot} /></div>
         </div>
-        <dl className="text-sm">
-          <dt className="text-ink-2">Quantity</dt>
-          <dd className="font-medium" data-testid="lot-qty">{formatKg(lot.netKg)} <span className="text-ink-2">({formatQtl(lot.quantityQtl)})</span></dd>
-          <dt className="mt-2 text-ink-2">Harvest or unloading</dt>
-          <dd>{formatDay(lot.harvestOrUnloadDate)}</dd>
+        <TrustChips lot={lot} />
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-line pt-3 text-sm">
+          <div><dt className="text-ink-3">Quantity</dt>
+            <dd className="font-semibold" data-testid="lot-qty">{formatKg(lot.netKg)} <span className="font-normal text-ink-2">({formatQtl(lot.quantityQtl)})</span></dd></div>
+          <div><dt className="text-ink-3">Harvest or unloading</dt><dd>{formatDay(lot.harvestOrUnloadDate)}</dd></div>
+          <div><dt className="text-ink-3">Village</dt><dd className="font-semibold" data-testid="lot-village">{village}, {lot.block}</dd></div>
+          {lot.facilityName && <div><dt className="text-ink-3">Stored at</dt><dd>{lot.facilityName}</dd></div>}
         </dl>
-        <dl className="text-sm">
-          <dt className="text-ink-2">Village</dt>
-          <dd className="font-medium" data-testid="lot-village">{village}, {lot.block}</dd>
-          {lot.facilityName && (<><dt className="mt-2 text-ink-2">Stored at</dt><dd>{lot.facilityName}</dd></>)}
-        </dl>
-        <div className="flex items-start gap-3 md:flex-col md:items-end">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-2">
           <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 text-sm font-medium">
             <input type="checkbox" className="h-5 w-5 accent-[var(--accent)]" checked={checked} onChange={onToggle} aria-label={`Add ${lot.humanRef} to an order`} />
             Add to order
           </label>
-          <Link href={`/lots/${lot.sscc}`} className="btn no-underline" data-testid="spec-link">Spec sheet<ArrowRight className="h-4 w-4" aria-hidden /></Link>
+          <Link href={`/lots/${lot.sscc}`} className="btn" data-testid="spec-link">Spec sheet<ArrowRight className="h-4 w-4" aria-hidden /></Link>
         </div>
       </div>
     </article>
