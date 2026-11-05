@@ -5,7 +5,12 @@ test.beforeEach(async () => { await resetMock(); });
 
 test('collateral search lists receipts and finds one by e-NWR', async ({ page }) => {
   await signIn(page);
-  await expect(page.getByTestId('collateral-table').locator('tbody tr')).toHaveCount(4);
+  await expect(page.getByTestId('rows-loading')).toHaveCount(0);
+  const rows = page.getByTestId('collateral-table').locator('tbody tr');
+  await expect(rows).toHaveCount(4);
+  // receipts under an active lien are listed first, read through /collateral (not from the loan)
+  await expect(rows.first()).toContainText(ENWR_ACTIVE);
+  await expect(rows.first().getByTestId('lien-chip')).toHaveText('Lien active');
   await page.getByLabel('e-NWR or SSCC').fill(ENWR_ACTIVE);
   await page.getByRole('button', { name: 'Search' }).click();
   await expect(page.getByTestId('collateral-table').locator('tbody tr')).toHaveCount(1);

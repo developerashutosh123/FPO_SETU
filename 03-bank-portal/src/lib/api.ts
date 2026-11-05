@@ -107,7 +107,8 @@ export function resolveBase(force = false): Promise<string | null> {
 }
 
 export interface ApiResult<T> { data: T; mode: LedgerMode }
-interface RequestOpts { auth?: boolean; method?: 'GET' | 'POST'; body?: unknown; signal?: AbortSignal }
+/** timeoutMs overrides the 15 s per-request timeout, for list chunks that should give up sooner. */
+interface RequestOpts { auth?: boolean; method?: 'GET' | 'POST'; body?: unknown; signal?: AbortSignal; timeoutMs?: number }
 
 async function parseError(res: Response): Promise<ApiClientError> {
   let body: { error?: { code?: ErrorCode; message?: string; txId?: string; details?: unknown } } | null = null;
@@ -125,7 +126,7 @@ export async function request<T>(path: string, opts: RequestOpts = {}): Promise<
     const token = opts.auth ? getToken() : undefined;
     if (token) headers.authorization = `Bearer ${token}`;
     try {
-      const res = await timedFetch(base + path, { method: opts.method ?? 'GET', headers, body: opts.body === undefined ? undefined : JSON.stringify(opts.body) }, REQUEST_TIMEOUT_MS, opts.signal);
+      const res = await timedFetch(base + path, { method: opts.method ?? 'GET', headers, body: opts.body === undefined ? undefined : JSON.stringify(opts.body) }, opts.timeoutMs ?? REQUEST_TIMEOUT_MS, opts.signal);
       const mode = (res.headers.get('x-ledger-mode') as LedgerMode | null) ?? (base === READ_API_URL ? 'index-only' : 'live');
       if (conn.mode !== mode && base === conn.base) setConn({ mode });
       if (!res.ok) {
@@ -162,9 +163,10 @@ export const api = {
   ledgerStatus: (signal?: AbortSignal) => request<LedgerStatus>('/ledger/status', { signal }),
   ledgerTx: (txId: string, signal?: AbortSignal) => request<TxDetail>(`/ledger/tx/${encodeURIComponent(txId)}`, { signal }),
   login: (username: string, password: string) => request<LoginResponse>('/auth/login', { method: 'POST', body: { username, password, portal: 'bank' } }),
-  collateral: (query: { enwr?: string; sscc?: string }, signal?: AbortSignal) => request<Page<Collateral>>(`/collateral${q(query)}`, { auth: true, signal }),
+  collateral: (query: { enwr?: string; sscc?: string; cursor?: string; limit?: string }, signal?: AbortSignal, timeoutMs?: number) =>
+    request<Page<Collateral>>(`/collateral${q(query)}`, { auth: true, signal, timeoutMs }),
   markLien: (enwr: string, body: LienRequest) => request<Receipted<Loan>>(`/collateral/${enc(enwr)}/lien`, { auth: true, method: 'POST', body }),
-  loans: (status?: string, signal?: AbortSignal) => request<Page<Loan>>(`/loans${q({ status })}`, { auth: true, signal }),
+  loans: (status?: string, signal?: AbortSignal, limit?: string, timeoutMs?: number) => request<Page<Loan>>(`/loans${q({ status, limit })}`, { auth: true, signal, timeoutMs }),
   loan: (loanId: string, signal?: AbortSignal) => request<Loan>(`/loans/${enc(loanId)}`, { auth: true, signal }),
   disburse: (loanId: string) => request<Receipted<Loan>>(`/loans/${enc(loanId)}/disburse`, { auth: true, method: 'POST', body: {} }),
   repay: (loanId: string, body: RepayRequest) => request<Receipted<Loan>>(`/loans/${enc(loanId)}/repay`, { auth: true, method: 'POST', body }),
