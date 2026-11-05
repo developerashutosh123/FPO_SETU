@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { isValidSscc } from '@/contract/contract';
 import { ProvenanceView } from '@/components/Provenance';
 import { Shell } from '@/components/Shell';
@@ -35,10 +36,12 @@ export default async function LotPage({ params, searchParams }: Props) {
   const t = dictFor(lang);
   const path = `/00/${sscc}`;
   const back = (
-    <Link href={withLang('/', lang)} className="tap tap-line">
-      <ArrowLeft aria-hidden className="h-4 w-4" />
-      {t.lot.back}
-    </Link>
+    <Button asChild variant="outline" size="sm">
+      <Link href={withLang('/', lang)}>
+        <ArrowLeft aria-hidden />
+        {t.lot.back}
+      </Link>
+    </Button>
   );
 
   let body: React.ReactNode;
@@ -49,7 +52,7 @@ export default async function LotPage({ params, searchParams }: Props) {
     if (r.status === 'ok') {
       body = (
         <>
-          <p className="mb-6">{back}</p>
+          <p className="mb-5">{back}</p>
           <ProvenanceView p={r.data} t={t} indexOnly={r.mode === 'index-only'} />
         </>
       );

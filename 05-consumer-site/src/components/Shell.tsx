@@ -11,7 +11,7 @@ export function Shell({ lang, t, path, children }: { lang: Lang; t: Dict; path: 
     <div lang={LANG_TAG[lang]} className="flex min-h-dvh flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-surface focus:p-3">{t.skip}</a>
       <header className="sticky top-0 z-20 border-b border-line bg-canvas/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-5 py-2.5">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-5 py-2.5">
           <Link href={withLang('/', lang)} className="flex min-h-12 items-center gap-2.5 no-underline">
             <span aria-hidden className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-white"><Sprout className="h-5 w-5" /></span>
             <span className="text-lg font-bold tracking-tight text-accent">{t.brand}</span>
@@ -32,7 +32,7 @@ export function Shell({ lang, t, path, children }: { lang: Lang; t: Dict; path: 
           </nav>
         </div>
       </header>
-      <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-5 py-8 sm:py-12">{children}</main>
+      <main id="main" className="mx-auto w-full max-w-5xl flex-1 px-5 py-8 sm:py-12">{children}</main>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @theme inline {
   --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -7,6 +9,7 @@
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-canvas: var(--canvas);
@@ -15,11 +18,30 @@
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-danger: var(--danger);
+  --color-info: var(--info);
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
   --radius-2xl: 28px;
+  /* shadcn/ui semantic colours, mapped onto the shared FPO-SETU tokens (components in src/components/ui read these). */
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-ink);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--ink-2);
+  --color-accent-foreground: var(--accent-ink);
+  --color-destructive: var(--danger);
+  --color-border: var(--line);
+  --color-input: var(--line-strong);
+  --color-ring: var(--accent);
 }
 
 /* Warm editorial paper, one light theme. Secondary text uses --ink-2 (7:1 on the paper); --ink-3 is for large or decorative text only. */
@@ -45,14 +67,6 @@ body {
 [lang="bn"] .eyebrow { letter-spacing: 0; text-transform: none; }
 
 .chip { font-size: var(--text-sm); padding: 3px 12px; font-weight: 600; color: var(--ink); background: var(--surface); }
-
-.tap { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 999px; font-weight: 600; text-decoration: none; transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
-.tap-primary { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow-sm); }
-.tap-primary:hover { background: color-mix(in srgb, var(--accent) 86%, black); }
-.tap-line { border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); background: var(--surface); }
-.tap-line:hover { background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
-.tap-light { background: #fff; color: var(--accent); }
-.tap-light:hover { background: #F1EEE6; }
 
 details > summary { list-style: none; cursor: pointer; }
 details > summary::-webkit-details-marker { display: none; }
