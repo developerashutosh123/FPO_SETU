@@ -9,6 +9,8 @@ import { CHUNK_SIZE, MAX_IN_FLIGHT, PAGE_SIZE, chunkOffsets, createLimiter, fetc
 import { ErrorState, Skeleton, StateShell } from '@/components/states';
 import { LienChip, inr } from '@/components/finance';
 import { ProofButton } from '@/components/ProofDrawer';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const deps: ListDeps = {
   collateral: (query, signal, timeoutMs) => api.collateral(query, signal, timeoutMs),
@@ -20,42 +22,42 @@ const commodityLabel = (c: Collateral) => c.lot.commodity.charAt(0) + c.lot.comm
 /** Placeholder rows that keep their place in the table while a request is out, so arriving rows do not push others around. */
 function LoadingRows({ count, label }: { count: number; label: string }) {
   return Array.from({ length: count }, (_, i) => (
-    <tr key={`${label}-${i}`} data-testid="rows-loading" aria-hidden>
-      <td colSpan={7}><Skeleton className="h-4 w-full" /></td>
-    </tr>
+    <TableRow key={`${label}-${i}`} data-testid="rows-loading" aria-hidden>
+      <TableCell colSpan={7}><Skeleton className="h-4 w-full" /></TableCell>
+    </TableRow>
   ));
 }
 
 export function CollateralTable({ rows, top, bottom }: { rows: Collateral[]; top?: ReactNode; bottom?: ReactNode }) {
   return (
     <div className="card scroll-x">
-      <table className="dtable" data-testid="collateral-table" aria-busy={top || bottom ? true : undefined}>
-        <thead>
-          <tr>
-            <th>e-NWR</th><th>Commodity</th><th>Facility</th>
-            <th className="num">Quantity (qtl)</th><th className="num"><T k="eligible">Eligible loan</T></th>
-            <th><T k="lien">Lien</T></th><th>Proof</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table data-testid="collateral-table" aria-busy={top || bottom ? true : undefined}>
+        <TableHeader>
+          <TableRow>
+            <TableHead>e-NWR</TableHead><TableHead>Commodity</TableHead><TableHead>Facility</TableHead>
+            <TableHead className="num">Quantity (qtl)</TableHead><TableHead className="num"><T k="eligible">Eligible loan</T></TableHead>
+            <TableHead><T k="lien">Lien</T></TableHead><TableHead>Proof</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {top}
           {rows.map((c) => (
-            <tr key={c.enwr}>
-              <td>
+            <TableRow key={c.enwr}>
+              <TableCell>
                 <Link href={`/collateral/${c.enwr}`} className="mono">{c.enwr}</Link>
                 <div className="text-xs text-ink-3">{c.lot.humanRef}</div>
-              </td>
-              <td>{commodityLabel(c)}</td>
-              <td>{c.facilityName}</td>
-              <td className="num">{c.quantityQtl.toFixed(2)}</td>
-              <td className="num">{inr(c.eligibleLoan)}</td>
-              <td><LienChip status={c.lien.status} /></td>
-              <td><ProofButton proof={c.lien.proof} /></td>
-            </tr>
+              </TableCell>
+              <TableCell>{commodityLabel(c)}</TableCell>
+              <TableCell>{c.facilityName}</TableCell>
+              <TableCell className="num">{c.quantityQtl.toFixed(2)}</TableCell>
+              <TableCell className="num">{inr(c.eligibleLoan)}</TableCell>
+              <TableCell><LienChip status={c.lien.status} /></TableCell>
+              <TableCell><ProofButton proof={c.lien.proof} /></TableCell>
+            </TableRow>
           ))}
           {bottom}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }
@@ -128,15 +130,15 @@ export function ReceiptList() {
           <p className="text-sm text-ink-2">
             Up to {failed.length * CHUNK_SIZE} receipts could not be loaded. {failed[0]!.error!.message}
           </p>
-          <button className="btn" onClick={() => loadChunks(failed.map((c) => c.offset))}><RotateCw className="h-4 w-4" aria-hidden />Try again</button>
+          <Button variant="outline" onClick={() => loadChunks(failed.map((c) => c.offset))}><RotateCw className="h-4 w-4" aria-hidden />Try again</Button>
         </div>
       )}
       {pending > 0 && <p className="sr-only" role="status">Loading more receipts</p>}
       {more && (
         <div className="mt-4 flex justify-center">
-          <button className="btn" data-testid="load-more" onClick={() => { const s = pageStart + PAGE_SIZE; setPageStart(s); loadChunks(chunkOffsets(s)); }}>
+          <Button variant="outline" data-testid="load-more" onClick={() => { const s = pageStart + PAGE_SIZE; setPageStart(s); loadChunks(chunkOffsets(s)); }}>
             <ChevronDown className="h-4 w-4" aria-hidden />Load {PAGE_SIZE} more
-          </button>
+          </Button>
         </div>
       )}
     </>

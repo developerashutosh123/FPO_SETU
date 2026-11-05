@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth, isCreditOfficer } from '@/lib/auth';
 import { asApiError } from '@/lib/api';
 import { PageHeader } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 /** Only same-site paths, so a crafted ?next= cannot send people elsewhere. */
 const safeNext = (n: string | null) => (n && n.startsWith('/') && !n.startsWith('//') ? n : '/collateral');
@@ -40,15 +42,15 @@ export function LoginForm() {
       <form onSubmit={submit} className="card self-start p-5" aria-describedby={error ? 'login-error' : undefined}>
         <h2 className="text-base font-semibold">Sign in</h2>
         <p className="mt-1 text-sm text-ink-2">Demo login. Password: <span className="mono">Setu@2026</span></p>
-        <button type="button" className="btn mt-4 w-full !h-auto !items-start !justify-start !py-2 text-left" onClick={() => { setUsername('arindam.bank'); setPassword('Setu@2026'); }}>
+        <Button variant="outline" className="mt-4 w-full text-left" type="button"  onClick={() => { setUsername('arindam.bank'); setPassword('Setu@2026'); }}>
           <span><span className="block mono">arindam.bank</span><span className="block text-xs font-normal text-ink-2">Arindam Ghosh, branch credit officer (BankOrgMSP)</span></span>
-        </button>
+        </Button>
         <label className="mt-4 block text-sm font-medium" htmlFor="u">Username</label>
-        <input id="u" className="field mt-1" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        <Input id="u" className="mt-1" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         <label className="mt-3 block text-sm font-medium" htmlFor="p">Password</label>
         <input id="p" type="password" className="field mt-1" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         {error && <p id="login-error" role="alert" className="mt-3 text-sm text-danger">{error}</p>}
-        <button className="btn mt-4 w-full" data-variant="primary" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+        <Button className="mt-4 w-full" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</Button>
       </form>
     </div>
   );

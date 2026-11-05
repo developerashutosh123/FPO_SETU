@@ -15,6 +15,8 @@ import { LienDialog, DuplicatePledgeButton } from '@/components/LienDialog';
 import { ProofButton } from '@/components/ProofDrawer';
 import { Chip, Field, Hash, PageHeader, Section, Term } from '@/components/ui';
 import { WRITES_PAUSED_REASON, useWritesEnabled } from '@/components/AppShell';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export function CollateralView({ enwr }: { enwr: string }) {
   return <RequireAuth>{() => <Inner enwr={enwr} />}</RequireAuth>;
@@ -27,7 +29,7 @@ function Inner({ enwr }: { enwr: string }) {
       {(page) => {
         const c = page.items.find((x) => x.enwr === enwr);
         return c ? <View c={c} reload={state.reload} /> : (
-          <StateShell kind="notfound" title="No receipt with this e-NWR" body="Check the e-NWR for typing mistakes." action={<Link href="/collateral" className="btn no-underline">Back to search</Link>} />
+          <StateShell kind="notfound" title="No receipt with this e-NWR" body="Check the e-NWR for typing mistakes." action={<Button asChild variant="outline"><Link href="/collateral">Back to search</Link></Button>} />
         );
       }}
     </Boundary>
@@ -105,10 +107,10 @@ function View({ c, reload }: { c: Collateral; reload: () => void }) {
             </>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
-              <button className="btn" data-variant="primary" onClick={() => setLienOpen(true)} disabled={!writes || !storable}
+              <Button onClick={() => setLienOpen(true)} disabled={!writes || !storable}
                 title={!writes ? WRITES_PAUSED_REASON : !storable ? `The lot is ${c.lot.status}; a lien needs a lot in storage.` : undefined} data-testid="mark-lien">
                 Mark lien
-              </button>
+              </Button>
               {!writes && <span className="text-sm text-warn">{WRITES_PAUSED_REASON}</span>}
               {writes && !storable && <span className="text-sm text-ink-2">The lot is {c.lot.status}, so it cannot be pledged now.</span>}
             </div>
@@ -120,17 +122,17 @@ function View({ c, reload }: { c: Collateral; reload: () => void }) {
         {c.storageConditionHistory.length === 0 ? (
           <p className="py-3 text-sm text-ink-2">No temperature digests have been anchored for this lot. Paddy in a warehouse has none; potato in cold storage should.</p>
         ) : (
-          <table className="dtable"><thead><tr><th>Recorded</th><th className="num">Average °C</th><th>Note</th></tr></thead>
-            <tbody>{c.storageConditionHistory.map((h) => (
-              <tr key={h.at}><td>{formatDateTimeIST(h.at)}</td><td className="num">{h.avgC !== undefined ? h.avgC.toFixed(1) : ''}</td><td>{h.note}</td></tr>
-            ))}</tbody></table>
+          <Table><TableHeader><TableRow><TableHead>Recorded</TableHead><TableHead className="num">Average °C</TableHead><TableHead>Note</TableHead></TableRow></TableHeader>
+            <TableBody>{c.storageConditionHistory.map((h) => (
+              <TableRow key={h.at}><TableCell>{formatDateTimeIST(h.at)}</TableCell><TableCell className="num">{h.avgC !== undefined ? h.avgC.toFixed(1) : ''}</TableCell><TableCell>{h.note}</TableCell></TableRow>
+            ))}</TableBody></Table>
         )}
       </Section>
 
       <Section title="Attestor reputation" aside="Operator and devices that graded the lot">
         {c.attestorReputation.length === 0 ? <p className="py-3 text-sm text-ink-2">No attestor scores yet.</p> : (
-          <table className="dtable"><thead><tr><th>Attestor</th><th className="num">Score</th></tr></thead>
-            <tbody>{c.attestorReputation.map((a) => <tr key={a.attestor}><td>{a.attestor}</td><td className="num">{a.score}</td></tr>)}</tbody></table>
+          <Table><TableHeader><TableRow><TableHead>Attestor</TableHead><TableHead className="num">Score</TableHead></TableRow></TableHeader>
+            <TableBody>{c.attestorReputation.map((a) => <TableRow key={a.attestor}><TableCell>{a.attestor}</TableCell><TableCell className="num">{a.score}</TableCell></TableRow>)}</TableBody></Table>
         )}
       </Section>
 

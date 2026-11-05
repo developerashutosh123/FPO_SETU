@@ -8,6 +8,8 @@ import { DEMO_MODE } from '@/lib/portals';
 import { DoubleFinancingNotice, ReceiptCard, WriteError, inr } from './finance';
 import { Term } from './ui';
 import { WRITES_PAUSED_REASON, useWritesEnabled } from './AppShell';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 /** Loan ID format LN-YYYY-NNNNN (contract 3.1). Generated here because the gateway takes it in the request body. */
 export function newLoanId(): string {
@@ -39,9 +41,9 @@ export function DuplicatePledgeButton({ collateral, terms }: { collateral: Colla
 
   return (
     <div className="mt-4" data-testid="duplicate-demo">
-      <button className="btn" onClick={attempt} disabled={busy || !writes} title={writes ? undefined : WRITES_PAUSED_REASON} data-testid="duplicate-btn">
+      <Button variant="outline" onClick={attempt} disabled={busy || !writes} title={writes ? undefined : WRITES_PAUSED_REASON} data-testid="duplicate-btn">
         {busy ? 'Submitting to the ledger…' : 'Attempt duplicate pledge (demo)'}
-      </button>
+      </Button>
       <div className="mt-3" aria-live="polite">
         {outcome?.kind === 'double' && <DoubleFinancingNotice error={outcome.error} />}
         {outcome?.kind === 'error' && <WriteError error={outcome.error} />}
@@ -95,7 +97,7 @@ export function LienDialog({ collateral, onClose, onDone }: { collateral: Collat
           <h2 id="lien-title" className="text-lg font-semibold">{done ? 'Lien recorded on the ledger' : 'Mark lien'}</h2>
           <p className="mono mt-0.5 text-xs text-ink-2">{collateral.enwr}</p>
         </div>
-        <button className="btn !min-h-8 !px-2" onClick={() => ref.current?.close()} aria-label="Close"><X className="h-4 w-4" aria-hidden /></button>
+        <Button variant="outline" size="sm" onClick={() => ref.current?.close()} aria-label="Close"><X className="h-4 w-4" aria-hidden /></Button>
       </div>
 
       <div className="px-5 py-4">
@@ -104,21 +106,21 @@ export function LienDialog({ collateral, onClose, onDone }: { collateral: Collat
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="text-sm font-medium" htmlFor="loan-id">Loan ID</label>
-                <input id="loan-id" className="field mono mt-1" value={loanId} readOnly aria-describedby="loan-id-help" />
+                <Input id="loan-id" className="mono mt-1" value={loanId} readOnly aria-describedby="loan-id-help" />
                 <p id="loan-id-help" className="mt-1 text-xs text-ink-3">Generated. The lien ID takes the same number.</p>
               </div>
               <div>
                 <label className="text-sm font-medium" htmlFor="amount">Amount (₹)</label>
-                <input id="amount" className="field num mt-1" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value)} aria-describedby="amount-help" />
+                <Input id="amount" className="num mt-1" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value)} aria-describedby="amount-help" />
                 <p id="amount-help" className="mt-1 text-xs text-ink-3">At most the <Term tip="Assessed value x 70% LTV, from the valuation on this page.">eligible loan</Term> of {inr(collateral.eligibleLoan)}.</p>
               </div>
               <div>
                 <label className="text-sm font-medium" htmlFor="tenure">Tenure (days)</label>
-                <input id="tenure" className="field num mt-1" inputMode="numeric" value={tenure} onChange={(e) => setTenure(e.target.value)} />
+                <Input id="tenure" className="num mt-1" inputMode="numeric" value={tenure} onChange={(e) => setTenure(e.target.value)} />
               </div>
               <div>
                 <label className="text-sm font-medium" htmlFor="rate">Interest rate (% a year)</label>
-                <input id="rate" className="field num mt-1" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} />
+                <Input id="rate" className="num mt-1" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} />
               </div>
             </div>
             <p className="mt-4 text-sm text-ink-2">Loan terms are stored privately between the bank and the FPO.</p>
@@ -128,9 +130,9 @@ export function LienDialog({ collateral, onClose, onDone }: { collateral: Collat
             {outcome?.kind === 'double' && <div className="mt-4"><DoubleFinancingNotice error={outcome.error} /></div>}
             {outcome?.kind === 'error' && <div className="mt-4"><WriteError error={outcome.error} /></div>}
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <button className="btn" data-variant="primary" disabled={busy || !writes} title={writes ? undefined : WRITES_PAUSED_REASON} data-testid="lien-submit">
+              <Button disabled={busy || !writes} title={writes ? undefined : WRITES_PAUSED_REASON} data-testid="lien-submit">
                 {busy ? 'Waiting for the endorsing peers…' : 'Mark lien'}
-              </button>
+              </Button>
               {!writes && <span className="text-sm text-warn">{WRITES_PAUSED_REASON}</span>}
             </div>
           </form>
@@ -143,8 +145,8 @@ export function LienDialog({ collateral, onClose, onDone }: { collateral: Collat
               Loan <span className="mono">{outcome.receipt.resource.loanId}</span> is sanctioned for {inr(outcome.receipt.resource.amount)}. Money moves only when you record the disbursement.
             </p>
             <div className="flex flex-wrap gap-2">
-              <Link className="btn no-underline" data-variant="primary" href={`/loans/${outcome.receipt.resource.loanId}`} data-testid="go-disburse">Go to the loan to disburse</Link>
-              <button className="btn" onClick={() => ref.current?.close()}>Close</button>
+              <Button asChild><Link href={`/loans/${outcome.receipt.resource.loanId}`} data-testid="go-disburse">Go to the loan to disburse</Link></Button>
+              <Button variant="outline" onClick={() => ref.current?.close()}>Close</Button>
             </div>
             <DuplicatePledgeButton collateral={collateral} terms={{ amount: amt, tenureDays: ten, ratePct: rt }} />
           </div>

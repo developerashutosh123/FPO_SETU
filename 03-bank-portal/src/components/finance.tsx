@@ -7,6 +7,8 @@ import { formatDateTimeIST } from '@/lib/format';
 import { govTxUrl } from '@/lib/portals';
 import { ProofButton } from './ProofDrawer';
 import { ChannelChip, Hash, OrgBadge } from './ui';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 export const inr = (n: number) => formatINR(n);
 
@@ -17,12 +19,12 @@ export function LienChip({ status }: { status: LienStatus }) {
     RELEASED: { tone: 'ok', text: 'Lien released', Icon: Unlock },
   } as const;
   const m = map[status];
-  return <span className="chip chip-lg" data-tone={m.tone} data-testid="lien-chip"><m.Icon className="h-3.5 w-3.5" aria-hidden />{m.text}</span>;
+  return <Badge variant={(m.tone) ?? 'default'} className="px-3 py-1 text-[13px]" data-testid="lien-chip"><m.Icon className="h-3.5 w-3.5" aria-hidden />{m.text}</Badge>;
 }
 
 export function LoanStatusChip({ status }: { status: Loan['status'] }) {
   const tone = status === 'RELEASED' ? 'ok' : status === 'REPAID' ? 'accent' : status === 'DISBURSED' ? 'warn' : undefined;
-  return <span className="chip" data-tone={tone} data-testid="loan-status">{status.charAt(0) + status.slice(1).toLowerCase()}</span>;
+  return <Badge variant={(tone) ?? 'default'} data-testid="loan-status">{status.charAt(0) + status.slice(1).toLowerCase()}</Badge>;
 }
 
 /** loanId and lienId share the number part (contract 3.1), so a lien links to its loan. */
@@ -34,7 +36,7 @@ export function ReceiptCard({ receipt, title }: { receipt: LedgerReceipt; title:
     <div className="card p-5" style={{ borderColor: 'color-mix(in srgb, var(--ok-text) 45%, transparent)', background: 'color-mix(in srgb, var(--ok-text) 5%, var(--surface))' }} role="status" data-testid="receipt">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="flex items-center gap-2 text-[15px] font-semibold"><CheckCircle2 className="h-5 w-5 text-ok" aria-hidden />{title}</h3>
-        <span className="chip" data-tone="ok">{receipt.validationCode}</span>
+        <Badge variant="ok">{receipt.validationCode}</Badge>
       </div>
       <dl className="mt-3 grid gap-x-4 gap-y-2 text-sm sm:grid-cols-[8rem_1fr]">
         <dt className="text-ink-2">Transaction</dt>
@@ -50,7 +52,7 @@ export function ReceiptCard({ receipt, title }: { receipt: LedgerReceipt; title:
       </dl>
       <div className="mt-3 flex flex-wrap gap-2">
         <ProofButton proof={{ txId: receipt.txId, blockNumber: receipt.blockNumber, channel: receipt.channel }} />
-        <a className="btn !min-h-8 no-underline" href={govTxUrl(receipt.txId)} target="_blank" rel="noreferrer">Open in the Gov explorer <ExternalLink className="h-4 w-4" aria-hidden /></a>
+        <Button asChild variant="outline" size="sm"><a href={govTxUrl(receipt.txId)} target="_blank" rel="noreferrer">Open in the Gov explorer <ExternalLink className="h-4 w-4" aria-hidden /></a></Button>
       </div>
     </div>
   );

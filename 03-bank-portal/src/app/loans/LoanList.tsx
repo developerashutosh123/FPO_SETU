@@ -8,6 +8,8 @@ import { Boundary, StateShell } from '@/components/states';
 import { LoanLink, LoanStatusChip, inr } from '@/components/finance';
 import { ProofButton } from '@/components/ProofDrawer';
 import { PageHeader } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const STATUSES = ['', 'SANCTIONED', 'DISBURSED', 'REPAID', 'RELEASED'] as const;
 
@@ -32,28 +34,28 @@ function Inner() {
       <Boundary state={state} skeleton={<StateShell kind="loading" title="Loading loans" />}>
         {(page) =>
           page.items.length === 0 ? (
-            <StateShell kind="empty" title="No loans with this status" body="A loan appears here after you mark a lien on a receipt." action={<Link className="btn no-underline" href="/collateral">Find collateral</Link>} />
+            <StateShell kind="empty" title="No loans with this status" body="A loan appears here after you mark a lien on a receipt." action={<Button asChild variant="outline"><Link href="/collateral">Find collateral</Link></Button>} />
           ) : (
             <div className="card scroll-x">
-              <table className="dtable" data-testid="loan-table">
-                <thead>
-                  <tr><th>Loan</th><th>e-NWR</th><th className="num">Amount</th><th className="num">Repaid</th><th className="num">Tenure (days)</th><th className="num">Rate (%)</th><th>Status</th><th>Proof</th></tr>
-                </thead>
-                <tbody>
+              <Table data-testid="loan-table">
+                <TableHeader>
+                  <TableRow><TableHead>Loan</TableHead><TableHead>e-NWR</TableHead><TableHead className="num">Amount</TableHead><TableHead className="num">Repaid</TableHead><TableHead className="num">Tenure (days)</TableHead><TableHead className="num">Rate (%)</TableHead><TableHead>Status</TableHead><TableHead>Proof</TableHead></TableRow>
+                </TableHeader>
+                <TableBody>
                   {page.items.map((l) => (
-                    <tr key={l.loanId}>
-                      <td><LoanLink loanId={l.loanId} /></td>
-                      <td><Link href={`/collateral/${l.enwr}`} className="mono">{l.enwr}</Link></td>
-                      <td className="num">{inr(l.amount)}</td>
-                      <td className="num">{l.repaidAmount !== undefined ? inr(l.repaidAmount) : ''}</td>
-                      <td className="num">{l.tenureDays ?? ''}</td>
-                      <td className="num">{l.ratePct ?? ''}</td>
-                      <td><LoanStatusChip status={l.status} /></td>
-                      <td><ProofButton proof={l.proofs[l.proofs.length - 1]} label="Latest" /></td>
-                    </tr>
+                    <TableRow key={l.loanId}>
+                      <TableCell><LoanLink loanId={l.loanId} /></TableCell>
+                      <TableCell><Link href={`/collateral/${l.enwr}`} className="mono">{l.enwr}</Link></TableCell>
+                      <TableCell className="num">{inr(l.amount)}</TableCell>
+                      <TableCell className="num">{l.repaidAmount !== undefined ? inr(l.repaidAmount) : ''}</TableCell>
+                      <TableCell className="num">{l.tenureDays ?? ''}</TableCell>
+                      <TableCell className="num">{l.ratePct ?? ''}</TableCell>
+                      <TableCell><LoanStatusChip status={l.status} /></TableCell>
+                      <TableCell><ProofButton proof={l.proofs[l.proofs.length - 1]} label="Latest" /></TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           )
         }

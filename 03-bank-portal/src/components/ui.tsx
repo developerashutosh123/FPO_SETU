@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ORG_DISPLAY, type Channel, type OrgMsp } from '@/contract/contract';
 import { channelShort, shortOrg } from '@/lib/format';
 import { CopyButton } from './CopyButton';
+import { Badge } from '@/components/ui/badge';
 
 export function PageHeader({ eyebrow, title, children }: { eyebrow?: string; title: ReactNode; children?: ReactNode }) {
   return (
@@ -15,7 +16,7 @@ export function PageHeader({ eyebrow, title, children }: { eyebrow?: string; tit
 }
 
 export function Chip({ tone, children, title }: { tone?: 'ok' | 'warn' | 'danger' | 'accent'; children: ReactNode; title?: string }) {
-  return <span className="chip" data-tone={tone} title={title}>{children}</span>;
+  return <Badge variant={(tone) ?? 'default'} title={title}>{children}</Badge>;
 }
 
 export const ChannelChip = ({ channel }: { channel: Channel }) => <Chip>{channelShort(channel)}-channel</Chip>;
@@ -23,9 +24,9 @@ export const ChannelChip = ({ channel }: { channel: Channel }) => <Chip>{channel
 export function OrgBadge({ org }: { org: OrgMsp | string }) {
   const name = ORG_DISPLAY[org as OrgMsp];
   return (
-    <span className="chip" data-tone="accent" title={name ? `${name} (${org})` : org}>
+    <Badge variant="accent" title={name ? `${name} (${org})` : org}>
       <span className="font-semibold">{org}</span>
-    </span>
+    </Badge>
   );
 }
 export { shortOrg };

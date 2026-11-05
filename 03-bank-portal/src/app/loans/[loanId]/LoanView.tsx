@@ -13,6 +13,9 @@ import { ProofButton } from '@/components/ProofDrawer';
 import { Field, Hash, PageHeader, Section } from '@/components/ui';
 import { WRITES_PAUSED_REASON, useWritesEnabled } from '@/components/AppShell';
 import { govTxUrl } from '@/lib/portals';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export function LoanView({ loanId }: { loanId: string }) {
   return <RequireAuth>{() => <Inner loanId={loanId} />}</RequireAuth>;
@@ -81,29 +84,29 @@ function View({ loan, reload }: { loan: Loan; reload: () => void }) {
           <div>
             <h3 className="text-sm font-semibold">1. Disburse</h3>
             <p className="mt-1 text-sm text-ink-2">Record that the sanctioned amount has been paid out.</p>
-            <button className="btn mt-3" data-variant={canDisburse ? 'primary' : undefined} disabled={!writes || !canDisburse || busy !== null}
+            <Button variant={(canDisburse ? 'primary' : undefined) ? 'default' : 'outline'} className="mt-3" disabled={!writes || !canDisburse || busy !== null}
               title={why('Only a sanctioned loan can be disbursed.', canDisburse)} onClick={() => run('disburse')} data-testid="disburse">
               {busy === 'disburse' ? 'Waiting for the endorsing peers…' : 'Record disbursement'}
-            </button>
+            </Button>
           </div>
           <div>
             <h3 className="text-sm font-semibold">2. Record repayment</h3>
             <p className="mt-1 text-sm text-ink-2">The loan becomes repaid when the total reaches the principal.</p>
             <label htmlFor="repay" className="mt-3 block text-sm">Amount (₹)</label>
-            <input id="repay" className="field num mt-1" inputMode="numeric" value={repayAmount} onChange={(e) => setRepayAmount(e.target.value)} disabled={!canRepay} />
+            <Input id="repay" className="num mt-1" inputMode="numeric" value={repayAmount} onChange={(e) => setRepayAmount(e.target.value)} disabled={!canRepay} />
             {repayTouched && repayProblem && <p className="mt-1 text-sm text-danger" role="alert">{repayProblem}</p>}
-            <button className="btn mt-3" disabled={!writes || !canRepay || busy !== null} title={why('Repayments are recorded on a disbursed loan.', canRepay)}
+            <Button variant="outline" className="mt-3" disabled={!writes || !canRepay || busy !== null} title={why('Repayments are recorded on a disbursed loan.', canRepay)}
               onClick={() => { setRepayTouched(true); if (!repayProblem) void run('repay'); }} data-testid="repay">
               {busy === 'repay' ? 'Waiting for the endorsing peers…' : 'Record repayment'}
-            </button>
+            </Button>
           </div>
           <div>
             <h3 className="text-sm font-semibold">3. Release the lien</h3>
             <p className="mt-1 text-sm text-ink-2">Available once the loan is repaid. Releasing unlocks dispatch in the FPO console.</p>
-            <button className="btn mt-3" data-variant={canRelease ? 'primary' : undefined} disabled={!writes || !canRelease || busy !== null}
+            <Button variant={(canRelease ? 'primary' : undefined) ? 'default' : 'outline'} className="mt-3" disabled={!writes || !canRelease || busy !== null}
               title={why('The lien can be released after the loan is repaid.', canRelease)} onClick={() => run('release')} data-testid="release">
               {busy === 'release' ? 'Waiting for the endorsing peers…' : 'Release lien'}
-            </button>
+            </Button>
           </div>
         </div>
         {!writes && <p className="border-t border-line py-3 text-sm text-warn">{WRITES_PAUSED_REASON}</p>}
@@ -125,10 +128,10 @@ function View({ loan, reload }: { loan: Loan; reload: () => void }) {
 
       <Section title="Ledger history" aside="Oldest first">
         {loan.proofs.length === 0 ? <p className="py-3 text-sm text-ink-2">No transactions are indexed for this loan yet.</p> : (
-          <table className="dtable"><thead><tr><th className="num">#</th><th>Transaction</th><th className="num">Block</th><th>Channel</th><th>Proof</th></tr></thead>
-            <tbody>{loan.proofs.map((p, i) => (
-              <tr key={p.txId}><td className="num">{i + 1}</td><td><Hash value={p.txId} full={false} href={govTxUrl(p.txId)} external label="Copy transaction ID" /></td><td className="num">{p.blockNumber}</td><td>{p.channel}</td><td><ProofButton proof={p} /></td></tr>
-            ))}</tbody></table>
+          <Table><TableHeader><TableRow><TableHead className="num">#</TableHead><TableHead>Transaction</TableHead><TableHead className="num">Block</TableHead><TableHead>Channel</TableHead><TableHead>Proof</TableHead></TableRow></TableHeader>
+            <TableBody>{loan.proofs.map((p, i) => (
+              <TableRow key={p.txId}><TableCell className="num">{i + 1}</TableCell><TableCell><Hash value={p.txId} full={false} href={govTxUrl(p.txId)} external label="Copy transaction ID" /></TableCell><TableCell className="num">{p.blockNumber}</TableCell><TableCell>{p.channel}</TableCell><TableCell><ProofButton proof={p} /></TableCell></TableRow>
+            ))}</TableBody></Table>
         )}
       </Section>
 

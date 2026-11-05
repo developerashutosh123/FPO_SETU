@@ -8,6 +8,8 @@ import { T } from '@/lib/glossary';
 import { Boundary, StateShell } from '@/components/states';
 import { PageHeader } from '@/components/ui';
 import { CollateralTable, ReceiptList } from './ReceiptList';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 /** "ENWR-..." searches by e-NWR, 18 digits by SSCC. Anything else cannot match and is explained instead of sent. */
 function toQuery(term: string): { enwr?: string; sscc?: string } | 'invalid' {
@@ -33,9 +35,9 @@ function Inner() {
       </PageHeader>
       <form className="mb-5 flex flex-wrap gap-2" role="search" onSubmit={(e) => { e.preventDefault(); setTerm(input); }}>
         <label htmlFor="q" className="sr-only">e-NWR or SSCC</label>
-        <input id="q" className="field max-w-md" placeholder="ENWR-NERL-2026-004212 or 18-digit SSCC" value={input} onChange={(e) => setInput(e.target.value)} />
-        <button className="btn" data-variant="primary"><Search className="h-4 w-4" aria-hidden />Search</button>
-        {term && <button type="button" className="btn" onClick={() => { setInput(''); setTerm(''); }}>Clear</button>}
+        <Input id="q" className="max-w-md" placeholder="ENWR-NERL-2026-004212 or 18-digit SSCC" value={input} onChange={(e) => setInput(e.target.value)} />
+        <Button><Search className="h-4 w-4" aria-hidden />Search</Button>
+        {term && <Button variant="outline" type="button"  onClick={() => { setInput(''); setTerm(''); }}>Clear</Button>}
       </form>
       {query === 'invalid' ? (
         <StateShell kind="empty" title="That is not an e-NWR or an SSCC" body="An e-NWR looks like ENWR-NERL-2026-004211 and an SSCC is 18 digits. Clear the box to list every receipt." />
