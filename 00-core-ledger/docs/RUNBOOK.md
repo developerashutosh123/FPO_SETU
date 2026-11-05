@@ -199,6 +199,19 @@ If Supabase is lost but the ledger is fine: `pnpm db:migrate`, then start the ga
 5. Pull the plug test (once, in advance): stop the gateway (Ctrl-C). Within about 3 seconds of the next page load a portal shows the amber **index-only** banner and write buttons are disabled; start the gateway and the banner clears.
 6. `make check-secrets` before every commit.
 
+## 8a. Demo stock for repeatable demos (`pnpm seed:demo-refresh`)
+
+A ledger write cannot be undone, so each demo write-moment uses up one item: an unsigned draft (confirm-and-sign), an unpledged e-NWR receipt (double-lien), an OPEN order nobody has priced (price-hash). `gateway/scripts/demo-refresh.ts` counts what is left and appends fresh stock through the running gateway's HTTP API (real transactions; it never resets, deletes or writes to the database directly). The gateway must be running with the ledger live; it refuses to write in index-only mode.
+
+```
+cd gateway
+pnpm seed:demo-refresh --status          # read-only: how many of each are ready, with IDs (--all lists every one)
+pnpm seed:demo-refresh                   # append 15 of each (about 4 to 6 minutes)
+pnpm seed:demo-refresh 20                # append 20 of each
+pnpm seed:demo-refresh 15 --top-up       # append only what is missing so that 15 of each are ready
+```
+It prints every new ID as it is created, then the new IDs grouped by moment, then the totals ready. A run that fails part way keeps what it created (listed above the failure); run `--top-up` to fill the rest. Orders and receipts are built for seed farmers 1 to 8 (never the demo farmer 9000000001), signing F2 with their seed device keys; if a farmer's on-chain key is not the seed key the script skips that farmer. Drafts are for farmer 9000000001. Each item is consumed by one demo: once an order has had a price submitted it no longer counts as ready.
+
 ## 9. Quick reference
 
 | What | Command |
