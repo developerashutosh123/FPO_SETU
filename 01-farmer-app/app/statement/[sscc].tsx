@@ -13,9 +13,9 @@ import { formatINR, formatKg, formatPlainDate } from '../../src/lib/format';
 import type { Lang } from '../../src/lib/numberWords';
 import { planRead, speakLines, type ReadHandle, type ReadPlan } from '../../src/lib/speech';
 import { commodityFromRef, statementScript } from '../../src/lib/statementScript';
-import { color, radius, space } from '../../src/theme';
+import { color, radius, shadow, space } from '../../src/theme';
 
-const lineBox = (on: boolean) => ({ paddingVertical: space.s2, paddingHorizontal: space.s2, borderRadius: radius.sm, backgroundColor: on ? color.warnBg : 'transparent' });
+const lineBox = (on: boolean) => ({ paddingVertical: space.s3, paddingHorizontal: space.s2, borderRadius: radius.sm, backgroundColor: on ? color.warnBg : 'transparent' });
 
 export default function StatementDetail() {
   const { sscc } = useLocalSearchParams<{ sscc: string }>();
@@ -89,7 +89,7 @@ export default function StatementDetail() {
               <Txt v="small">{t('statement.buyer')}: {s.buyerType}</Txt>
             </Card>
 
-            <View style={[{ backgroundColor: color.accent, borderRadius: radius.md, padding: space.s4, gap: space.s1 }, lineBox(active === 'net') && { backgroundColor: color.accent }]} testID="net-card">
+            <View style={[{ backgroundColor: color.accent, borderRadius: radius.lg, padding: space.s5, gap: space.s1, ...shadow }, lineBox(active === 'net') && { backgroundColor: color.accent }]} testID="net-card">
               <Txt v="label" style={{ color: '#DCE8DF' }}>{t('statement.net')}</Txt>
               <Num v="money" style={{ color: color.accentInk }} testID="net-amount">{formatINR(s.net)}</Num>
               {s.paidOn ? <Txt style={{ color: color.accentInk }}>{t('statement.paidOn')}: {formatPlainDate(s.paidOn)}</Txt> : <Txt style={{ color: color.accentInk }}>{t('statement.notPaid')}</Txt>}

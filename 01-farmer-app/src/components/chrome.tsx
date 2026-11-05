@@ -7,7 +7,7 @@ import { FOOTER_TEXT, type Commodity } from '../contract/contract';
 import { LANGS, setLang } from '../i18n';
 import { getConn, subscribeConn } from '../lib/api';
 import { useLive } from '../lib/live';
-import { color, MIN_TOUCH, radius, space } from '../theme';
+import { color, MIN_TOUCH, radius, shadow, space } from '../theme';
 import { Row, Txt } from './ui';
 import { Carrot, Sprout, Wheat } from 'lucide-react-native';
 
@@ -50,14 +50,14 @@ export function OfflineBanner() {
 export function LanguageSwitch() {
   const { i18n, t } = useTranslation();
   return (
-    <Row style={{ gap: space.s1 }} accessibilityLabel={t('common.language')}>
-      <Languages color={color.ink2} size={20} />
+    <Row style={{ gap: space.s2, flexWrap: 'wrap' }} accessibilityLabel={t('common.language')}>
+      <Languages color={color.ink2} size={22} />
       {LANGS.map((l) => {
         const on = i18n.language === l.code;
         return (
           <Pressable key={l.code} onPress={() => setLang(l.code)} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={l.native}
-            style={{ minHeight: MIN_TOUCH, minWidth: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.s2, borderBottomWidth: 3, borderBottomColor: on ? color.accent2 : 'transparent' }}>
-            <Txt v="small" style={{ color: on ? color.accent : color.ink2, fontWeight: on ? '700' : '500' }}>{l.native}</Txt>
+            style={{ minHeight: MIN_TOUCH, minWidth: 64, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space.s4, borderRadius: radius.pill, borderWidth: 2, borderColor: on ? color.accent : color.line, backgroundColor: on ? color.accent : color.surface }}>
+            <Txt v="small" style={{ color: on ? color.accentInk : color.ink, fontWeight: '700' }}>{l.native}</Txt>
           </Pressable>
         );
       })}
@@ -72,7 +72,7 @@ export function ActivityToasts() {
   return (
     <View style={{ position: 'absolute', left: space.s3, right: space.s3, bottom: space.s4, gap: space.s2, zIndex: 50 }} pointerEvents="box-none" accessibilityLiveRegion="polite">
       {toasts.map((x) => (
-        <Row key={x.id} style={{ backgroundColor: color.accent, borderRadius: radius.md, padding: space.s3, alignItems: 'flex-start' }} testID="toast">
+        <Row key={x.id} style={[{ backgroundColor: color.accent, borderRadius: radius.lg, padding: space.s4, alignItems: 'flex-start', boxShadow: '0 8px 24px -6px rgba(16,24,40,0.35)' }]} testID="toast">
           <View style={{ flex: 1 }}>
             <Txt style={{ color: color.accentInk, fontWeight: '600' }}>{x.text}</Txt>
             <Txt v="mono" style={{ color: '#DCE8DF' }}>tx {x.txId.slice(0, 8)}…</Txt>
@@ -104,7 +104,7 @@ export function ScreenHeader({ title, back = true, right }: { title: string; bac
   const router = useRouter();
   const { t } = useTranslation();
   return (
-    <Row style={{ backgroundColor: color.accent, paddingHorizontal: space.s2, minHeight: 60 }}>
+    <Row style={{ backgroundColor: color.accent, paddingHorizontal: space.s2, minHeight: 64 }}>
       {back ? (
         <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/home'))} accessibilityRole="button" accessibilityLabel={t('common.back')} style={{ minWidth: MIN_TOUCH, minHeight: MIN_TOUCH, alignItems: 'center', justifyContent: 'center' }}>
           <ArrowLeft color={color.accentInk} size={26} />

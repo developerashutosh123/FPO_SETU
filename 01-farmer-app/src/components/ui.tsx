@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
-import { color, FONT_MONO, FONT_SANS, MIN_TOUCH, radius, size, space, TABULAR } from '../theme';
+import { color, FONT_MONO, FONT_SANS, MIN_TOUCH, radius, shadow, size, space, TABULAR } from '../theme';
 
 type Variant = 'body' | 'small' | 'title' | 'lg' | 'xl' | 'money' | 'mono' | 'label';
 const variants: Record<Variant, TextStyle> = {
@@ -9,7 +9,7 @@ const variants: Record<Variant, TextStyle> = {
   label: { fontSize: size.small, lineHeight: 22, color: color.ink2, fontWeight: '600' },
   lg: { fontSize: size.lg, lineHeight: 30, color: color.ink, fontWeight: '600' },
   xl: { fontSize: size.xl, lineHeight: 34, color: color.ink, fontWeight: '700' },
-  title: { fontSize: size.xxl, lineHeight: 40, color: color.accent, fontWeight: '700' },
+  title: { fontSize: size.xxl, lineHeight: 40, color: color.accent, fontWeight: '700', letterSpacing: -0.3 },
   money: { fontSize: size.money, lineHeight: 52, color: color.accent, fontWeight: '800', ...TABULAR },
   mono: { fontSize: size.small, lineHeight: 24, color: color.ink2, fontFamily: FONT_MONO },
 };
@@ -24,7 +24,7 @@ export function Num({ children, style, v = 'lg', ...rest }: { children: ReactNod
 export function Card({ children, style, tone, ...rest }: { children: ReactNode; style?: StyleProp<ViewStyle>; tone?: 'warn' | 'ok' | 'info' | 'accent' } & Omit<ViewProps, 'style'>) {
   const bg = tone === 'warn' ? color.warnBg : tone === 'ok' ? color.okBg : tone === 'info' ? color.infoBg : tone === 'accent' ? color.accentBg : color.surface;
   const bd = tone === 'warn' ? color.warn : tone === 'ok' ? color.ok : tone === 'info' ? color.info : tone === 'accent' ? color.accent : color.line;
-  return <View {...rest} style={[styles.card, { backgroundColor: bg, borderColor: bd }, style]}>{children}</View>;
+  return <View {...rest} style={[styles.card, tone ? null : shadow, { backgroundColor: bg, borderColor: bd }, style]}>{children}</View>;
 }
 
 export function Chip({ label, tone = 'neutral' }: { label: string; tone?: 'ok' | 'warn' | 'danger' | 'info' | 'neutral' }) {
@@ -48,7 +48,7 @@ export function Button({ label, onPress, icon, variant = 'primary', disabled, bu
     <Pressable
       accessibilityRole="button" accessibilityLabel={label} accessibilityHint={hint} accessibilityState={{ disabled: !!off, busy: !!busy }} testID={testID}
       disabled={!!off} onPress={off ? undefined : onPress}
-      style={({ pressed }) => [styles.btn, { backgroundColor: bg, borderColor: bd, minHeight: big ? 64 : MIN_TOUCH + 4, opacity: off ? 0.5 : pressed ? 0.85 : 1 }]}
+      style={({ pressed }) => [styles.btn, { backgroundColor: bg, borderColor: bd, minHeight: big ? 68 : MIN_TOUCH + 8, opacity: off ? 0.5 : pressed ? 0.88 : 1 }, variant === 'primary' && !off ? shadow : null]}
     >
       {busy ? <ActivityIndicator color={fg} /> : icon}
       <Txt v={big ? 'lg' : 'body'} style={{ color: fg, fontWeight: '700', flexShrink: 1, textAlign: 'center' }}>{label}</Txt>
@@ -76,7 +76,7 @@ export function CardSkeleton() {
 
 export function Page({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.canvas }} contentContainerStyle={{ padding: space.s4, gap: space.s4, paddingBottom: space.s6 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ flex: 1, backgroundColor: color.canvas }} contentContainerStyle={{ padding: space.s4, gap: space.s4, paddingBottom: space.s7, width: '100%', maxWidth: 640, alignSelf: 'center' }} keyboardShouldPersistTaps="handled">
       {children}
       {footer}
     </ScrollView>
@@ -84,7 +84,7 @@ export function Page({ children, footer }: { children: ReactNode; footer?: React
 }
 
 const styles = StyleSheet.create({
-  card: { borderWidth: 1, borderRadius: radius.md, padding: space.s4, gap: space.s2 },
-  chip: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: radius.sm, paddingHorizontal: space.s2, paddingVertical: 2 },
-  btn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.s2, borderWidth: 2, borderRadius: radius.md, paddingHorizontal: space.s4, paddingVertical: space.s2 },
+  card: { borderWidth: 1, borderRadius: radius.lg, padding: space.s5, gap: space.s3 },
+  chip: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: space.s3, paddingVertical: 4 },
+  btn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.s3, borderWidth: 2, borderRadius: radius.lg, paddingHorizontal: space.s5, paddingVertical: space.s3 },
 });

@@ -12,7 +12,7 @@ import { useSession } from '../src/lib/session';
 import { color, FONT_MONO, MIN_TOUCH, radius, size, space } from '../src/theme';
 
 const input = {
-  minHeight: MIN_TOUCH + 8, borderWidth: 2, borderColor: color.accent, borderRadius: radius.md, paddingHorizontal: space.s4,
+  minHeight: MIN_TOUCH + 12, borderWidth: 2, borderColor: color.accent, borderRadius: radius.lg, paddingHorizontal: space.s5,
   fontSize: size.lg, color: color.ink, backgroundColor: color.surface, fontFamily: FONT_MONO,
 } as const;
 
