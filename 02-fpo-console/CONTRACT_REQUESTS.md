@@ -1,0 +1,9 @@
+# Contract requests from 02-fpo-console
+
+Written for the 00-core-ledger chat. Nothing here blocks the current build; each item limits what the console can honestly show.
+
+1. **Document bytes for Re-verify (PORTAL_COMMON.md section C).** `LotPassport.integrity.docs` lists `{name, sha256, viewable}` but no endpoint returns the bytes, so the browser cannot recompute SHA-256 and compare. Request: `GET /lots/:sscc/documents/:name` for roles allowed to see the document. Until then the lot page lists the hashes and says Re-verify is not offered.
+2. **Device public keys.** The weighbridge and quality-meter signatures are checked by the chaincode on `POST /lots/:sscc/quality`, but the registered device public keys are not exposed, so the browser cannot show "device signature verified" before submitting. The console shows "Signed reading received" first and "verified by the ledger" only after the receipt (`quality.deviceVerified`). Request (optional): `GET /devices/:deviceId` returning `{deviceId, publicKeyHex}`.
+3. **Dispatch role vs order page.** PROMPT.md puts Dispatch on `/orders/[id]`, but `custody/propose` is `operator`-only and `GET /orders/:id` is `ceo`/`buyer_manager`-only, so no single role can do both on one page. The console puts Dispatch on the lot page (operator) and links to it from the order. Request: confirm that is intended, or allow `operator` to `GET /orders/:orderId`.
+4. **Mock does not model liens on custody.** `shared/mock/server.mjs` accepts `custody/propose` for a pledged lot. The console's Playwright test forces `ERR_LOT_PLEDGED` with `X-Mock-Error`. Request: have the mock refuse with `ERR_LOT_PLEDGED` when the lot's lien is ACTIVE.
+5. **Grading rule.** DATA_SOURCES marks potato grade tolerances as a GAP. The console proposes a grade from a labelled demo rule (see `src/lib/grading.ts`) and the operator can override it. Request: if the team settles a rule, put it in the contract so the chaincode and every portal agree.

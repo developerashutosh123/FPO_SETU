@@ -1,0 +1,5 @@
+# Human steps for 02-fpo-console
+
+1. **Playwright needs system libraries on this WSL.** `libnspr4`, `libnss3` and `libasound2t64` are missing, so Chromium does not start. Run once: `sudo npx playwright install-deps chromium` (or `sudo apt-get install libnspr4 libnss3 libasound2t64`). The tests in this chat were run with those three libraries unpacked from the Ubuntu packages into a temporary folder and `LD_LIBRARY_PATH` pointed at it; nothing was installed system-wide.
+2. **Vercel project** (when P6 is wanted): name `fposetu-fpo`, root directory `02-fpo-console`, Node 22. Environment variables for Production and Preview: `NEXT_PUBLIC_DATA_SOURCE=live`, `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_READ_API_URL` (values in `00-core-ledger/docs/RUNBOOK.md` section 0), and the six `NEXT_PUBLIC_URL_*` portal URLs. Add the final domain (or `https://fposetu-*.vercel.app`) to `CORS_ORIGINS` on the gateway and read-API.
+3. **Live run (P5)** needs the gateway and tunnel up (`make resume`, `pnpm start`, `make tunnel`). Then `NEXT_PUBLIC_DATA_SOURCE=live ... pnpm dev` and walk steps 4, 7, 8 and 9 as `debasis.ops` and `sujata.ceo`.

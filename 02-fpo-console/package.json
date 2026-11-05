@@ -1,0 +1,36 @@
+{
+  "name": "fpo-setu-fpo-console",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FPO-SETU 02: FPO operator console (academic prototype, RD61003, CRDIST, IIT Kharagpur, Group 7).",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "predev": "node scripts/sync-contract.mjs",
+    "dev": "next dev -p 3002",
+    "prebuild": "node scripts/sync-contract.mjs",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "mock": "node ../shared/mock/server.mjs --quiet",
+    "check": "pnpm typecheck && pnpm test"
+  },
+  "dependencies": {
+    "@microsoft/fetch-event-source": "2.0.1",
+    "lucide-react": "1.68.0",
+    "next": "16.4.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.3.4",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "4.3.4",
+    "typescript": "~5.9.3",
+    "vitest": "5.1.0"
+  }
+}
