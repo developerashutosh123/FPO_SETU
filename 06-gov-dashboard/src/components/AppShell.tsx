@@ -3,7 +3,6 @@ import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Landmark, LogIn, LogOut, Network, Search, LayoutDashboard } from 'lucide-react';
-import { FOOTER_TEXT } from '@/contract/contract';
 import { DATA_SOURCE, api, getConn, resolveBase, subscribeConn, type ConnState } from '@/lib/api';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { formatCount, formatDateTimeIST } from '@/lib/format';
@@ -134,9 +133,6 @@ function Inner({ children }: { children: ReactNode }) {
       <Banners />
       <Header />
       <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">{children}</main>
-      <footer className="border-t border-line bg-surface">
-        <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-ink-2 sm:px-6">{FOOTER_TEXT}</p>
-      </footer>
     </div>
   );
 }
