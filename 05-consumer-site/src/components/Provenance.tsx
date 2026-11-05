@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ExternalLink, MapPin, Minus, TriangleAlert } from 'lucide-react';
+import { Check, ChevronDown, ExternalLink, MapPin, Minus, Snowflake, Sprout, Store, Truck, TriangleAlert, Warehouse } from 'lucide-react';
 import type { Provenance } from '@/contract/contract';
 import { formatDate, formatDateTime, shortTx } from '@/lib/format';
 import { fill, type Dict } from '@/lib/lang';
@@ -6,6 +6,7 @@ import { govTxUrl } from '@/lib/links';
 
 type Tone = 'ok' | 'warn' | 'none';
 const TONE_CLASS: Record<Tone, string> = { ok: 'bg-ok text-white', warn: 'bg-warn text-white', none: 'bg-line text-ink' };
+const ORG_ICON = { FPO: Sprout, COLD_STORAGE: Snowflake, WAREHOUSE: Warehouse, BUYER: Store, TRANSPORT: Truck } as const;
 
 /** One plain statement with a "how we know" expander. Native <details>: keyboard and screen-reader friendly, no JavaScript. */
 function Check_({ tone, title, why, how }: { tone: Tone; title: string; why: string; how: string }) {
@@ -13,15 +14,15 @@ function Check_({ tone, title, why, how }: { tone: Tone; title: string; why: str
   return (
     <li className="border-b border-line last:border-b-0">
       <details>
-        <summary className="flex min-h-14 items-center gap-3 py-3">
-          <span aria-hidden className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${TONE_CLASS[tone]}`}><Icon className="h-4 w-4" strokeWidth={3} /></span>
+        <summary className="flex min-h-16 items-center gap-4 px-4 py-3 sm:px-5">
+          <span aria-hidden className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${TONE_CLASS[tone]}`}><Icon className="h-5 w-5" strokeWidth={2.75} /></span>
           <span className="flex-1 text-lg font-semibold leading-snug">{title}</span>
           <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-accent">
             {how}
             <ChevronDown aria-hidden className="chev h-4 w-4 transition-transform" />
           </span>
         </summary>
-        <p className="pb-4 pl-10 pr-2 text-ink-2">{why}</p>
+        <p className="pb-5 pl-[4.25rem] pr-5 leading-relaxed text-ink-2 sm:pl-[4.75rem]">{why}</p>
       </details>
     </li>
   );
@@ -35,36 +36,39 @@ export function ProvenanceView({ p, t, indexOnly }: { p: Provenance; t: Dict; in
 
   return (
     <article>
-      <p className="eyebrow">{t.lot.lotRef}</p>
-      <p className="mono mt-1 text-ink-2">{p.humanRef}</p>
-      <h1 className="mt-2 text-[2.25rem] font-semibold leading-tight tracking-tight sm:text-5xl">{commodity}</h1>
-      <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2 text-xl text-ink-2">
-        {p.variety && <span>{p.variety}</span>}
-        {p.grade && <span className="chip">{fill(t.lot.gradeValue, { grade: p.grade })}</span>}
-      </p>
-
-      <p className="mt-6 flex items-start gap-3 text-xl leading-snug">
-        <MapPin aria-hidden className="mt-1 h-5 w-5 shrink-0 text-accent-2" />
-        <span>{fill(t.lot.grownIn, { village: p.village, block: p.block, district: p.district })}</span>
-      </p>
-      <p className="mt-2 pl-8 text-ink-2">{fill(t.lot.harvested, { date: formatDate(p.harvestOrUnloadDate) })}</p>
-
-      {firstLink && (
-        <p className="mt-5 pl-8">
-          <a href={firstLink} className="tap tap-line" rel="noopener">
-            {t.lot.ledgerLink}
-            <ExternalLink aria-hidden className="h-4 w-4" />
-          </a>
+      <div className="relative overflow-hidden rounded-3xl bg-accent px-6 py-8 text-white shadow-md sm:px-10 sm:py-12">
+        <Sprout aria-hidden className="pointer-events-none absolute -right-6 -top-6 h-44 w-44 text-white/[0.07] sm:h-60 sm:w-60" />
+        <p className="relative text-sm font-semibold uppercase tracking-widest text-white/75">{t.lot.lotRef}</p>
+        <p className="mono relative mt-1 text-white/85">{p.humanRef}</p>
+        <h1 className="relative mt-4 text-[2.75rem] font-bold leading-none tracking-tight sm:text-6xl">{commodity}</h1>
+        <p className="relative mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xl text-white/90">
+          {p.variety && <span>{p.variety}</span>}
+          {p.grade && <span className="chip !border-white/30 !bg-white/15 !text-white">{fill(t.lot.gradeValue, { grade: p.grade })}</span>}
         </p>
-      )}
+
+        <p className="relative mt-8 flex items-start gap-3 text-xl leading-snug">
+          <MapPin aria-hidden className="mt-1 h-5 w-5 shrink-0 text-[#F2C48D]" />
+          <span>{fill(t.lot.grownIn, { village: p.village, block: p.block, district: p.district })}</span>
+        </p>
+        <p className="relative mt-2 pl-8 text-white/80">{fill(t.lot.harvested, { date: formatDate(p.harvestOrUnloadDate) })}</p>
+
+        {firstLink && (
+          <p className="relative mt-7">
+            <a href={firstLink} className="tap tap-light" rel="noopener">
+              {t.lot.ledgerLink}
+              <ExternalLink aria-hidden className="h-4 w-4" />
+            </a>
+          </p>
+        )}
+      </div>
 
       {indexOnly && (
-        <p role="status" className="mt-6 rounded-md border border-warn bg-surface p-3 text-sm font-medium text-warn">{t.lot.indexOnly}</p>
+        <p role="status" className="note mt-6 font-medium text-warn" data-tone="warn">{t.lot.indexOnly}</p>
       )}
 
-      <section aria-labelledby="checks" className="mt-10 border-t border-ink pt-6">
+      <section aria-labelledby="checks" className="mt-12">
         <h2 id="checks" className="eyebrow">{t.lot.checksTitle}</h2>
-        <ul className="mt-2">
+        <ul className="card mt-3 overflow-hidden">
           <Check_
             tone={p.residueTested ? 'ok' : 'none'}
             title={p.residueTested ? t.lot.residueYes : t.lot.residueNo}
@@ -86,23 +90,26 @@ export function ProvenanceView({ p, t, indexOnly }: { p: Provenance; t: Dict; in
         </ul>
       </section>
 
-      <section aria-labelledby="journey" className="mt-10 border-t border-ink pt-6">
+      <section aria-labelledby="journey" className="mt-12">
         <h2 id="journey" className="eyebrow">{t.lot.journeyTitle}</h2>
         <p className="mt-2 text-sm text-ink-2">{t.lot.journeyNote}</p>
-        <ol className="mt-4">
-          {p.journey.map((j, i) => (
-            <li key={`${j.at}-${i}`} className="relative pb-6 pl-8 last:pb-0">
-              {i < p.journey.length - 1 && <span aria-hidden className="absolute left-[7px] top-4 h-full w-px bg-line" />}
-              <span aria-hidden className="absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-accent bg-canvas" />
-              <p className="text-sm font-semibold text-ink-2">{formatDateTime(j.at)} · {t.lot.orgType[j.orgType] ?? j.orgType}</p>
-              <p className="text-lg font-semibold leading-snug">{stepLabel(j.step)}</p>
-              <p className="text-ink-2">{j.place}</p>
-            </li>
-          ))}
+        <ol className="mt-6">
+          {p.journey.map((j, i) => {
+            const Icon = ORG_ICON[j.orgType] ?? Sprout;
+            return (
+              <li key={`${j.at}-${i}`} className="relative pb-8 pl-16 last:pb-0">
+                {i < p.journey.length - 1 && <span aria-hidden className="absolute left-[21px] top-11 h-[calc(100%-2.75rem)] w-0.5 rounded bg-accent/20" />}
+                <span aria-hidden className="absolute left-0 top-0 flex h-11 w-11 items-center justify-center rounded-full border-2 border-accent/25 bg-surface text-accent shadow-sm"><Icon className="h-5 w-5" /></span>
+                <p className="text-sm font-semibold text-ink-2">{formatDateTime(j.at)} · {t.lot.orgType[j.orgType] ?? j.orgType}</p>
+                <p className="mt-0.5 text-lg font-semibold leading-snug">{stepLabel(j.step)}</p>
+                <p className="text-ink-2">{j.place}</p>
+              </li>
+            );
+          })}
         </ol>
       </section>
 
-      <section aria-labelledby="verify" className="mt-10 border-t border-ink pt-6">
+      <section aria-labelledby="verify" className="card mt-12 p-5 sm:p-6">
         <details>
           <summary className="flex min-h-12 items-center justify-between gap-3">
             <h2 id="verify" className="text-xl font-semibold">{t.lot.verifyTitle}</h2>
@@ -136,7 +143,7 @@ export function ProvenanceView({ p, t, indexOnly }: { p: Provenance; t: Dict; in
         </details>
       </section>
 
-      <p className="mt-10 text-sm text-ink-2">{t.home.privacy} {t.lot.simulated}</p>
+      <p className="mt-10 text-sm leading-relaxed text-ink-2">{t.home.privacy} {t.lot.simulated}</p>
     </article>
   );
 }

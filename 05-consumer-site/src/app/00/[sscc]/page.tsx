@@ -22,7 +22,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 function Message({ title, body, back }: { title: string; body: string; back: React.ReactNode }) {
   return (
     <div>
-      <h1 className="text-[2rem] font-semibold leading-tight tracking-tight">{title}</h1>
+      <h1 className="text-[2rem] font-bold leading-tight tracking-tight">{title}</h1>
       <p className="mt-4 text-lg text-ink-2">{body}</p>
       <p className="mt-6">{back}</p>
     </div>
