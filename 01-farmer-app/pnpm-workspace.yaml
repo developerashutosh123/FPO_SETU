@@ -1,0 +1,11 @@
+# Vercel installs with CI=1; pnpm 12 then fails with ERR_PNPM_IGNORED_BUILDS for any dependency whose build script is not approved here.
+# Filled in after the first install (see the list printed by `pnpm install`); each entry below was checked and is harmless.
+allowBuilds:
+  esbuild: true
+
+# Metro cannot follow pnpm's symlinked node_modules, so the install is hoisted (the layout npm uses).
+minimumReleaseAgeExclude:
+  - lucide-react-native@1.68.0
+  - react-native-qrcode-svg@6.3.54
+
+nodeLinker: hoisted

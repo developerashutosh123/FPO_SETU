@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.expo/
+.vercel/
+expo-env.d.ts
+*.log
+.env*.local
+test-results/
+playwright-report/

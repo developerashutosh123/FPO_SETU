@@ -1,0 +1,110 @@
+{
+  "app": { "name": "FPO-SETU", "tagline": "What happened to my lot, and what was I paid?", "webDemo": "Web demo" },
+  "common": {
+    "loading": "Loading…", "retry": "Try again", "back": "Back", "close": "Close", "copy": "Copy", "copied": "Copied",
+    "kg": "kg", "bags": "{{n}} bags", "home": "Home", "language": "Language", "logout": "Sign out", "simulated": "Simulated adapter",
+    "openInGov": "Open in ledger explorer", "profile": "Profile", "skipToContent": "Skip to content"
+  },
+  "lang": { "title": "Choose your language", "sub": "You can change it later from the top of the home screen." },
+  "login": {
+    "title": "Sign in with your phone", "phone": "Mobile number (10 digits)", "sendOtp": "Send OTP", "demoOtp": "Demo OTP",
+    "demoHint": "This is a prototype. No real SMS is sent, so the OTP is shown here.", "otp": "6-digit OTP", "enter": "Sign in",
+    "changePhone": "Use another number", "demoPhone": "Demo farmer: 9000000001", "badPhone": "Enter the 10-digit mobile number."
+  },
+  "device": {
+    "title": "This phone is your signature",
+    "body": "When you press \"I confirm\", this phone signs with a secret key. The key never leaves the phone, so nobody can sign for you. The ledger checks the signature.",
+    "ok": "Understood, continue", "failed": "This phone could not make its signing key. Open the app in the phone's own browser over https, then try again."
+  },
+  "home": {
+    "hello": "Hello, {{name}}", "season": "This season", "totalKg": "Total weight", "totalPaid": "Total paid to you", "pending": "Waiting",
+    "waitingTitle": "Waiting for your confirmation", "waitingOne": "1 lot needs your signature", "waitingMany": "{{n}} lots need your signature",
+    "confirmNow": "Open and confirm", "myLots": "My lots", "netCredit": "You received", "seeStatement": "See payment statement",
+    "statements": "Payment statements", "emptyTitle": "No lots yet", "emptyBody": "When your VLE writes a lot in your name it shows up here. You confirm it with your phone.",
+    "loadFailed": "Your lots could not be loaded.", "listNote": "Showing lots that have a draft or a payment statement."
+  },
+  "status": {
+    "PENDING_FARMER_SIGNATURE": "Needs your signature", "COMMISSIONED": "Recorded", "GRADED": "Graded", "IN_STORAGE": "In storage", "PLEDGED": "Pledged to bank",
+    "LISTED": "Offered for sale", "SOLD": "Sold", "IN_TRANSIT": "On the way", "DELIVERED": "Delivered", "SETTLED": "Payment made", "CLOSED": "Accounts closed",
+    "TRANSFORMED": "Sent to processing", "REJECTED": "Rejected", "UNVERIFIABLE": "Cannot be verified"
+  },
+  "crop": { "POTATO": "Potato", "PADDY": "Paddy", "BRINJAL": "Brinjal", "CAULIFLOWER": "Cauliflower" },
+  "grade": "Grade {{g}}",
+  "lot": {
+    "title": "Lot", "weight": "Weight", "harvestDate": "Harvest / unload date", "variety": "Variety", "village": "Village", "pledgedTitle": "Pledged to bank",
+    "pledgedBody": "This lot is held as security for a loan. It cannot be sold on until the bank releases it.", "timeline": "What happened to this lot",
+    "qrTitle": "Pack QR for buyers and shoppers", "qrBody": "Anyone who scans it sees where this lot came from. No name or phone number is shown.", "openConsumer": "Open the public page",
+    "statementCard": "Payment for this lot", "proof": "Proof", "noProof": "no proof yet", "needsSignature": "This lot is waiting for your signature.", "estimated": "Estimated"
+  },
+  "timeline": {
+    "commissioned": "Lot recorded with your signature", "graded": "Weighed and graded", "stored": "Stored", "pledged": "Pledged to the bank", "released": "Bank released the pledge",
+    "sold": "Sale agreed", "dispatched": "Sent to the buyer", "delivered": "Reached the buyer", "paid": "Payment made to you",
+    "atCentre": "Changual collection centre"
+  },
+  "confirm": {
+    "title": "Confirm this lot", "intro": "Your VLE {{vle}} wrote this lot in your name. If it is right, confirm it with this phone.", "crop": "Crop", "bags": "Bags",
+    "est": "Estimated weight", "date": "Harvest / unload date", "vle": "Written by", "button": "I confirm", "notRight": "This is not right", "signing": "Signing…",
+    "offlineWhy": "The ledger is asleep, so signing is paused.", "doneTitle": "Lot confirmed", "doneBody": "Your signature is on the ledger. The lot is now recorded in your name.",
+    "tx": "Transaction", "block": "Block", "time": "Time", "viewProof": "Show proof", "backHome": "Back to home", "viewLot": "Open the lot",
+    "declineTitle": "Not confirmed", "declineBody": "You have not signed, so this lot will not go on the ledger. Tell your VLE what is wrong. It will not appear in your waiting list on this phone.",
+    "declineUndo": "I changed my mind, show it again", "alreadyDone": "This lot is already confirmed.", "notFound": "There is no lot waiting for you with this number.",
+    "payloadBad": "This draft does not match what is shown, so this phone will not sign it. Ask your VLE to create it again.",
+    "reregister": "Register this phone's signature again and retry", "noKey": "This phone has no signing key yet. Sign in again so one is made."
+  },
+  "statement": {
+    "title": "Payment statement", "listTitle": "Your payment statements", "gross": "Total sale amount", "deductions": "What was deducted", "net": "You received", "grade": "Grade",
+    "weight": "Weight", "buyer": "Sold to", "upi": "UPI reference", "simulated": "Simulated payment", "paidOn": "Paid on", "listen": "Read aloud", "stop": "Stop",
+    "noVoice": "This device has no Bengali voice. Please read the statement on the screen.", "noVoiceHi": "This device has no Hindi voice. Please read the statement on the screen.",
+    "noVoiceEn": "This device has no English voice. Please read the statement on the screen.", "proofs": "Proof on the ledger", "emptyTitle": "No payment yet",
+    "emptyBody": "Your statement appears here after the buyer pays and the FPO shares the money.", "notPaid": "Not paid yet", "reading": "Reading aloud…",
+    "say": {
+      "intro": "Statement for your {{crop}} lot. Weight {{kg}} kilograms. Grade {{grade}}.",
+      "gross": "Total sale amount: {{amount}}.",
+      "deductionsIntro": "These were deducted.",
+      "deduction": "{{name}}: {{amount}}.",
+      "net": "You received {{amount}}.",
+      "paid": "Paid on {{date}}. This payment reference is simulated.",
+      "noDeductions": "Nothing was deducted."
+    }
+  },
+  "deduction": {
+    "HAMALI": "Hamali (loading and unloading)", "MARKET_FEE": "Market fee", "COMMISSION": "Commission agent", "TRANSPORT": "Transport", "COLD_STORAGE_RENT": "Cold storage rent",
+    "FPO_MARGIN": "FPO share", "LOAN_RECOVERY": "Loan repaid"
+  },
+  "proofDrawer": {
+    "title": "Proof on the ledger", "tx": "Transaction ID", "channel": "Channel", "block": "Block", "endorsers": "Endorsed by", "committed": "Committed", "fn": "Action",
+    "loading": "Reading the transaction…", "unavailable": "The transaction details could not be loaded right now.", "explorer": "Open in ledger explorer"
+  },
+  "pill": { "live": "Live", "index": "Index-only", "offline": "Ledger offline" },
+  "banner": {
+    "indexOnly": "The ledger node is asleep. You are seeing the last indexed state. Actions that write to the ledger are paused.",
+    "offline": "No connection to the server. Check your internet and try again."
+  },
+  "toast": {
+    "LotCommissioned": "Lot {{ref}} recorded with your signature", "LotGraded": "Lot {{ref}} was weighed and graded", "DepositRecorded": "Lot {{ref}} stored",
+    "LienMarked": "Lot {{ref}} pledged to the bank", "LienReleased": "Bank released lot {{ref}}", "SettlementExecuted": "Payment recorded for lot {{ref}}",
+    "PatronageDistributed": "Your statement for lot {{ref}} is ready", "CustodyAccepted": "Lot {{ref}} reached the buyer", "default": "Update on lot {{ref}}"
+  },
+  "profile": { "title": "Profile", "token": "Member token", "tokenNote": "This is the only ID of yours that goes on the ledger. Your name and phone stay off it.", "fpo": "FPO", "village": "Village" },
+  "about": {
+    "title": "How FPO-SETU fits together",
+    "body": "Six apps read and write one shared record through one gateway. The record lives on a Hyperledger Fabric network run by four organisations on three channels. This app is the farmer's window onto it.",
+    "chain": "Farmer app, FPO console, bank portal, buyer portal, consumer site, governance dashboard  →  one gateway  →  Fabric (4 organisations, 3 channels)", "here": "You are here: the farmer app"
+  },
+  "credits": { "title": "Credits", "body": "This build uses no photographs or illustrations. Icons are from Lucide (ISC licence). Fonts: IBM Plex Sans, Noto Sans Bengali, Noto Sans Devanagari (SIL Open Font Licence), loaded from Google Fonts." },
+  "errors": {
+    "NETWORK": "The server cannot be reached. Check your internet and try again.",
+    "UNKNOWN": "Something went wrong. Try again in a moment.",
+    "ERR_UNAUTHENTICATED": "Your sign-in has ended. Sign in again with your phone number.",
+    "ERR_FORBIDDEN_ROLE": "This is not your lot, so it cannot be opened. Go back to your own lots.",
+    "ERR_FORBIDDEN_ORG": "You cannot see this. Go back to your own lots.",
+    "ERR_VALIDATION": "Something you entered is not right. Check it and try again.",
+    "ERR_NOT_FOUND": "That could not be found. Go back to home and look again.",
+    "ERR_INVALID_STATE": "This lot is not ready for that step. Go back to home to see its latest state.",
+    "ERR_BAD_FARMER_SIGNATURE": "The signature did not match the key on record. Choose \"Register this phone's signature again\" and retry.",
+    "ERR_BAD_DEVICE_SIGNATURE": "The weighing device signature did not match. Tell the FPO.",
+    "ERR_LEDGER_UNAVAILABLE": "The ledger is asleep, so this cannot be done now. Try again in a few minutes.",
+    "ERR_DOUBLE_FINANCING": "This lot is already pledged. Wait for the bank to release it.",
+    "ERR_LOT_PLEDGED": "This lot is pledged to the bank. Wait for the bank to release it."
+  }
+}

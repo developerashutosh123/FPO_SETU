@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "FPO-SETU",
+    "slug": "fposetu-farmer",
+    "scheme": "fposetu",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png",
+      "name": "FPO-SETU",
+      "shortName": "SETU",
+      "themeColor": "#1E4D2B",
+      "description": "What happened to my lot, and what was I paid? FPO-SETU farmer app (prototype)."
+    }
+  }
+}
