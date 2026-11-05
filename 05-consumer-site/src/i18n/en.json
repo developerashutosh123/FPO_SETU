@@ -1,0 +1,103 @@
+{
+  "brand": "FPO-SETU",
+  "tagline": "Where your food came from",
+  "skip": "Skip to content",
+  "language": "Language",
+  "home": {
+    "title": "Where did this food come from?",
+    "lead": "Scan the code on your pack to see where it was grown, how it was handled, and the proof each party signed.",
+    "scanHint": "Open your phone camera and point it at the QR code on the pack. It opens this site on the right page.",
+    "entryLabel": "Or type the 18-digit number printed under the code",
+    "entryPlaceholder": "18 digits",
+    "entryButton": "Show this lot",
+    "invalid": "That is not a valid lot number. Check the 18 digits printed under the QR code and try again.",
+    "stepsTitle": "How a pack gets its record",
+    "steps": [
+      {
+        "title": "Farm",
+        "body": "The farmer confirms the lot on their own phone. The village and harvest date are recorded."
+      },
+      {
+        "title": "Collection centre",
+        "body": "The lot is weighed and graded on signed readings, then stored cold."
+      },
+      {
+        "title": "You",
+        "body": "Each handover is recorded. You can open the proofs and check them yourself."
+      }
+    ],
+    "privacy": "This page never shows the name or phone number of any farmer."
+  },
+  "lot": {
+    "back": "Check another pack",
+    "lotRef": "Lot reference",
+    "grade": "Grade",
+    "gradeValue": "Grade {grade}",
+    "grownIn": "Grown in {village}, {block} block, {district}",
+    "harvested": "Harvested or unloaded on {date}",
+    "ledgerLink": "See the record on the ledger explorer",
+    "indexOnly": "Showing the last verified record. Live ledger node is offline.",
+    "checksTitle": "What we checked",
+    "howWeKnow": "How we know",
+    "residueYes": "Residue tested",
+    "residueYesWhy": "A residue test result for this lot is recorded on the ledger. The result itself is not changed once it is written.",
+    "residueNo": "No residue test recorded",
+    "residueNoWhy": "The ledger holds no residue test for this lot. We do not claim one.",
+    "phiYes": "Safe-to-harvest interval respected",
+    "phiYesWhy": "The farmer logs every spray in a diary. The gap between the last spray and the harvest was long enough for the product used. The diary itself is private and is not shown here.",
+    "phiNo": "Safe-to-harvest interval not confirmed",
+    "phiNoWhy": "The record could not confirm that the wait after the last spray was long enough. The diary itself is private and is not shown here.",
+    "coldYes": "Kept cool all the way",
+    "coldYesWhy": "A temperature logger travelled with the lot. It recorded no reading outside the allowed range, and its summary is anchored on the ledger.",
+    "coldNo": "Not kept cool all the way",
+    "coldNoWhy": "The temperature logger recorded a reading outside the allowed range during storage or transport. Breaches recorded: {count}. We show this as it was recorded.",
+    "journeyTitle": "The journey",
+    "orgType": {
+      "FPO": "Producer company",
+      "COLD_STORAGE": "Cold storage",
+      "WAREHOUSE": "Warehouse",
+      "BUYER": "Buyer",
+      "TRANSPORT": "Transport"
+    },
+    "steps": {
+      "Lot commissioned with the farmer signature": "Lot registered with the farmer's own confirmation",
+      "Graded and weighed on a signed weighbridge": "Graded and weighed on a signed weighbridge",
+      "Stored": "Stored",
+      "Dispatched": "Dispatched",
+      "Received by the buyer": "Received by the buyer"
+    },
+    "verifyTitle": "Verify it yourself",
+    "verifyBody": "Four organisations keep copies of this record. Changing it would need several of them to collude. Each line below is one entry. Open it in the ledger explorer to see which organisations signed it.",
+    "proofsTitle": "Ledger entries for this lot",
+    "block": "Block {n}",
+    "channelMembers": "Kept by",
+    "channels": {
+      "trace-channel": "Trace record",
+      "finance-channel": "Finance record",
+      "trade-channel": "Trade record"
+    },
+    "channelOrgs": {
+      "trace-channel": "producer company, bank, buyer, district monitoring cell",
+      "finance-channel": "producer company, bank, district monitoring cell",
+      "trade-channel": "producer company, buyer"
+    },
+    "noProofs": "No ledger entries are listed for this lot yet.",
+    "noLink": "Explorer link not configured",
+    "simulated": "Simulated: payments, e-NWR and other outside systems. The ledger entries are real."
+  },
+  "notFound": {
+    "title": "We cannot find this lot",
+    "body": "No record matches {sscc}. Check the 18 digits under the QR code. If the number is right and the pack still shows nothing, the label may not be genuine.",
+    "bad": "{sscc} is not a valid lot number."
+  },
+  "unreachable": {
+    "title": "The record cannot be reached right now",
+    "body": "Neither the live ledger node nor the saved copy answered. Try again in a minute."
+  },
+  "commodity": {
+    "POTATO": "Potato",
+    "PADDY": "Paddy",
+    "BRINJAL": "Brinjal",
+    "CAULIFLOWER": "Cauliflower"
+  }
+}

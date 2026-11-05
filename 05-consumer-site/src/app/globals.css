@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@theme inline {
+  --font-sans: var(--font-plex-sans), "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
+  --color-canvas: var(--canvas);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+}
+
+/* Editorial paper, one light theme. Secondary text uses --ink-2 (7:1 on the paper); --ink-3 is too faint for body copy. */
+html { color-scheme: light; }
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+[lang="bn"] { font-family: var(--font-bn-loaded), var(--font-bn); line-height: 1.75; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+
+.mono { font-family: var(--font-mono); font-size: 0.875em; letter-spacing: -0.01em; word-break: break-all; }
+.eyebrow { font-size: var(--text-sm); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+[lang="bn"] .eyebrow { letter-spacing: 0; text-transform: none; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 12px; border-radius: 999px;
+  border: 1px solid var(--line); font-size: var(--text-sm); font-weight: 600; color: var(--ink); background: var(--surface);
+}
+
+.tap { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 16px; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; }
+.tap-primary { background: var(--accent); color: var(--accent-ink); }
+.tap-primary:hover { background: color-mix(in srgb, var(--accent) 88%, black); }
+.tap-line { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
+.tap-line:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] > summary .chev { transform: rotate(180deg); }
