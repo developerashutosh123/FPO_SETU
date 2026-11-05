@@ -19,6 +19,18 @@ describe('fpo api client', () => {
     expect(extraHeadersFor('https://read-api-ten.vercel.app')).toEqual({});
   });
 
+  it('treats an env value with a stray space as the same value, so " live" is live and not mock', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => json(HEALTH)));
+    const m = await load({ NEXT_PUBLIC_DATA_SOURCE: ' live', NEXT_PUBLIC_API_URL: ' https://gw.example/ ', NEXT_PUBLIC_READ_API_URL: 'https://read.example\n' });
+    expect(m.DATA_SOURCE).toBe('live');
+    expect(m.PRIMARY_URL).toBe('https://gw.example');
+    expect(m.READ_API_URL).toBe('https://read.example');
+    vi.resetModules();
+    vi.stubEnv('NEXT_PUBLIC_URL_GOV', ' https://fposetu-gov.vercel.app ');
+    const { PORTALS } = await import('./portals');
+    expect(PORTALS.gov).toBe('https://fposetu-gov.vercel.app');
+  });
+
   it('agree-price sends a numeric pricePerQtl and no salt, so the gateway derives the salt the buyer also gets', async () => {
     const calls: { url: string; body?: string }[] = [];
     vi.stubGlobal('fetch', vi.fn(async (u: string, init?: RequestInit) => { calls.push({ url: u, body: init?.body as string | undefined }); return u.endsWith('/health') ? json(HEALTH) : json({ resource: {} }); }));

@@ -12,8 +12,9 @@ import { ERROR_MESSAGES, type ClientErrorCode } from './errors';
  *    and the mode becomes index-only. A single slow or dropped request on the free ngrok tunnel re-probes instead of failing over.
  *  - Every response's X-Ledger-Mode header is recorded.
  */
-const trim = (s: string | undefined) => (s ?? '').replace(/\/+$/, '');
-export const DATA_SOURCE: 'mock' | 'live' = process.env.NEXT_PUBLIC_DATA_SOURCE === 'live' ? 'live' : 'mock';
+/** Env values pasted into a dashboard often carry a stray space or newline; ignore it (a " live" must not silently mean mock). */
+const trim = (s: string | undefined) => (s ?? '').trim().replace(/\/+$/, '');
+export const DATA_SOURCE: 'mock' | 'live' = (process.env.NEXT_PUBLIC_DATA_SOURCE ?? '').trim() === 'live' ? 'live' : 'mock';
 export const PRIMARY_URL = DATA_SOURCE === 'mock' ? trim(process.env.NEXT_PUBLIC_MOCK_URL) || 'http://localhost:4010' : trim(process.env.NEXT_PUBLIC_API_URL);
 export const READ_API_URL = trim(process.env.NEXT_PUBLIC_READ_API_URL);
 
