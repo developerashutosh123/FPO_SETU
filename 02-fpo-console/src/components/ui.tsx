@@ -8,11 +8,11 @@ import { CopyButton } from './CopyButton';
 
 export function PageHeader({ eyebrow, title, children, actions }: { eyebrow?: string; title: ReactNode; children?: ReactNode; actions?: ReactNode }) {
   return (
-    <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div className="min-w-0">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight">{title}</h1>
-        {children && <div className="mt-2 max-w-3xl text-ink-2">{children}</div>}
+        <h1 className="mt-1.5 text-[1.625rem] font-semibold leading-tight tracking-tight">{title}</h1>
+        {children && <div className="mt-2 max-w-3xl text-[15px] leading-relaxed text-ink-2">{children}</div>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </header>

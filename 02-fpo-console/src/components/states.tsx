@@ -9,7 +9,7 @@ export function Skeleton({ className = '' }: { className?: string }) {
 export function StateShell({ kind, title, body, action }: { kind: 'loading' | 'empty' | 'error' | 'notfound'; title: string; body?: string; action?: ReactNode }) {
   if (kind === 'loading') {
     return (
-      <div className="card p-6" role="status" aria-live="polite" aria-label={title}>
+      <div className="card p-6 sm:p-8" role="status" aria-live="polite" aria-label={title}>
         <span className="sr-only">{title}</span>
         <Skeleton className="h-5 w-48" />
         <Skeleton className="mt-4 h-4 w-full" />

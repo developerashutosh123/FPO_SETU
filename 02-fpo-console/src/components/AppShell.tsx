@@ -2,7 +2,7 @@
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Keyboard, LogIn, LogOut, X } from 'lucide-react';
+import { Boxes, ClipboardList, FileCheck2, Keyboard, LayoutDashboard, LogIn, LogOut, Scale, Sprout, X, type LucideIcon } from 'lucide-react';
 import { FOOTER_TEXT, type StreamEvent } from '@/contract/contract';
 import { DATA_SOURCE, api, getConn, resolveBase, subscribeConn, type ConnState } from '@/lib/api';
 import { AuthProvider, useAuth } from '@/lib/auth';
@@ -47,7 +47,7 @@ export function LedgerStatusPill() {
     text = `Index-only · last block ${n('trace-channel')}${lastIndexedAt ? ` at ${formatDateTimeIST(lastIndexedAt)}` : ''}`;
   } else if (checked) { tone = 'danger'; text = 'Ledger offline'; }
 
-  const dot = tone === 'ok' ? 'bg-ok' : tone === 'warn' ? 'bg-warn' : tone === 'danger' ? 'bg-danger' : 'bg-ink-3';
+  const dot = tone === 'idle' ? 'bg-ink-3' : 'bg-current';
   return (
     <span className="chip" data-tone={tone === 'idle' ? undefined : tone} role="status" aria-live="polite" data-testid="ledger-pill">
       <span className={`inline-block h-2 w-2 rounded-full ${dot}`} aria-hidden />
@@ -61,17 +61,17 @@ function Banners() {
   return (
     <>
       {DATA_SOURCE === 'mock' && (
-        <div className="border-b border-line bg-surface px-4 py-1.5 text-center text-xs text-ink-2" data-testid="mock-banner">
+        <div className="banner" data-tone="muted" data-testid="mock-banner">
           <strong className="font-semibold text-ink">Mock data.</strong> This build reads fixtures from the mock gateway. Transaction IDs start with FIXTURE- and are not on a ledger.
         </div>
       )}
       {conn.mode === 'index-only' && (
-        <div role="status" className="border-b px-4 py-2 text-center text-sm" style={{ background: 'color-mix(in srgb, var(--warn-text) 12%, var(--surface))', borderColor: 'color-mix(in srgb, var(--warn-text) 40%, transparent)' }} data-testid="offline-banner">
+        <div role="status" className="banner" data-tone="warn" data-testid="offline-banner">
           <strong className="font-semibold text-warn">The ledger node is asleep.</strong> You are seeing the last indexed state. Actions that write to the ledger are paused.
         </div>
       )}
       {conn.mode === 'offline' && (
-        <div role="alert" className="border-b px-4 py-2 text-center text-sm" style={{ background: 'color-mix(in srgb, var(--danger-text) 10%, var(--surface))', borderColor: 'color-mix(in srgb, var(--danger-text) 40%, transparent)' }}>
+        <div role="alert" className="banner" data-tone="danger">
           <strong className="font-semibold text-danger">Cannot reach the ledger or its read-only copy.</strong> Check your connection and reload.
         </div>
       )}
@@ -131,39 +131,86 @@ function ShortcutOverlay({ open, onClose }: { open: boolean; onClose: () => void
   );
 }
 
+const NAV_ICON: Record<string, LucideIcon> = { '/': LayoutDashboard, '/intake': Scale, '/lots': Boxes, '/orders': ClipboardList, '/collateral': FileCheck2 };
+const isActive = (href: string, pathname: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+
+function Brand() {
+  return (
+    <Link href="/" className="flex items-center gap-3 no-underline">
+      <span aria-hidden className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-2 text-white"><Sprout className="h-5 w-5" /></span>
+      <span className="flex flex-col leading-tight">
+        <span className="text-[15px] font-semibold tracking-tight">Kharagpur Krishak Sanghati</span>
+        <span className="text-xs font-medium uppercase tracking-wider opacity-60">FPO07 console</span>
+      </span>
+    </Link>
+  );
+}
+
+/** Persistent left sidebar (large screens). Small screens get the same links in the top bar. */
+function Sidebar() {
+  const pathname = usePathname();
+  const { session, logout } = useAuth();
+  const nav = session ? navFor(session.user.role) : [];
+  if (!session) return null;
+  return (
+    <aside className="sidebar hidden w-64 shrink-0 flex-col lg:flex">
+      <div className="sticky top-0 flex h-dvh flex-col gap-6 px-4 py-5">
+        <Brand />
+        <nav aria-label="Main" className="flex flex-col gap-1">
+          {nav.map(({ href, label }) => {
+            const Icon = NAV_ICON[href] ?? LayoutDashboard;
+            return (
+              <Link key={href} href={href} aria-current={isActive(href, pathname) ? 'page' : undefined} className="sidenav inline-flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium no-underline transition-colors">
+                <Icon className="h-[18px] w-[18px]" aria-hidden />{label}
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="mt-auto rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
+          <p className="font-medium">{session.user.displayName}</p>
+          <p className="text-xs opacity-70">{ROLE_LABEL[session.user.role] ?? session.user.role}</p>
+          <button className="btn !mt-3 !min-h-9 w-full" onClick={logout} aria-label="Sign out"><LogOut className="h-4 w-4" aria-hidden />Sign out</button>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 function Header({ onShortcuts }: { onShortcuts: () => void }) {
   const pathname = usePathname();
   const { session, logout } = useAuth();
   const nav = session ? navFor(session.user.role) : [];
   return (
     <header className="border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5">
-        <Link href="/" className="flex items-baseline gap-2 no-underline" style={{ color: 'var(--ink)' }}>
-          <span className="text-lg font-semibold tracking-tight">Kharagpur Krishak Sanghati</span>
-          <span className="text-sm text-ink-2">FPO07 console</span>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5 sm:px-6">
+        <Link href="/" className={`flex items-baseline gap-2 no-underline ${session ? 'lg:hidden' : ''}`} style={{ color: 'var(--ink)' }}>
+          <span className="text-base font-semibold tracking-tight">Kharagpur Krishak Sanghati</span>
+          <span className="hidden text-sm text-ink-2 sm:inline">FPO07 console</span>
         </Link>
-        <nav aria-label="Main" className="order-3 -mx-1 flex w-full gap-1 overflow-x-auto sm:order-none sm:w-auto">
-          {nav.map(({ href, label }) => {
-            const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
-            return (
-              <Link key={href} href={href} aria-current={active ? 'page' : undefined}
-                className="inline-flex min-h-10 items-center whitespace-nowrap rounded-sm px-3 text-sm font-medium no-underline"
-                style={{ color: active ? 'var(--accent-text)' : 'var(--ink-2)', background: active ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'transparent' }}>
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
+        {session && (
+          <nav aria-label="Main" className="order-3 -mx-1 flex w-full gap-1 overflow-x-auto lg:hidden">
+            {nav.map(({ href, label }) => {
+              const active = isActive(href, pathname);
+              return (
+                <Link key={href} href={href} aria-current={active ? 'page' : undefined}
+                  className="inline-flex min-h-10 items-center whitespace-nowrap rounded-md px-3 text-sm font-medium no-underline"
+                  style={{ color: active ? 'var(--accent-text)' : 'var(--ink-2)', background: active ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'transparent' }}>
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
         <div className="ml-auto flex flex-wrap items-center gap-3">
           <LedgerStatusPill />
           <button className="btn !min-h-8 !px-2" onClick={onShortcuts} aria-label="Keyboard shortcuts"><Keyboard className="h-4 w-4" aria-hidden /></button>
           {session ? (
-            <span className="flex items-center gap-2 text-sm">
-              <span className="text-ink-2">{session.user.displayName} · {ROLE_LABEL[session.user.role] ?? session.user.role}</span>
+            <span className="flex items-center gap-2 text-sm lg:hidden">
+              <span className="hidden text-ink-2 sm:inline">{session.user.displayName} · {ROLE_LABEL[session.user.role] ?? session.user.role}</span>
               <button className="btn !min-h-8 !px-2" onClick={logout} aria-label="Sign out"><LogOut className="h-4 w-4" aria-hidden />Sign out</button>
             </span>
           ) : session === null ? (
-            <Link href="/login" className="btn no-underline"><LogIn className="h-4 w-4" aria-hidden />Sign in</Link>
+            <Link href="/login" className="btn"><LogIn className="h-4 w-4" aria-hidden />Sign in</Link>
           ) : null}
         </div>
       </div>
@@ -202,11 +249,16 @@ function Inner({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-sm focus:bg-surface focus:p-2">Skip to content</a>
       <Banners />
-      <Header onShortcuts={() => setHelp(true)} />
-      <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">{children}</main>
-      <footer className="border-t border-line bg-surface">
-        <p className="mx-auto max-w-7xl px-4 py-4 text-xs text-ink-2">{FOOTER_TEXT}</p>
-      </footer>
+      <div className="flex min-w-0 flex-1">
+        <Sidebar />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <Header onShortcuts={() => setHelp(true)} />
+          <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+          <footer className="border-t border-line bg-surface">
+            <p className="mx-auto max-w-7xl px-4 py-4 text-xs text-ink-2 sm:px-6">{FOOTER_TEXT}</p>
+          </footer>
+        </div>
+      </div>
       <ActivityToasts />
       <ShortcutOverlay open={help} onClose={() => setHelp(false)} />
     </div>
