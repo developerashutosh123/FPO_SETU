@@ -48,7 +48,7 @@ test('lot without a confirmed safe interval does not claim it', async ({ page })
 });
 
 test('language switch keeps the page and shows Bengali', async ({ page }) => {
-  await page.goto(`/00/${SETTLED}`);
+  await page.goto(`/00/${SETTLED}`, { waitUntil: 'networkidle' }); // dev server: let hydration finish before the click
   await page.getByRole('link', { name: 'বাংলা' }).click();
   await expect(page).toHaveURL(new RegExp(`/00/${SETTLED}\\?lang=bn`));
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('আলু');
@@ -101,4 +101,13 @@ test('no farmer name or phone anywhere in the server-rendered HTML, and no GI wo
       expect(html).toContain('Academic prototype');
     }
   }
+});
+
+test('journey shows the recorded date and time in IST, in order', async ({ page }) => {
+  await page.goto(`/00/${SETTLED}`);
+  await expect(page.getByText('recorded on the ledger, in Indian Standard Time')).toBeVisible();
+  const stamps = await page.locator('#journey ~ ol li p.text-sm').allTextContents();
+  expect(stamps).toHaveLength(5);
+  for (const s of stamps) expect(s).toMatch(/^\d{2}-\d{2}-\d{4}, \d{2}:\d{2} IST · /);
+  expect(new Set(stamps.map((s) => s.split(' · ')[0])).size).toBe(5); // every step has its own recorded time
 });

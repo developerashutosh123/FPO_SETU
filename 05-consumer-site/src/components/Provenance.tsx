@@ -1,6 +1,6 @@
 import { Check, ChevronDown, ExternalLink, MapPin, Minus, TriangleAlert } from 'lucide-react';
 import type { Provenance } from '@/contract/contract';
-import { formatDate, shortTx } from '@/lib/format';
+import { formatDate, formatDateTime, shortTx } from '@/lib/format';
 import { fill, type Dict } from '@/lib/lang';
 import { govTxUrl } from '@/lib/links';
 
@@ -88,12 +88,13 @@ export function ProvenanceView({ p, t, indexOnly }: { p: Provenance; t: Dict; in
 
       <section aria-labelledby="journey" className="mt-10 border-t border-ink pt-6">
         <h2 id="journey" className="eyebrow">{t.lot.journeyTitle}</h2>
+        <p className="mt-2 text-sm text-ink-2">{t.lot.journeyNote}</p>
         <ol className="mt-4">
           {p.journey.map((j, i) => (
             <li key={`${j.at}-${i}`} className="relative pb-6 pl-8 last:pb-0">
               {i < p.journey.length - 1 && <span aria-hidden className="absolute left-[7px] top-4 h-full w-px bg-line" />}
               <span aria-hidden className="absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 border-accent bg-canvas" />
-              <p className="text-sm font-semibold text-ink-2">{formatDate(j.at)} · {t.lot.orgType[j.orgType] ?? j.orgType}</p>
+              <p className="text-sm font-semibold text-ink-2">{formatDateTime(j.at)} · {t.lot.orgType[j.orgType] ?? j.orgType}</p>
               <p className="text-lg font-semibold leading-snug">{stepLabel(j.step)}</p>
               <p className="text-ink-2">{j.place}</p>
             </li>

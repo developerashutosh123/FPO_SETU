@@ -83,7 +83,8 @@
     },
     "noProofs": "No ledger entries are listed for this lot yet.",
     "noLink": "Explorer link not configured",
-    "simulated": "Simulated: payments, e-NWR and other outside systems. The ledger entries are real."
+    "simulated": "Simulated: payments, e-NWR and other outside systems. The ledger entries are real.",
+    "journeyNote": "Each time is when that step was recorded on the ledger, in Indian Standard Time."
   },
   "notFound": {
     "title": "We cannot find this lot",
