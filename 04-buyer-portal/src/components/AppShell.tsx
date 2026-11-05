@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState, useSyncExternalStore, type ReactNode 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ClipboardList, ExternalLink, LogIn, LogOut, PackageSearch, ScanLine, Sprout, X } from 'lucide-react';
-import { FOOTER_TEXT, shortHash, type LedgerEventName, type StreamEvent } from '@/contract/contract';
+import { shortHash, type LedgerEventName, type StreamEvent } from '@/contract/contract';
 import { DATA_SOURCE, api, getConn, resolveBase, subscribeConn, type ConnState } from '@/lib/api';
 import { AuthProvider, isBuyerManager, useAuth } from '@/lib/auth';
 import { formatCount, formatDateTimeIST } from '@/lib/format';
@@ -210,9 +210,6 @@ function Inner({ children }: { children: ReactNode }) {
       <Header />
       <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">{children}</main>
       <ActivityToasts />
-      <footer className="border-t border-line bg-surface">
-        <p className="mx-auto max-w-7xl px-4 py-5 text-xs sm:px-6 text-ink-2">{FOOTER_TEXT}</p>
-      </footer>
     </div>
   );
 }
