@@ -11,7 +11,8 @@ Read this after `CONTRACT.md` and before your own `PROMPT.md`. If anything here 
 ## B. Data access (identical pattern in every portal)
 - Write a single `src/lib/api.ts` typed with contract types. It:
   - calls `NEXT_PUBLIC_API_URL` (or `EXPO_PUBLIC_API_URL`);
-  - on `/health` failure or timeout (2.5 s), switches to `NEXT_PUBLIC_READ_API_URL` and sets `ledgerMode='index-only'`;
+  - probes `/health` with an 8 s timeout, sending `ngrok-skip-browser-warning` to ngrok hosts, and retries once; only when **both** attempts fail does it switch to `NEXT_PUBLIC_READ_API_URL` and set `ledgerMode='index-only'` (the free ngrok tunnel is slow and drops the odd request);
+  - once live, a failed request or a dropped event stream re-probes `/health` instead of failing over directly;
   - reads `X-Ledger-Mode` from every response;
   - maps `ApiError.code` to friendly, action-phrased messages (one message map per portal, in its language);
   - attaches the JWT.

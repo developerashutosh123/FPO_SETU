@@ -38,4 +38,28 @@ describe('bank api client', () => {
     expect(r.mode).toBe('index-only');
     expect(getConn().base).toBe('https://read.example');
   });
+
+  it('retries /health once before failing over', async () => {
+    let healthCalls = 0;
+    vi.stubGlobal('fetch', vi.fn(async (u: string) => {
+      if (u === 'https://gw.example/health' && ++healthCalls === 1) throw new TypeError('network');
+      return u.endsWith('/health') ? json(HEALTH) : json({ items: [] });
+    }));
+    const { api, getConn } = await load({ NEXT_PUBLIC_DATA_SOURCE: 'live', NEXT_PUBLIC_API_URL: 'https://gw.example', NEXT_PUBLIC_READ_API_URL: 'https://read.example' });
+    await api.collateral({});
+    expect(healthCalls).toBe(2);
+    expect(getConn()).toMatchObject({ mode: 'live', base: 'https://gw.example' });
+  });
+
+  it('stays live when a request drops but /health still answers', async () => {
+    let dropped = false;
+    vi.stubGlobal('fetch', vi.fn(async (u: string) => {
+      if (u.startsWith('https://gw.example/loans') && !dropped) { dropped = true; throw new TypeError('network'); }
+      return u.endsWith('/health') ? json(HEALTH) : json({ items: [] });
+    }));
+    const { api, getConn } = await load({ NEXT_PUBLIC_DATA_SOURCE: 'live', NEXT_PUBLIC_API_URL: 'https://gw.example', NEXT_PUBLIC_READ_API_URL: 'https://read.example' });
+    const r = await api.loans();
+    expect(r.mode).toBe('live');
+    expect(getConn()).toMatchObject({ mode: 'live', base: 'https://gw.example' });
+  });
 });

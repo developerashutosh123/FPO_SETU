@@ -7,7 +7,8 @@ import { ERROR_MESSAGES, type ClientErrorCode } from './errors';
 /**
  * The only module that talks to the gateway (PORTAL_COMMON.md section B). Runs in the browser and on the server (the tx and block pages are server-rendered).
  *  - mock: the mock gateway on :4010. live: NEXT_PUBLIC_API_URL.
- *  - If GET /health fails or takes longer than 2.5 s, requests go to NEXT_PUBLIC_READ_API_URL and the mode becomes index-only.
+ *  - GET /health is probed with an 8 s timeout and retried once; only when both attempts fail do requests go to NEXT_PUBLIC_READ_API_URL
+ *    and the mode becomes index-only. A single slow or dropped request on the free ngrok tunnel re-probes instead of failing over.
  *  - Every response's X-Ledger-Mode header is recorded.
  */
 const trim = (s: string | undefined) => (s ?? '').replace(/\/+$/, '');
@@ -15,7 +16,8 @@ export const DATA_SOURCE: 'mock' | 'live' = process.env.NEXT_PUBLIC_DATA_SOURCE 
 export const PRIMARY_URL = DATA_SOURCE === 'mock' ? trim(process.env.NEXT_PUBLIC_MOCK_URL) || 'http://localhost:4010' : trim(process.env.NEXT_PUBLIC_API_URL);
 export const READ_API_URL = trim(process.env.NEXT_PUBLIC_READ_API_URL);
 
-const HEALTH_TIMEOUT_MS = 2500;
+const HEALTH_TIMEOUT_MS = 8000;
+const HEALTH_ATTEMPTS = 2;
 const REQUEST_TIMEOUT_MS = 15000;
 const PROBE_TTL_MS = 15000;
 
@@ -51,11 +53,9 @@ function getToken(): string | undefined {
 
 // ---------- transport ----------
 /** Free ngrok domains answer browsers with an interstitial unless this header is sent (RUNBOOK section 3). Only for ngrok hosts. */
+const NGROK_HOST = /\.ngrok(-free)?\.(app|dev|io)$/;
 export function extraHeadersFor(base: string): Record<string, string> {
-  try {
-    const host = new URL(base).hostname;
-    return host.endsWith('.ngrok-free.app') || host.endsWith('.ngrok-free.dev') ? { 'ngrok-skip-browser-warning': '1' } : {};
-  } catch { return {}; }
+  try { return NGROK_HOST.test(new URL(base).hostname) ? { 'ngrok-skip-browser-warning': '1' } : {}; } catch { return {}; }
 }
 
 async function timedFetch(url: string, init: RequestInit, ms: number, outer?: AbortSignal): Promise<Response> {
@@ -66,22 +66,30 @@ async function timedFetch(url: string, init: RequestInit, ms: number, outer?: Ab
   try { return await fetch(url, { ...init, signal: ac.signal, cache: 'no-store' }); } finally { clearTimeout(timer); outer?.removeEventListener('abort', onOuter); }
 }
 
+/** GET /health on the primary gateway, retried once. An interstitial page (HTML, not JSON) counts as a failure. */
+async function probePrimary(): Promise<{ health: HealthResponse; mode: LedgerMode } | null> {
+  for (let i = 0; i < HEALTH_ATTEMPTS; i++) {
+    try {
+      const res = await timedFetch(`${PRIMARY_URL}/health`, { headers: { accept: 'application/json', ...extraHeadersFor(PRIMARY_URL) } }, HEALTH_TIMEOUT_MS);
+      if (res.ok) {
+        const health = (await res.json()) as HealthResponse;
+        return { health, mode: (res.headers.get('x-ledger-mode') as LedgerMode | null) ?? health.ledgerMode };
+      }
+    } catch { /* retry, then fall through to the read-only API */ }
+  }
+  return null;
+}
+
 let probing: Promise<string | null> | null = null;
-/** Picks the base URL. Probes the primary gateway's /health (2.5 s), falls back to the read-only API. Cached for 15 s. */
+/** Picks the base URL. Probes the primary gateway's /health (8 s, one retry), falls back to the read-only API. Cached for 15 s. */
 export function resolveBase(force = false): Promise<string | null> {
   if (!force && conn.base && Date.now() - conn.probedAt < PROBE_TTL_MS) return Promise.resolve(conn.base);
   if (probing) return probing;
   probing = (async () => {
-    if (PRIMARY_URL) {
-      try {
-        const res = await timedFetch(`${PRIMARY_URL}/health`, { headers: { accept: 'application/json', ...extraHeadersFor(PRIMARY_URL) } }, HEALTH_TIMEOUT_MS);
-        if (res.ok) {
-          const health = (await res.json()) as HealthResponse;
-          const mode = (res.headers.get('x-ledger-mode') as LedgerMode | null) ?? health.ledgerMode;
-          setConn({ mode, base: PRIMARY_URL, probedAt: Date.now(), health });
-          return PRIMARY_URL;
-        }
-      } catch { /* fall through to the read-only API */ }
+    const primary = PRIMARY_URL ? await probePrimary() : null;
+    if (primary) {
+      setConn({ mode: primary.mode, base: PRIMARY_URL, probedAt: Date.now(), health: primary.health });
+      return PRIMARY_URL;
     }
     if (READ_API_URL) {
       try {
@@ -130,13 +138,14 @@ export async function request<T>(path: string, opts: RequestOpts = {}): Promise<
     } catch (e) {
       if (e instanceof ApiClientError) throw e;
       if (opts.signal?.aborted && !(opts.signal.reason instanceof DOMException && opts.signal.reason.name === 'TimeoutError')) throw e;
-      // network error or timeout on the primary gateway: fail over once to the read-only API
-      if (attempt === 0 && base === PRIMARY_URL && READ_API_URL) {
-        setConn({ mode: 'index-only', base: READ_API_URL, probedAt: Date.now() });
-        base = READ_API_URL;
+      // network error or timeout on the primary gateway: re-probe /health (which only falls back to the read-only API after two
+      // failed probes) and try once more on whatever it picks, so one dropped request on the tunnel does not flip us to index-only
+      if (attempt === 0 && base === PRIMARY_URL) {
+        base = await resolveBase(true);
         continue;
       }
-      setConn({ mode: 'offline', base: null, probedAt: Date.now() });
+      // the gateway's /health still answers, so this request alone failed: keep the connection state as it is
+      if (base !== PRIMARY_URL || conn.base !== PRIMARY_URL) setConn({ mode: 'offline', base: null, probedAt: Date.now() });
       throw new ApiClientError('NETWORK', 0);
     }
   }

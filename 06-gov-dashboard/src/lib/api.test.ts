@@ -38,7 +38,7 @@ describe('api failover', () => {
     expect(calls.some((c) => c.startsWith('https://read.example/ledger/blocks'))).toBe(true);
   });
 
-  it('gives up on /health after 2.5 s', async () => {
+  it('gives up on /health only after two 8 s timeouts', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('fetch', vi.fn((u: string, init: RequestInit) => {
       if (u.startsWith('https://gw.example')) return new Promise((_, rej) => init.signal?.addEventListener('abort', () => rej(new DOMException('timeout', 'TimeoutError'))));
@@ -46,11 +46,37 @@ describe('api failover', () => {
     }));
     const { api, getConn } = await load({ NEXT_PUBLIC_DATA_SOURCE: 'live', NEXT_PUBLIC_API_URL: 'https://gw.example', NEXT_PUBLIC_READ_API_URL: 'https://read.example' });
     const p = api.ledgerBlocks();
-    await vi.advanceTimersByTimeAsync(2499);
+    await vi.advanceTimersByTimeAsync(8001);
+    expect(getConn().mode).not.toBe('index-only');
+    await vi.advanceTimersByTimeAsync(7998);
     expect(getConn().mode).not.toBe('index-only');
     await vi.advanceTimersByTimeAsync(2);
     await p;
     expect(getConn().mode).toBe('index-only');
+  });
+
+  it('stays live when one /health probe fails and the retry answers', async () => {
+    let healthCalls = 0;
+    vi.stubGlobal('fetch', vi.fn(async (u: string) => {
+      if (u === 'https://gw.example/health' && ++healthCalls === 1) throw new TypeError('fetch failed');
+      return u.endsWith('/health') ? json(HEALTH) : json([]);
+    }));
+    const { api, getConn } = await load({ NEXT_PUBLIC_DATA_SOURCE: 'live', NEXT_PUBLIC_API_URL: 'https://gw.example', NEXT_PUBLIC_READ_API_URL: 'https://read.example' });
+    await api.ledgerBlocks();
+    expect(healthCalls).toBe(2);
+    expect(getConn()).toMatchObject({ mode: 'live', base: 'https://gw.example' });
+  });
+
+  it('stays live when a request drops but /health still answers', async () => {
+    let dropped = false;
+    vi.stubGlobal('fetch', vi.fn(async (u: string) => {
+      if (u.startsWith('https://gw.example/ledger/blocks') && !dropped) { dropped = true; throw new TypeError('fetch failed'); }
+      return u.endsWith('/health') ? json(HEALTH) : json([]);
+    }));
+    const { api, getConn } = await load({ NEXT_PUBLIC_DATA_SOURCE: 'live', NEXT_PUBLIC_API_URL: 'https://gw.example', NEXT_PUBLIC_READ_API_URL: 'https://read.example' });
+    const r = await api.ledgerBlocks();
+    expect(r.mode).toBe('live');
+    expect(getConn()).toMatchObject({ mode: 'live', base: 'https://gw.example' });
   });
 
   it('reports offline when neither API answers', async () => {
@@ -72,6 +98,8 @@ describe('ngrok header', () => {
     const { extraHeadersFor } = await load({ NEXT_PUBLIC_DATA_SOURCE: 'live', NEXT_PUBLIC_API_URL: 'https://x.ngrok-free.dev' });
     expect(extraHeadersFor('https://repaying-chant-consumer.ngrok-free.dev')).toEqual({ 'ngrok-skip-browser-warning': '1' });
     expect(extraHeadersFor('https://old.ngrok-free.app')).toEqual({ 'ngrok-skip-browser-warning': '1' });
+    expect(extraHeadersFor('https://paid.ngrok.app')).toEqual({ 'ngrok-skip-browser-warning': '1' });
+    expect(extraHeadersFor('https://notngrok.app')).toEqual({});
     expect(extraHeadersFor('https://read-api-ten.vercel.app')).toEqual({});
     expect(extraHeadersFor('http://localhost:4010')).toEqual({});
   });

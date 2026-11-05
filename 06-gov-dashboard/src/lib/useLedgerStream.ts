@@ -49,7 +49,8 @@ export function useLedgerStream(handlers: { onEvent?: (e: StreamEvent) => void; 
         },
         onerror() {
           if (stopped || mine.signal.aborted) throw new Error('stopped');
-          // retry with backoff; if the gateway has gone to sleep the connection probe will switch us to polling
+          // retry with backoff. After 3 drops re-probe /health: it only switches to index-only (and polling) when /health fails
+          // twice in a row, so a stream hiccup on the ngrok tunnel keeps us live and the stream just reconnects
           const wait = BACKOFF_MS[Math.min(failures++, BACKOFF_MS.length - 1)]!;
           if (failures >= 3) { void resolveBase(true).then(() => { if (!stopped && getConn().mode !== 'live') void start(); }); }
           return wait;
