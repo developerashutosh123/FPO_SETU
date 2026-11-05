@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Sprout } from 'lucide-react';
-import { FOOTER_TEXT } from '@/contract/contract';
 import { LANGS, withLang, type Dict, type Lang } from '@/lib/lang';
 
 const LANG_NAME: Record<Lang, string> = { en: 'English', bn: 'বাংলা' };
@@ -34,9 +33,6 @@ export function Shell({ lang, t, path, children }: { lang: Lang; t: Dict; path: 
         </div>
       </header>
       <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-5 py-8 sm:py-12">{children}</main>
-      <footer className="border-t border-line bg-surface-2">
-        <p lang="en" className="mx-auto max-w-3xl px-5 py-6 text-sm text-ink-2">{FOOTER_TEXT}</p>
-      </footer>
     </div>
   );
 }
