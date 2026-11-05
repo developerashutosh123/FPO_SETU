@@ -1,0 +1,40 @@
+{
+  "name": "fpo-setu-buyer-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FPO-SETU 04: buyer sourcing portal (academic prototype, RD61003, CRDIST, IIT Kharagpur, Group 7).",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "predev": "node scripts/sync-contract.mjs",
+    "dev": "next dev -p 3004",
+    "prebuild": "node scripts/sync-contract.mjs",
+    "build": "next build",
+    "start": "next start -p 3004",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "mock": "node ../shared/mock/server.mjs --quiet",
+    "check": "pnpm typecheck && pnpm test"
+  },
+  "dependencies": {
+    "html5-qrcode": "2.3.8",
+    "leaflet": "1.9.4",
+    "lucide-react": "1.68.0",
+    "next": "16.4.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-leaflet": "5.0.0",
+    "recharts": "3.10.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.3.4",
+    "@types/leaflet": "1.9.22",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "4.3.4",
+    "typescript": "~5.9.3",
+    "vitest": "5.1.0"
+  }
+}

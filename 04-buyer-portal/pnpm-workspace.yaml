@@ -1,0 +1,9 @@
+# Vercel installs with CI=1; pnpm 12 then fails with ERR_PNPM_IGNORED_BUILDS for any dependency whose build script is not approved here.
+# esbuild (vitest) and sharp (next image optimisation) are the two with build scripts; both are harmless.
+# recharts, react-leaflet, leaflet and html5-qrcode have no install scripts.
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+minimumReleaseAgeExclude:
+  - lucide-react@1.68.0
