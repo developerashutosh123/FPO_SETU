@@ -1,10 +1,27 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Boxes, Handshake, FileCheck2, ScrollText } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { asApiError } from '@/lib/api';
 import { isFpoRole } from '@/lib/access';
 import { PageHeader } from '@/components/ui';
+
+const POINTS = [
+  { icon: Boxes, text: 'Intake · grade · dispatch' },
+  { icon: Handshake, text: 'Sealed two-party price' },
+  { icon: FileCheck2, text: 'Collateral & liens at a glance' },
+  { icon: ScrollText, text: 'Every change is an auditable transaction' },
+];
+
+function ChainMotif() {
+  return (
+    <svg aria-hidden className="login-motif" viewBox="0 0 340 110" fill="none" stroke="currentColor" strokeWidth="1.5">
+      {[8, 98, 188, 278].map((x) => (<g key={x}><rect x={x} y="28" width="54" height="54" rx="10" /><path d={`M${x + 12} 46h30M${x + 12} 56h22M${x + 12} 66h28`} strokeLinecap="round" /></g>))}
+      {[62, 152, 242].map((x) => (<path key={x} d={`M${x} 55h36`} strokeDasharray="3 4" />))}
+    </svg>
+  );
+}
 
 /** Only same-site paths, so a crafted ?next= cannot send people elsewhere. */
 const safeNext = (n: string | null) => (n && n.startsWith('/') && !n.startsWith('//') ? n : '/');
@@ -41,10 +58,16 @@ export function LoginForm() {
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-[1fr_26rem]">
-      <PageHeader eyebrow="Kharagpur Krishak Sanghati Producer Company Ltd · FPO07" title="What is in the centre right now, and what should move today?">
+    <div className="login-wrap" style={{ '--login-card': '26rem' } as React.CSSProperties}>
+      <div className="login-hero">
+        <ChainMotif />
+        <PageHeader eyebrow="Kharagpur Krishak Sanghati Producer Company Ltd · FPO07" title="What is in the centre right now, and what should move today?">
         Weigh and grade incoming lots, agree prices with the buyer, dispatch, and see which lots a bank holds a lien on. Every change you make is a transaction the bank, the buyer and the observer can check.
-      </PageHeader>
+        </PageHeader>
+        <ul className="login-points">
+          {POINTS.map(({ icon: Icon, text }) => (<li key={text} className="login-point"><Icon aria-hidden />{text}</li>))}
+        </ul>
+      </div>
       <form onSubmit={submit} className="card self-start p-5" aria-describedby={error ? 'login-error' : undefined}>
         <h2 className="text-base font-semibold">Sign in</h2>
         <p className="mt-1 text-sm text-ink-2">Demo logins. Password: <span className="mono">Setu@2026</span></p>
