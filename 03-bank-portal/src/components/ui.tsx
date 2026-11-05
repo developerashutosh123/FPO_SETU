@@ -6,10 +6,10 @@ import { CopyButton } from './CopyButton';
 
 export function PageHeader({ eyebrow, title, children }: { eyebrow?: string; title: ReactNode; children?: ReactNode }) {
   return (
-    <header className="mb-6">
+    <header className="mb-8">
       {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-      <h1 className="mt-1 text-2xl font-semibold tracking-tight">{title}</h1>
-      {children && <div className="mt-2 max-w-3xl text-ink-2">{children}</div>}
+      <h1 className="mt-1.5 text-[1.625rem] font-semibold leading-tight tracking-tight sm:text-[2rem]">{title}</h1>
+      {children && <div className="mt-3 max-w-3xl text-[15px] leading-relaxed text-ink-2">{children}</div>}
     </header>
   );
 }
@@ -54,8 +54,8 @@ export function Term({ children, tip }: { children: ReactNode; tip: ReactNode })
 
 export function Field({ label, children }: { label: ReactNode; children: ReactNode }) {
   return (
-    <div className="grid gap-1 border-b border-line py-3 last:border-b-0 sm:grid-cols-[11rem_1fr] sm:gap-4">
-      <dt className="text-sm text-ink-2">{label}</dt>
+    <div className="grid gap-1 border-b border-line py-3.5 last:border-b-0 sm:grid-cols-[12rem_1fr] sm:gap-6">
+      <dt className="text-sm font-medium text-ink-2">{label}</dt>
       <dd className="min-w-0">{children}</dd>
     </div>
   );
@@ -64,11 +64,11 @@ export function Field({ label, children }: { label: ReactNode; children: ReactNo
 export function Section({ title, children, aside, id }: { title: ReactNode; children: ReactNode; aside?: ReactNode; id?: string }) {
   return (
     <section className="card mb-6 overflow-hidden" id={id}>
-      <div className="flex items-baseline justify-between gap-3 border-b border-line px-4 py-3 sm:px-5">
-        <h2 className="text-base font-semibold">{title}</h2>
+      <div className="flex items-baseline justify-between gap-3 border-b border-line bg-surface-2 px-4 py-3 sm:px-6">
+        <h2 className="text-[15px] font-semibold">{title}</h2>
         {aside && <div className="text-sm text-ink-3">{aside}</div>}
       </div>
-      <div className="px-4 py-1 sm:px-5">{children}</div>
+      <div className="px-4 py-1 sm:px-6">{children}</div>
     </section>
   );
 }

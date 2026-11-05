@@ -53,6 +53,7 @@ function View({ c, reload }: { c: Collateral; reload: () => void }) {
         </span>
       </PageHeader>
 
+      <div className="grid items-start gap-x-6 lg:grid-cols-2">
       <Section title="Lot summary">
         <dl>
           <Field label="Lot"><span className="mono">{c.lot.humanRef}</span></Field>
@@ -75,16 +76,18 @@ function View({ c, reload }: { c: Collateral; reload: () => void }) {
           </Field>
           <Field label={<T k="haircut">Haircut</T>}><span className="num">{c.haircutPct}%</span></Field>
           <Field label={<T k="assessed">Assessed value</T>}>
-            <span className="num font-semibold" data-testid="assessed">{inr(c.assessedValue)}</span>
+            <span className="num text-xl font-semibold" data-testid="assessed">{inr(c.assessedValue)}</span>
             <div className="mt-1 text-sm text-ink-2">{c.quantityQtl.toFixed(2)} qtl × {inr(c.priceBasis.modalPerQtl)} × (1 − {c.haircutPct}%)</div>
           </Field>
           <Field label={<T k="ltv">LTV</T>}><span className="num">{c.ltvPct}%</span></Field>
           <Field label={<T k="eligible">Eligible loan</T>}>
-            <span className="num font-semibold" data-testid="eligible">{inr(c.eligibleLoan)}</span>
+            <span className="num text-xl font-semibold" data-testid="eligible">{inr(c.eligibleLoan)}</span>
             <div className="mt-1 text-sm text-ink-2">{inr(c.assessedValue)} × {c.ltvPct}%</div>
           </Field>
         </dl>
       </Section>
+
+      </div>
 
       <Section title={<T k="lien">Lien status</T>} aside="From the ledger">
         <div className="flex flex-wrap items-center gap-3 py-3">
