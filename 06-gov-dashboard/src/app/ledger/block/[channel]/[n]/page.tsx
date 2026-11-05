@@ -6,6 +6,7 @@ import { api, asApiError } from '@/lib/api';
 import { channelShort, formatCount, formatDateTimeIST } from '@/lib/format';
 import { ChannelChip, Chip, Field, Hash, OrgBadge, PageHeader, Section } from '@/components/ui';
 import { StateShell } from '@/components/states';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,21 +82,21 @@ export default async function BlockPage({ params }: { params: Promise<{ channel:
       <Section title="Transactions" aside={String(block.txs.length)}>
         {block.txs.length === 0 ? <p className="py-3 text-sm text-ink-3">This block has no transactions.</p> : (
           <div className="scroll-x -mx-4 sm:-mx-6">
-            <table className="dtable">
-              <caption className="sr-only">Transactions in block {block.number}</caption>
-              <thead><tr><th scope="col">Transaction</th><th scope="col">Chaincode · function</th><th scope="col">Result</th><th scope="col">Submitted by</th><th scope="col">Time</th></tr></thead>
-              <tbody>
+            <Table>
+              <TableCaption className="sr-only">Transactions in block {block.number}</TableCaption>
+              <TableHeader><TableRow><TableHead scope="col">Transaction</TableHead><TableHead scope="col">Chaincode · function</TableHead><TableHead scope="col">Result</TableHead><TableHead scope="col">Submitted by</TableHead><TableHead scope="col">Time</TableHead></TableRow></TableHeader>
+              <TableBody>
                 {block.txs.map((t) => (
-                  <tr key={t.txId}>
-                    <td><Hash value={t.txId} full={false} href={`/ledger/tx/${encodeURIComponent(t.txId)}`} label="Copy transaction ID" /></td>
-                    <td><span className="mono">{t.chaincode}</span> · <span className="mono">{t.fn}</span></td>
-                    <td><Chip tone={t.validationCode === 'VALID' ? 'ok' : 'danger'}>{t.validationCode}</Chip></td>
-                    <td><OrgBadge org={t.creatorMsp} /></td>
-                    <td className="whitespace-nowrap">{formatDateTimeIST(t.timestamp, true)}</td>
-                  </tr>
+                  <TableRow key={t.txId}>
+                    <TableCell><Hash value={t.txId} full={false} href={`/ledger/tx/${encodeURIComponent(t.txId)}`} label="Copy transaction ID" /></TableCell>
+                    <TableCell><span className="mono">{t.chaincode}</span> · <span className="mono">{t.fn}</span></TableCell>
+                    <TableCell><Chip tone={t.validationCode === 'VALID' ? 'ok' : 'danger'}>{t.validationCode}</Chip></TableCell>
+                    <TableCell><OrgBadge org={t.creatorMsp} /></TableCell>
+                    <TableCell className="whitespace-nowrap">{formatDateTimeIST(t.timestamp, true)}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </Section>

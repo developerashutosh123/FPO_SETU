@@ -8,6 +8,7 @@ import { useLedgerStream } from '@/lib/useLedgerStream';
 import { channelShort, formatCount, formatDateTimeIST } from '@/lib/format';
 import { Chip, OrgBadge, PageHeader, Section } from '@/components/ui';
 import { Boundary } from '@/components/states';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const CHANNELS: Channel[] = ['trace-channel', 'finance-channel', 'trade-channel'];
 const ORGS: OrgMsp[] = ['FpoOrgMSP', 'BankOrgMSP', 'BuyerOrgMSP', 'RegulatorOrgMSP'];
@@ -46,44 +47,44 @@ function Body({ s }: { s: LedgerStatus }) {
 
       <Section title="Peers" aside={`${s.peers.filter((p) => p.up).length} of ${s.peers.length} up`}>
         <div className="scroll-x -mx-4 sm:-mx-6">
-          <table className="dtable" data-testid="peers">
-            <caption className="sr-only">Peers with status and block height per channel</caption>
-            <thead><tr><th scope="col">Peer</th><th scope="col">Organisation</th><th scope="col">Status</th>{CHANNELS.map((c) => <th key={c} scope="col" className="text-right">{channelShort(c)} height</th>)}</tr></thead>
-            <tbody>
+          <Table data-testid="peers">
+            <TableCaption className="sr-only">Peers with status and block height per channel</TableCaption>
+            <TableHeader><TableRow><TableHead scope="col">Peer</TableHead><TableHead scope="col">Organisation</TableHead><TableHead scope="col">Status</TableHead>{CHANNELS.map((c) => <TableHead key={c} scope="col" className="text-right">{channelShort(c)} height</TableHead>)}</TableRow></TableHeader>
+            <TableBody>
               {s.peers.map((p) => (
-                <tr key={p.name}>
-                  <td className="mono">{p.name}</td>
-                  <td><OrgBadge org={p.org} /></td>
-                  <td><Chip tone={p.up ? 'ok' : 'danger'}>{p.up ? 'Up' : 'Down'}</Chip></td>
+                <TableRow key={p.name}>
+                  <TableCell className="mono">{p.name}</TableCell>
+                  <TableCell><OrgBadge org={p.org} /></TableCell>
+                  <TableCell><Chip tone={p.up ? 'ok' : 'danger'}>{p.up ? 'Up' : 'Down'}</Chip></TableCell>
                   {CHANNELS.map((c) => {
                     const h = p.heights[c];
-                    return <td key={c} className="text-right">{h === undefined ? <span className="text-ink-3" title="This organisation is not a member of this channel">not a member</span> : <span className="mono">{formatCount(h)}</span>}</td>;
+                    return <TableCell key={c} className="text-right">{h === undefined ? <span className="text-ink-3" title="This organisation is not a member of this channel">not a member</span> : <span className="mono">{formatCount(h)}</span>}</TableCell>;
                   })}
-                </tr>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </Section>
 
       <Section title="Orderers" aside="Raft: one leader per channel">
         <div className="scroll-x -mx-4 sm:-mx-6">
-          <table className="dtable" data-testid="orderers">
-            <caption className="sr-only">Orderers with Raft leadership</caption>
-            <thead><tr><th scope="col">Orderer</th><th scope="col">Status</th><th scope="col">Raft role</th></tr></thead>
-            <tbody>
+          <Table data-testid="orderers">
+            <TableCaption className="sr-only">Orderers with Raft leadership</TableCaption>
+            <TableHeader><TableRow><TableHead scope="col">Orderer</TableHead><TableHead scope="col">Status</TableHead><TableHead scope="col">Raft role</TableHead></TableRow></TableHeader>
+            <TableBody>
               {s.orderers.map((o) => {
                 const led = leaderOf(o);
                 return (
-                  <tr key={o.name}>
-                    <td className="mono">{o.name}</td>
-                    <td><Chip tone={o.up ? 'ok' : 'danger'}>{o.up ? 'Up' : 'Down'}</Chip></td>
-                    <td>{led.length ? <span className="flex flex-wrap items-center gap-1.5"><Chip tone="accent">Leader</Chip><span className="text-sm text-ink-2">of {led.map(channelShort).join(' and ')}-channel</span></span> : <span className="text-ink-2">Follower</span>}</td>
-                  </tr>
+                  <TableRow key={o.name}>
+                    <TableCell className="mono">{o.name}</TableCell>
+                    <TableCell><Chip tone={o.up ? 'ok' : 'danger'}>{o.up ? 'Up' : 'Down'}</Chip></TableCell>
+                    <TableCell>{led.length ? <span className="flex flex-wrap items-center gap-1.5"><Chip tone="accent">Leader</Chip><span className="text-sm text-ink-2">of {led.map(channelShort).join(' and ')}-channel</span></span> : <span className="text-ink-2">Follower</span>}</TableCell>
+                  </TableRow>
                 );
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <p className="border-t border-line py-3 text-sm text-ink-2">
           {CHANNELS.map((c) => `${channelShort(c)}: ${leaders[c] ?? 'no leader reported'}`).join(' · ')}. The leader is elected per channel, so one orderer can lead several.
@@ -92,28 +93,28 @@ function Body({ s }: { s: LedgerStatus }) {
 
       <Section title="Who is on which channel">
         <div className="scroll-x -mx-4 sm:-mx-6">
-          <table className="dtable" data-testid="matrix">
-            <caption className="sr-only">Organisations by channel membership</caption>
-            <thead><tr><th scope="col">Organisation</th>{CHANNELS.map((c) => <th key={c} scope="col" className="text-center">{channelShort(c)}<span className="mono ml-1 normal-case text-ink-3">#{formatCount(heightOf(c) ?? 0)}</span></th>)}</tr></thead>
-            <tbody>
+          <Table data-testid="matrix">
+            <TableCaption className="sr-only">Organisations by channel membership</TableCaption>
+            <TableHeader><TableRow><TableHead scope="col">Organisation</TableHead>{CHANNELS.map((c) => <TableHead key={c} scope="col" className="text-center">{channelShort(c)}<span className="mono ml-1 normal-case text-ink-3">#{formatCount(heightOf(c) ?? 0)}</span></TableHead>)}</TableRow></TableHeader>
+            <TableBody>
               {ORGS.map((o) => (
-                <tr key={o}>
-                  <th scope="row" className="!bg-surface !text-left !normal-case !tracking-normal !text-ink font-normal">
+                <TableRow key={o}>
+                  <TableHead scope="row" className="!bg-surface !text-left !normal-case !tracking-normal !text-ink font-normal">
                     <span className="flex flex-wrap items-center gap-2"><OrgBadge org={o} /><span className="hidden text-ink-2 sm:inline">{ORG_DISPLAY[o]}</span></span>
-                  </th>
+                  </TableHead>
                   {CHANNELS.map((c) => {
                     const member = s.channels.find((x) => x.name === c)?.members.includes(o);
                     return (
-                      <td key={c} className="text-center">
+                      <TableCell key={c} className="text-center">
                         {member ? <><span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-ok/10 text-ok ring-1 ring-ok/25"><Check className="h-4 w-4" aria-hidden /></span><span className="sr-only">Member</span></>
                           : <><span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full text-ink-3"><Minus className="h-4 w-4" aria-hidden /></span><span className="sr-only">Not a member</span></>}
-                      </td>
+                      </TableCell>
                     );
                   })}
-                </tr>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <div className="border-t border-line py-4 text-sm text-ink-2">
           <h3 className="font-semibold text-ink">Why the Regulator has no seat on trade-channel</h3>

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ORG_DISPLAY, type Channel, type OrgMsp } from '@/contract/contract';
 import { channelShort, shortOrg } from '@/lib/format';
+import { Badge } from '@/components/ui/badge';
 import { CopyButton } from './CopyButton';
 
 export function PageHeader({ eyebrow, title, children }: { eyebrow?: string; title: ReactNode; children?: ReactNode }) {
@@ -15,7 +16,7 @@ export function PageHeader({ eyebrow, title, children }: { eyebrow?: string; tit
 }
 
 export function Chip({ tone, children, title }: { tone?: 'ok' | 'warn' | 'danger' | 'accent'; children: ReactNode; title?: string }) {
-  return <span className="chip" data-tone={tone} title={title}>{children}</span>;
+  return <Badge variant={tone ?? 'default'} title={title}>{children}</Badge>;
 }
 
 export const ChannelChip = ({ channel }: { channel: Channel }) => <Chip>{channelShort(channel)}-channel</Chip>;
@@ -23,10 +24,10 @@ export const ChannelChip = ({ channel }: { channel: Channel }) => <Chip>{channel
 export function OrgBadge({ org, full }: { org: OrgMsp | string; full?: boolean }) {
   const name = ORG_DISPLAY[org as OrgMsp];
   return (
-    <span className={`chip ${full ? "!whitespace-normal" : ""}`} title={name ? `${name} (${org})` : org}>
+    <Badge variant="outline" title={name ? `${name} (${org})` : org} className={full ? 'h-auto whitespace-normal' : undefined}>
       <span className="font-semibold text-ink">{shortOrg(org)}</span>
-      {full && name && <span className="text-ink-3">{name}</span>}
-    </span>
+      {full && name && <span className="font-normal text-ink-3">{name}</span>}
+    </Badge>
   );
 }
 

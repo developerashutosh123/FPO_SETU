@@ -10,7 +10,11 @@ import { useLedgerStream } from '@/lib/useLedgerStream';
 import { channelShort, formatCount, formatDateTimeIST } from '@/lib/format';
 import { ChannelChip, Chip, Hash, OrgBadge, PageHeader } from '@/components/ui';
 import { Boundary, StateShell } from '@/components/states';
+import { BlurFade } from '@/components/ui/blur-fade';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useConn } from '@/components/AppShell';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const CHANNELS: Channel[] = ['trace-channel', 'finance-channel', 'trade-channel'];
 const isChannel = (c: string | null): c is Channel => CHANNELS.includes(c as Channel);
@@ -55,13 +59,16 @@ export function Explorer() {
 
   return (
     <>
-      <PageHeader eyebrow="Public · no sign-in" title="Ledger Explorer">
-        Every record in FPO-SETU is a transaction on a Hyperledger Fabric channel. Open any block or transaction to see which organisations endorsed it and which keys it changed. Values are never shown here.
-      </PageHeader>
+      <BlurFade variant={{ hidden: { y: 8 }, visible: { y: 0 } }} duration={0.5}>
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,1fr)_34rem]">
+          <PageHeader eyebrow="Public · no sign-in" title="Ledger Explorer">
+            Every record in FPO-SETU is a transaction on a Hyperledger Fabric channel. Open any block or transaction to see which organisations endorsed it and which keys it changed. Values are never shown here.
+          </PageHeader>
+          <div className="lg:pt-6"><SearchBox /></div>
+        </div>
+      </BlurFade>
 
-      <SearchBox />
-
-      <section aria-labelledby="blocks-h" className="mt-10">
+      <section aria-labelledby="blocks-h" className="mt-4">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="blocks-h" className="text-lg font-semibold">Latest blocks{selected ? ` on ${selected}` : ' on all channels'}</h2>
@@ -110,28 +117,28 @@ function ChannelButton({ active, onClick, label, sub }: { active: boolean; onCli
 function BlocksTable({ rows, showChannel, fresh }: { rows: BlockSummary[]; showChannel: boolean; fresh: Set<string> }) {
   return (
     <div className="card scroll-x">
-      <table className="dtable [&_td]:whitespace-nowrap">
-        <caption className="sr-only">Latest blocks, newest first</caption>
-        <thead>
-          <tr>
-            {showChannel && <th scope="col">Channel</th>}
-            <th scope="col">Block</th><th scope="col">Time</th><th scope="col" className="text-right">Txs</th>
-            <th scope="col">Data hash</th><th scope="col">Previous hash</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table className="[&_td]:whitespace-nowrap">
+        <TableCaption className="sr-only">Latest blocks, newest first</TableCaption>
+        <TableHeader>
+          <TableRow>
+            {showChannel && <TableHead scope="col">Channel</TableHead>}
+            <TableHead scope="col">Block</TableHead><TableHead scope="col">Time</TableHead><TableHead scope="col" className="text-right">Txs</TableHead>
+            <TableHead scope="col">Data hash</TableHead><TableHead scope="col">Previous hash</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {rows.map((b) => (
-            <tr key={`${b.channel}:${b.number}`} className={fresh.has(`${b.channel}:${b.number}`) ? 'row-new' : undefined}>
-              {showChannel && <td><ChannelChip channel={b.channel} /></td>}
-              <td><Link href={`/ledger/block/${b.channel}/${b.number}`} className="mono font-medium">#{formatCount(b.number)}</Link></td>
-              <td className="whitespace-nowrap">{formatDateTimeIST(b.time, true)}</td>
-              <td className="text-right">{b.txCount}</td>
-              <td><Hash value={b.dataHash} full={false} label="Copy data hash" /></td>
-              <td><Hash value={b.previousHash} full={false} label="Copy previous hash" /></td>
-            </tr>
+            <TableRow key={`${b.channel}:${b.number}`} className={fresh.has(`${b.channel}:${b.number}`) ? 'row-new' : undefined}>
+              {showChannel && <TableCell><ChannelChip channel={b.channel} /></TableCell>}
+              <TableCell><Link href={`/ledger/block/${b.channel}/${b.number}`} className="mono font-medium">#{formatCount(b.number)}</Link></TableCell>
+              <TableCell className="whitespace-nowrap">{formatDateTimeIST(b.time, true)}</TableCell>
+              <TableCell className="text-right">{b.txCount}</TableCell>
+              <TableCell><Hash value={b.dataHash} full={false} label="Copy data hash" /></TableCell>
+              <TableCell><Hash value={b.previousHash} full={false} label="Copy previous hash" /></TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }
@@ -166,14 +173,14 @@ function SearchBox() {
   }
 
   return (
-    <section aria-labelledby="search-h" className="card p-5 sm:p-6">
+    <section aria-labelledby="search-h" className="card p-5">
       <h2 id="search-h" className="text-[15px] font-semibold">Find a record</h2>
       <form onSubmit={run} role="search" className="mt-3 flex flex-col gap-2 sm:flex-row">
         <label htmlFor="ledger-q" className="sr-only">Transaction ID, lot SSCC, e-NWR or order ID</label>
-        <input id="ledger-q" name="q" value={q} onChange={(e) => setQ(e.target.value)} spellCheck={false} autoComplete="off"
+        <Input id="ledger-q" name="q" value={q} onChange={(e) => setQ(e.target.value)} spellCheck={false} autoComplete="off"
           placeholder="Tx ID, lot SSCC, e-NWR (ENWR-…) or order ID (ORD-…)"
-          className="mono min-h-12 flex-1 rounded-md px-4 text-[15px]" />
-        <button className="btn" data-variant="primary" disabled={busy || !q.trim()}><Search className="h-4 w-4" aria-hidden />{busy ? 'Searching…' : 'Search'}</button>
+          className="mono h-11 flex-1 px-3.5 text-sm" />
+        <Button className="h-11 px-5" disabled={busy || !q.trim()}><Search aria-hidden />{busy ? 'Searching…' : 'Search'}</Button>
       </form>
 
       <div aria-live="polite" data-testid="search-results">

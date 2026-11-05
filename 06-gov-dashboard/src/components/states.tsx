@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { AlertTriangle, Inbox, SearchX } from 'lucide-react';
 import type { ApiClientError } from '@/lib/api';
+import { Button } from '@/components/ui/button';
 
 export function Skeleton({ className = '' }: { className?: string }) {
   return <div className={`skeleton ${className}`} aria-hidden />;
@@ -40,7 +41,7 @@ export function ErrorState({ error, onRetry, notFoundTitle }: { error: ApiClient
       kind={nf ? 'notfound' : 'error'}
       title={nf ? (notFoundTitle ?? 'Not found') : 'Could not load this'}
       body={error.message}
-      action={onRetry && !nf ? <button className="btn" onClick={onRetry}>Try again</button> : undefined}
+      action={onRetry && !nf ? <Button variant="outline" onClick={onRetry}>Try again</Button> : undefined}
     />
   );
 }
