@@ -11,7 +11,7 @@ import { useAsync } from '../../src/hooks/useAsync';
 import { api } from '../../src/lib/api';
 import { formatINR, formatKg, formatPlainDate } from '../../src/lib/format';
 import type { Lang } from '../../src/lib/numberWords';
-import { pickVoice, speakLines, type ReadHandle } from '../../src/lib/speech';
+import { planRead, speakLines, type ReadHandle, type ReadPlan } from '../../src/lib/speech';
 import { commodityFromRef, statementScript } from '../../src/lib/statementScript';
 import { color, radius, space } from '../../src/theme';
 
@@ -28,26 +28,37 @@ export default function StatementDetail() {
   const [open, setOpen] = useState<Proof | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
-  const [noVoice, setNoVoice] = useState(false);
+  const [plan, setPlan] = useState<ReadPlan | null | undefined>(undefined); // undefined: still looking for a voice
   const handle = useRef<ReadHandle | null>(null);
 
   const crop = lot.data?.commodity ?? (s ? commodityFromRef(s.humanRef) : undefined);
-  const script = useMemo(
-    () => (s ? statementScript(s, crop ? t(`crop.${crop}`) : t('lot.title'), lang, (k, o) => String(t(k, o as never)), (type) => t(`deduction.${type}`)) : []),
-    [s, crop, lang, t],
-  );
+  /** The spoken script in a given language. The on-screen text always stays in the app language. */
+  const scriptFor = (l: Lang) => {
+    if (!s) return [];
+    const tl = i18n.getFixedT(l);
+    return statementScript(s, crop ? String(tl(`crop.${crop}`)) : String(tl('lot.title')), l, (k, o) => String(tl(k, o as never)), (type) => String(tl(`deduction.${type}`)));
+  };
+  const script = useMemo(scriptFor.bind(null, lang), [s, crop, lang, i18n]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stop = () => { handle.current?.stop(); handle.current = null; setReading(false); setActive(null); };
   useEffect(() => stop, []);
-  useEffect(() => { stop(); setNoVoice(false); }, [lang, sscc]);
+  useEffect(() => {
+    // decide up front which voice will be used, so the note about the English fallback is there before the button is pressed
+    stop();
+    setPlan(undefined);
+    let live = true;
+    void planRead(lang).then((p) => { if (live) setPlan(p); });
+    return () => { live = false; };
+  }, [lang, sscc]);
 
   const read = async () => {
     if (reading) return stop();
-    setNoVoice(false);
-    const voice = await pickVoice(lang);
-    if (!voice) return setNoVoice(true); // say so, keep the text on screen
+    const p = plan === undefined ? await planRead(lang) : plan;
+    setPlan(p);
+    if (!p) return; // no voice at all: the message below says so and the text stays on screen
+    const lines = p.lang === lang ? script : scriptFor(p.lang);
     setReading(true);
-    const h = speakLines(script.map((l) => l.text), voice, (i) => setActive(script[i]?.key ?? null));
+    const h = speakLines(lines.map((l) => l.text), p.voice, (i) => setActive(lines[i]?.key ?? null));
     handle.current = h;
     void h.done.then(() => { if (handle.current === h) { handle.current = null; setReading(false); setActive(null); } });
   };
@@ -87,7 +98,8 @@ export default function StatementDetail() {
             <Button big variant={reading ? 'secondary' : 'primary'} label={reading ? t('statement.stop') : t('statement.listen')}
               icon={reading ? <Square color={color.accent} size={24} /> : <Volume2 color={color.accentInk} size={26} />} onPress={() => void read()} testID="read-aloud" />
             {reading ? <Txt v="small" accessibilityLiveRegion="polite">{t('statement.reading')}</Txt> : null}
-            {noVoice ? <Card tone="warn"><Txt testID="no-voice">{noVoiceText}</Txt></Card> : null}
+            {plan?.fallback ? <Txt v="small" testID="voice-fallback-note">{lang === 'hi' ? t('statement.fallbackHi') : t('statement.fallbackBn')}</Txt> : null}
+            {plan === null ? <Card tone="warn"><Txt testID="no-voice">{noVoiceText}</Txt></Card> : null}
 
             <Card testID="breakdown">
               <View style={lineBox(active === 'gross')}>

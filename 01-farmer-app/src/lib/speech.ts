@@ -1,35 +1,38 @@
 import * as Speech from 'expo-speech';
 import type { Lang } from './numberWords';
+import { chooseVoice, loadWebVoices, type VoiceInfo } from './voices';
 
-const PREFIX: Record<Lang, string> = { bn: 'bn', hi: 'hi', en: 'en' };
-const PREFERRED: Record<Lang, string> = { bn: 'bn-IN', hi: 'hi-IN', en: 'en-IN' };
-
-export interface VoicePick { language: string; identifier?: string }
+export type VoicePick = Pick<VoiceInfo, 'language' | 'identifier'>;
 
 const withTimeout = <T,>(p: Promise<T>, ms: number, fallback: T): Promise<T> =>
   Promise.race([p, new Promise<T>((r) => setTimeout(() => r(fallback), ms))]);
 
-/**
- * Browsers load their voice list lazily, and expo-speech's web build never resolves getAvailableVoicesAsync() on a device with no voices at all
- * (it waits for a `voiceschanged` event that never comes). So each attempt is bounded, and an empty answer means "no voice".
- */
-async function voices(): Promise<Speech.Voice[]> {
-  for (let i = 0; i < 4; i++) {
-    try {
-      const v = await withTimeout(Speech.getAvailableVoicesAsync(), 800, [] as Speech.Voice[]);
-      if (v.length) return v;
-    } catch { return []; }
-  }
-  return [];
+/** Web: speechSynthesis read after `voiceschanged` (voices.ts). Native: expo-speech's list. (expo-speech's web list never resolves on a device with no voices.) */
+async function listVoices(): Promise<VoiceInfo[]> {
+  const web = await loadWebVoices();
+  if (web) return web;
+  try {
+    const v = await withTimeout(Speech.getAvailableVoicesAsync(), 2000, [] as Speech.Voice[]);
+    return v.map((x) => ({ language: x.language, identifier: x.identifier, name: x.name }));
+  } catch { return []; }
 }
 
-/** The best voice for the language, or null if the device has none (then the screen says so and keeps the text). */
 export async function pickVoice(lang: Lang): Promise<VoicePick | null> {
-  const all = await voices();
-  const match = all.filter((v) => v.language.toLowerCase().replace('_', '-').startsWith(PREFIX[lang]));
-  if (!match.length) return null;
-  const best = match.find((v) => v.language.toLowerCase().replace('_', '-') === PREFERRED[lang].toLowerCase()) ?? match[0]!;
-  return { language: best.language, identifier: best.identifier };
+  const v = chooseVoice(await listVoices(), lang);
+  return v ? { language: v.language, identifier: v.identifier } : null;
+}
+
+export interface ReadPlan { voice: VoicePick; lang: Lang; /** true: the statement is read in English because the device has no voice for the app language */ fallback: boolean }
+
+/** What to read and with which voice: the app language if the device has a voice for it, else the English statement with an English voice, else null. */
+export async function planRead(lang: Lang): Promise<ReadPlan | null> {
+  const own = await pickVoice(lang);
+  if (own) return { voice: own, lang, fallback: false };
+  if (lang !== 'en') {
+    const en = await pickVoice('en');
+    if (en) return { voice: en, lang: 'en', fallback: true };
+  }
+  return null;
 }
 
 export interface ReadHandle { stop: () => void; done: Promise<void> }

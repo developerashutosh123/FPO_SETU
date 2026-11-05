@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ANIMA_PHONE, installFakeSpeech, LOT_CLOSED, LOT_DRAFT, LOT_PLEDGED, signIn, spoken, verifyWire } from './helpers';
+import { ANIMA_PHONE, installFakeSpeech, LOT_CLOSED, LOT_DRAFT, LOT_PLEDGED, signIn, spoken, spokenVoices, verifyWire } from './helpers';
 
 test.describe('login and home', () => {
   test('first launch asks for a language, then phone and the demo OTP shown on screen', async ({ page }) => {
@@ -86,13 +86,41 @@ test.describe('statement and read-aloud', () => {
     expect(said).toContain('তেরো নভেম্বর দুই হাজার ছাব্বিশ');
   });
 
-  test('no Bengali voice: says so and keeps the text', async ({ page }) => {
+  test('no voice at all: says so and keeps the text', async ({ page }) => {
     await installFakeSpeech(page, null);
     await signIn(page);
     await page.goto(`/statement/${LOT_CLOSED}`);
-    await page.getByTestId('read-aloud').click();
-    await expect(page.getByTestId('no-voice')).toContainText('বাংলা কণ্ঠ নেই');
+    await expect(page.getByTestId('no-voice')).toContainText('বাংলা কণ্ঠ নেই', { timeout: 8000 });
     await expect(page.getByTestId('net-amount')).toBeVisible();
+  });
+
+  test('no Bengali voice but an English one: reads the English statement and says so; the screen stays Bengali', async ({ page }) => {
+    await installFakeSpeech(page, ['en-US', 'hi-IN']);
+    await signIn(page);
+    await page.goto(`/statement/${LOT_CLOSED}`);
+    await expect(page.getByTestId('voice-fallback-note')).toContainText('ইংরেজি সংস্করণ');
+    await page.getByTestId('read-aloud').click();
+    await expect.poll(async () => (await spoken(page)).length).toBeGreaterThanOrEqual(9);
+    const said = (await spoken(page)).join(' | ');
+    expect(said).toContain('You received twenty-five thousand nine hundred and twenty-one rupees');
+    expect(said).toContain('Cold storage rent: three thousand one hundred and forty-two rupees');
+    expect(said).not.toMatch(/[\u0980-\u09FF]/); // no Bengali script was spoken
+    expect(new Set(await spokenVoices(page))).toEqual(new Set(['en-US']));
+    await expect(page.getByTestId('ded-COLD_STORAGE_RENT')).toHaveText('হিমঘরের ভাড়া'); // on-screen text unchanged
+    await expect(page.getByTestId('no-voice')).toHaveCount(0);
+  });
+
+  test('a Bengali voice that only appears after voiceschanged is still found and preferred (bn-IN over bn-BD)', async ({ page }) => {
+    await installFakeSpeech(page, ['en-US', 'bn-BD', 'bn-IN'], 1200);
+    await signIn(page);
+    await page.goto(`/statement/${LOT_CLOSED}`);
+    await expect(page.getByTestId('net-amount')).toBeVisible();
+    await page.getByTestId('read-aloud').click();
+    await expect.poll(async () => (await spoken(page)).length, { timeout: 10000 }).toBeGreaterThanOrEqual(9);
+    expect((await spoken(page)).join(' | ')).toContain('আপনি পেয়েছেন পঁচিশ হাজার নয় শো একুশ টাকা');
+    expect(new Set(await spokenVoices(page))).toEqual(new Set(['bn-IN']));
+    await expect(page.getByTestId('voice-fallback-note')).toHaveCount(0);
+    await expect(page.getByTestId('no-voice')).toHaveCount(0);
   });
 
   test('English switch reads the same statement in English words', async ({ page }) => {

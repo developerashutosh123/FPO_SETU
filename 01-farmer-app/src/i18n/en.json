@@ -56,7 +56,7 @@
     "weight": "Weight", "buyer": "Sold to", "upi": "UPI reference", "simulated": "Simulated payment", "paidOn": "Paid on", "listen": "Read aloud", "stop": "Stop",
     "noVoice": "This device has no Bengali voice. Please read the statement on the screen.", "noVoiceHi": "This device has no Hindi voice. Please read the statement on the screen.",
     "noVoiceEn": "This device has no English voice. Please read the statement on the screen.", "proofs": "Proof on the ledger", "emptyTitle": "No payment yet",
-    "emptyBody": "Your statement appears here after the buyer pays and the FPO shares the money.", "notPaid": "Not paid yet", "reading": "Reading aloud…",
+    "emptyBody": "Your statement appears here after the buyer pays and the FPO shares the money.", "notPaid": "Not paid yet", "fallbackBn": "Reading the English version. No Bengali voice is installed on this device.", "fallbackHi": "Reading the English version. No Hindi voice is installed on this device.", "reading": "Reading aloud…",
     "say": {
       "intro": "Statement for your {{crop}} lot. Weight {{kg}} kilograms. Grade {{grade}}.",
       "gross": "Total sale amount: {{amount}}.",

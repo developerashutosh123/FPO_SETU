@@ -6,25 +6,34 @@ export const LOT_CLOSED = '089012340000004517'; // settled, has the seeded state
 export const LOT_PLEDGED = '089012340000004524'; // lien ACTIVE
 export const LOT_DRAFT = '089012340000004906'; // waiting for Anima's signature
 
-/** A fake Bengali voice, so the read-aloud script can be captured in a headless browser that has none. */
-export async function installFakeSpeech(page: Page, lang: string | null = 'bn-IN') {
-  await page.addInitScript((voiceLang) => {
+/**
+ * A fake speechSynthesis, so the read-aloud can be captured in a headless browser. `langs`: the voices the device has (none = null).
+ * `delayMs`: the voice list is empty until then, and a `voiceschanged` event fires when it fills (how real browsers load voices).
+ */
+export async function installFakeSpeech(page: Page, langs: string | string[] | null = 'bn-IN', delayMs = 0) {
+  await page.addInitScript(([voiceLangs, delay]) => {
     const w = window as unknown as Record<string, unknown>;
     w.__spoken = [] as string[];
-    const voices = voiceLang ? [{ name: 'Test voice', lang: voiceLang, voiceURI: 'test-voice', default: true, localService: true }] : [];
+    w.__spokenVoice = [] as string[];
+    const all = (voiceLangs as string[]).map((l) => ({ name: `Test ${l}`, lang: l, voiceURI: `test-${l}`, default: false, localService: true }));
+    let voices = delay ? [] : all;
+    const target = new EventTarget();
+    if (delay) setTimeout(() => { voices = all; target.dispatchEvent(new Event('voiceschanged')); }, delay as number);
     w.SpeechSynthesisUtterance = function () { /* the caller sets text, lang, voice and the callbacks */ };
     // window.speechSynthesis is an accessor on the prototype chain: assigning does nothing, so define it
     Object.defineProperty(window, 'speechSynthesis', {
       configurable: true,
       value: {
-        getVoices: () => voices, speak: (u: { text: string; onend?: () => void }) => { (w.__spoken as string[]).push(u.text); setTimeout(() => u.onend?.(), 5); },
-        cancel: () => {}, pause: () => {}, resume: () => {}, speaking: false, pending: false, paused: false, onvoiceschanged: null,
-        addEventListener: () => {}, removeEventListener: () => {},
+        getVoices: () => voices,
+        speak: (u: { text: string; voice?: { lang: string }; onend?: () => void }) => { (w.__spoken as string[]).push(u.text); (w.__spokenVoice as string[]).push(u.voice?.lang ?? ''); setTimeout(() => u.onend?.(), 5); },
+        cancel: () => {}, pause: () => {}, resume: () => {}, speaking: false, pending: false, paused: false,
+        addEventListener: target.addEventListener.bind(target), removeEventListener: target.removeEventListener.bind(target),
       },
     });
-  }, lang);
+  }, [langs === null ? [] : Array.isArray(langs) ? langs : [langs], delayMs] as const);
 }
 export const spoken = (page: Page) => page.evaluate(() => (window as unknown as { __spoken: string[] }).__spoken);
+export const spokenVoices = (page: Page) => page.evaluate(() => (window as unknown as { __spokenVoice: string[] }).__spokenVoice);
 
 /** Language tile, phone, demo OTP, device-key intro, then home. */
 export async function signIn(page: Page, lang: 'bn' | 'hi' | 'en' = 'bn') {

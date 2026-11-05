@@ -24,7 +24,7 @@ Phone `9000000001` (Anima Das), OTP `123456` (shown on screen). Against the mock
 See `HUMAN_STEPS.md`. Short version: `node ../shared/mock/server.mjs`, then `pnpm install && pnpm dev`.
 
 ## Verify
-`pnpm check` (typecheck + 38 unit tests), then `pnpm build:mock && pnpm e2e` (17 Playwright tests on the production bundle against the mock). Screenshots: `docs/screenshots/`.
+`pnpm check` (typecheck + 46 unit tests), then `pnpm build:mock && pnpm e2e` (20 Playwright tests on the production bundle against the mock). Screenshots: `docs/screenshots/`.
 
 ## How this app connects to the others
 ```
