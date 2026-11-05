@@ -35,11 +35,11 @@ function Shell() {
 
   const framed = width >= 700;
   return (
-    <View style={{ flex: 1, backgroundColor: framed ? '#EFEADD' : color.canvas, alignItems: 'center' }}>
+    <View style={{ flexGrow: 1, backgroundColor: framed ? '#EFEADD' : color.canvas, alignItems: 'center' }}>
       <View
         style={{
-          flex: 1, width: '100%', maxWidth: 480, backgroundColor: color.canvas, overflow: 'hidden',
-          ...(framed ? { marginVertical: space.s4, maxHeight: Math.min(height - 32, 900), borderWidth: 1, borderColor: color.line, borderRadius: 14 } : {}),
+          flexGrow: 1, width: '100%', maxWidth: 480, backgroundColor: color.canvas,
+          ...(framed ? { marginVertical: space.s4, minHeight: height - 32, borderWidth: 1, borderColor: color.line, borderRadius: 14, overflow: 'hidden' } : {}),
         }}
       >
         <View style={{ backgroundColor: color.surface, paddingHorizontal: space.s4, paddingTop: space.s2, borderBottomWidth: 1, borderColor: color.line }}>
@@ -52,7 +52,7 @@ function Shell() {
           <View style={{ paddingBottom: space.s2 }}><LedgerStatusPill /></View>
         </View>
         <OfflineBanner />
-        <View style={{ flex: 1 }}>{needLang || needLogin ? null : <Slot />}</View>
+        <View style={{ flexGrow: 1 }}>{needLang || needLogin ? null : <Slot />}</View>
         <ActivityToasts />
       </View>
       <StatusBar style="light" />

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
 import { color, FONT_MONO, FONT_SANS, MIN_TOUCH, radius, shadow, size, space, TABULAR } from '../theme';
 
 type Variant = 'body' | 'small' | 'title' | 'lg' | 'xl' | 'money' | 'mono' | 'label';
@@ -75,8 +75,17 @@ export function CardSkeleton() {
 }
 
 export function Page({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
+  const content = { padding: space.s4, gap: space.s4, paddingBottom: space.s7, width: '100%', maxWidth: 640, alignSelf: 'center' } as const;
+  // On the web the window scrolls as one; a nested scroller would add a second scrollbar.
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{ flexGrow: 1, backgroundColor: color.canvas }}>
+        <View style={content}>{children}{footer}</View>
+      </View>
+    );
+  }
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.canvas }} contentContainerStyle={{ padding: space.s4, gap: space.s4, paddingBottom: space.s7, width: '100%', maxWidth: 640, alignSelf: 'center' }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ flex: 1, backgroundColor: color.canvas }} contentContainerStyle={content} keyboardShouldPersistTaps="handled">
       {children}
       {footer}
     </ScrollView>
