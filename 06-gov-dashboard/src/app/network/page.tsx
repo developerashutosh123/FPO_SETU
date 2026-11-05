@@ -38,15 +38,14 @@ function Body({ s }: { s: LedgerStatus }) {
   return (
     <>
       {s.mode === 'index-only' && (
-        <p role="note" className="mb-6 rounded-sm border px-3 py-2 text-sm" data-testid="status-note"
-          style={{ borderColor: 'color-mix(in srgb, var(--warn-text) 40%, transparent)', background: 'color-mix(in srgb, var(--warn-text) 10%, var(--surface))' }}>
+        <p role="note" className="note mb-6" data-testid="status-note" data-tone="warn">
           {s.note ?? 'Index-only: this is the last indexed chain state, not a live query of a peer.'}
           {s.lastIndexedAt && <> Last indexed {formatDateTimeIST(s.lastIndexedAt)}.</>}
         </p>
       )}
 
       <Section title="Peers" aside={`${s.peers.filter((p) => p.up).length} of ${s.peers.length} up`}>
-        <div className="scroll-x -mx-4 sm:-mx-5">
+        <div className="scroll-x -mx-4 sm:-mx-6">
           <table className="dtable" data-testid="peers">
             <caption className="sr-only">Peers with status and block height per channel</caption>
             <thead><tr><th scope="col">Peer</th><th scope="col">Organisation</th><th scope="col">Status</th>{CHANNELS.map((c) => <th key={c} scope="col" className="text-right">{channelShort(c)} height</th>)}</tr></thead>
@@ -68,7 +67,7 @@ function Body({ s }: { s: LedgerStatus }) {
       </Section>
 
       <Section title="Orderers" aside="Raft: one leader per channel">
-        <div className="scroll-x -mx-4 sm:-mx-5">
+        <div className="scroll-x -mx-4 sm:-mx-6">
           <table className="dtable" data-testid="orderers">
             <caption className="sr-only">Orderers with Raft leadership</caption>
             <thead><tr><th scope="col">Orderer</th><th scope="col">Status</th><th scope="col">Raft role</th></tr></thead>
@@ -92,22 +91,22 @@ function Body({ s }: { s: LedgerStatus }) {
       </Section>
 
       <Section title="Who is on which channel">
-        <div className="scroll-x -mx-4 sm:-mx-5">
+        <div className="scroll-x -mx-4 sm:-mx-6">
           <table className="dtable" data-testid="matrix">
             <caption className="sr-only">Organisations by channel membership</caption>
             <thead><tr><th scope="col">Organisation</th>{CHANNELS.map((c) => <th key={c} scope="col" className="text-center">{channelShort(c)}<span className="mono ml-1 normal-case text-ink-3">#{formatCount(heightOf(c) ?? 0)}</span></th>)}</tr></thead>
             <tbody>
               {ORGS.map((o) => (
                 <tr key={o}>
-                  <th scope="row" className="!text-left !normal-case !tracking-normal !text-ink font-normal">
+                  <th scope="row" className="!bg-surface !text-left !normal-case !tracking-normal !text-ink font-normal">
                     <span className="flex flex-wrap items-center gap-2"><OrgBadge org={o} /><span className="hidden text-ink-2 sm:inline">{ORG_DISPLAY[o]}</span></span>
                   </th>
                   {CHANNELS.map((c) => {
                     const member = s.channels.find((x) => x.name === c)?.members.includes(o);
                     return (
                       <td key={c} className="text-center">
-                        {member ? <><Check className="mx-auto h-4 w-4 text-ok" aria-hidden /><span className="sr-only">Member</span></>
-                          : <><Minus className="mx-auto h-4 w-4 text-ink-3" aria-hidden /><span className="sr-only">Not a member</span></>}
+                        {member ? <><span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-ok/10 text-ok ring-1 ring-ok/25"><Check className="h-4 w-4" aria-hidden /></span><span className="sr-only">Member</span></>
+                          : <><span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full text-ink-3"><Minus className="h-4 w-4" aria-hidden /></span><span className="sr-only">Not a member</span></>}
                       </td>
                     );
                   })}

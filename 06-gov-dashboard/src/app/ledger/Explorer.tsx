@@ -61,7 +61,7 @@ export function Explorer() {
 
       <SearchBox />
 
-      <section aria-labelledby="blocks-h" className="mt-8">
+      <section aria-labelledby="blocks-h" className="mt-10">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="blocks-h" className="text-lg font-semibold">Latest blocks{selected ? ` on ${selected}` : ' on all channels'}</h2>
@@ -100,8 +100,8 @@ export function Explorer() {
 function ChannelButton({ active, onClick, label, sub }: { active: boolean; onClick: () => void; label: string; sub?: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={active}
-      className="inline-flex min-h-10 items-center gap-2 rounded-sm border px-3 text-sm font-medium"
-      style={{ borderColor: active ? 'var(--accent-text)' : 'var(--line)', background: active ? 'color-mix(in srgb, var(--accent-text) 12%, var(--surface))' : 'var(--surface)', color: active ? 'var(--accent-text)' : 'var(--ink)' }}>
+      className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3.5 text-sm font-medium shadow-sm transition-colors"
+      style={{ borderColor: active ? 'var(--accent-text)' : 'var(--line-strong)', background: active ? 'color-mix(in srgb, var(--accent-text) 11%, var(--surface))' : 'var(--surface)', color: active ? 'var(--accent-text)' : 'var(--ink)' }}>
       {label}{sub && <span className="mono text-xs text-ink-3">{sub}</span>}
     </button>
   );
@@ -166,13 +166,13 @@ function SearchBox() {
   }
 
   return (
-    <section aria-labelledby="search-h" className="card p-4 sm:p-5">
-      <h2 id="search-h" className="text-base font-semibold">Find a record</h2>
+    <section aria-labelledby="search-h" className="card p-5 sm:p-6">
+      <h2 id="search-h" className="text-[15px] font-semibold">Find a record</h2>
       <form onSubmit={run} role="search" className="mt-3 flex flex-col gap-2 sm:flex-row">
         <label htmlFor="ledger-q" className="sr-only">Transaction ID, lot SSCC, e-NWR or order ID</label>
         <input id="ledger-q" name="q" value={q} onChange={(e) => setQ(e.target.value)} spellCheck={false} autoComplete="off"
           placeholder="Tx ID, lot SSCC, e-NWR (ENWR-…) or order ID (ORD-…)"
-          className="mono min-h-11 flex-1 rounded-sm border border-line bg-surface px-3" />
+          className="mono min-h-12 flex-1 rounded-md px-4 text-[15px]" />
         <button className="btn" data-variant="primary" disabled={busy || !q.trim()}><Search className="h-4 w-4" aria-hidden />{busy ? 'Searching…' : 'Search'}</button>
       </form>
 
@@ -182,7 +182,7 @@ function SearchBox() {
           <p className="mt-3 text-sm text-ink-2">Nothing on the ledger index matches <span className="mono">{asked}</span>. Check it for typing mistakes. An SSCC has 18 digits; an e-NWR looks like ENWR-NERL-2026-004211.</p>
         )}
         {hits && hits.length > 0 && (
-          <ul className="mt-3 divide-y divide-line rounded-sm border border-line">
+          <ul className="mt-4 divide-y divide-line rounded-md border border-line">
             {hits.map((h) => {
               const href = hitHref(h);
               return (

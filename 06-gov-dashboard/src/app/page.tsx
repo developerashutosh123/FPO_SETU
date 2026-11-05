@@ -26,10 +26,10 @@ function OverviewBody() {
           return (
             <>
               {gate && <Gate kpi={gate} />}
-              <section aria-labelledby="kpi-h" className="mt-10">
+              <section aria-labelledby="kpi-h" className="mt-12">
                 <h2 id="kpi-h" className="text-lg font-semibold">Indicators against their Year-1 targets</h2>
                 <p className="mt-1 text-sm text-ink-2">As of {formatDateTimeIST(r.asOf)}.</p>
-                <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="kpi-cards">
+                <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-testid="kpi-cards">
                   {cards.map((k) => <li key={k.key}><KpiCard kpi={k} /></li>)}
                 </ul>
               </section>
@@ -52,10 +52,10 @@ function formatValue(k: Kpi): string | null {
 function KpiCard({ kpi: k }: { kpi: Kpi }) {
   const value = formatValue(k);
   return (
-    <article className="card flex h-full flex-col p-4" data-testid={`kpi-${k.key}`}>
-      <h3 className="text-sm font-medium text-ink-2">{k.label}</h3>
+    <article className="card flex h-full flex-col p-5" data-testid={`kpi-${k.key}`}>
+      <h3 className="text-sm font-semibold text-ink-2">{k.label}</h3>
       {value ? (
-        <p className="mt-2 text-[32px] font-semibold leading-none tracking-tight">{value}</p>
+        <p className="kpi-value mt-3">{value}</p>
       ) : (
         <p className="mt-2 text-lg font-medium text-ink-2">Not available yet</p>
       )}
@@ -77,7 +77,7 @@ function Gate({ kpi }: { kpi: Kpi }) {
   const criteria = kpi.criteria ?? [];
   const met = criteria.filter((c) => c.met === true).length;
   return (
-    <section aria-labelledby="gate-h" className="card p-4 sm:p-5" data-testid="gate">
+    <section aria-labelledby="gate-h" className="card p-5 sm:p-6" data-testid="gate">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="gate-h" className="text-lg font-semibold">Month-12 go/no-go gate: {met} of {criteria.length || 4} criteria met</h2>
         <span className="text-sm text-ink-3">As of {formatDateTimeIST(kpi.asOf)}</span>
@@ -86,7 +86,7 @@ function Gate({ kpi }: { kpi: Kpi }) {
       <p className="mt-1 text-xs text-ink-2"><span className="font-semibold text-ink">Computed from: </span>{kpi.computedFrom}</p>
       {criteria.length === 0
         ? <p className="mt-4 text-sm text-ink-2">The API returned no criteria for the gate.</p>
-        : <ol className="mt-4 divide-y divide-line rounded-sm border border-line">{criteria.map((c, i) => <Criterion key={c.key} c={c} n={i + 1} />)}</ol>}
+        : <ol className="mt-5 divide-y divide-line overflow-hidden rounded-lg border border-line">{criteria.map((c, i) => <Criterion key={c.key} c={c} n={i + 1} />)}</ol>}
     </section>
   );
 }

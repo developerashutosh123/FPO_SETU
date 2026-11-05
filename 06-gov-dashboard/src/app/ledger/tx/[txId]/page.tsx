@@ -49,8 +49,7 @@ export default async function TxPage({ params }: { params: Promise<{ txId: strin
     <>
       <BackLink />
       {mode === 'index-only' && (
-        <p role="note" className="mb-4 flex items-start gap-2 rounded-sm border px-3 py-2 text-sm" data-testid="index-only-note"
-          style={{ borderColor: 'color-mix(in srgb, var(--warn-text) 40%, transparent)', background: 'color-mix(in srgb, var(--warn-text) 10%, var(--surface))' }}>
+        <p role="note" className="note mb-5 flex items-start gap-2" data-testid="index-only-note" data-tone="warn">
           <Database className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden />
           <span>Served from the indexed copy of the ledger; live peer is offline.</span>
         </p>

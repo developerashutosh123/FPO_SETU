@@ -46,8 +46,7 @@ export default async function BlockPage({ params }: { params: Promise<{ channel:
     <>
       <Back />
       {mode === 'index-only' && (
-        <p role="note" className="mb-4 flex items-start gap-2 rounded-sm border px-3 py-2 text-sm"
-          style={{ borderColor: 'color-mix(in srgb, var(--warn-text) 40%, transparent)', background: 'color-mix(in srgb, var(--warn-text) 10%, var(--surface))' }}>
+        <p role="note" className="note mb-5 flex items-start gap-2" data-tone="warn">
           <Database className="mt-0.5 h-4 w-4 shrink-0 text-warn" aria-hidden />
           <span>Served from the indexed copy of the ledger; live peer is offline.</span>
         </p>
@@ -81,7 +80,7 @@ export default async function BlockPage({ params }: { params: Promise<{ channel:
 
       <Section title="Transactions" aside={String(block.txs.length)}>
         {block.txs.length === 0 ? <p className="py-3 text-sm text-ink-3">This block has no transactions.</p> : (
-          <div className="scroll-x -mx-4 sm:-mx-5">
+          <div className="scroll-x -mx-4 sm:-mx-6">
             <table className="dtable">
               <caption className="sr-only">Transactions in block {block.number}</caption>
               <thead><tr><th scope="col">Transaction</th><th scope="col">Chaincode · function</th><th scope="col">Result</th><th scope="col">Submitted by</th><th scope="col">Time</th></tr></thead>
@@ -112,7 +111,7 @@ function ChainCell({ label, n, ch, detail, missing, current, field }: {
   label: string; n: number; ch: Channel; detail: BlockDetail | null; missing?: string; current?: boolean; field: 'previous' | 'this' | 'next';
 }) {
   return (
-    <li className="card min-w-0 p-3" style={current ? { borderColor: 'var(--accent-text)' } : undefined} aria-current={current ? 'true' : undefined}>
+    <li className="card min-w-0 p-4" style={current ? { borderColor: 'var(--accent-text)', boxShadow: '0 0 0 3px color-mix(in srgb, var(--accent-text) 16%, transparent)' } : undefined} aria-current={current ? 'true' : undefined}>
       <p className="eyebrow">{label}</p>
       {detail ? (
         <>

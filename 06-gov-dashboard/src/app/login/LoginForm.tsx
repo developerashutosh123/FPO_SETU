@@ -45,14 +45,14 @@ export function LoginForm() {
         <PageHeader eyebrow="Governance dashboard" title="Is the FPO healthy, is distribution fair, and is the record trustworthy?">
           The monitoring pages are for the district observer and the FPO board. The ledger itself is public.
         </PageHeader>
-        <div className="card p-5">
+        <div className="card p-6">
           <h2 className="text-base font-semibold">No sign-in needed to check a proof</h2>
           <p className="mt-1 text-ink-2">Every transaction, block and channel on the Fabric ledger can be opened by anyone with the link.</p>
           <Link href="/ledger" className="btn mt-4 no-underline" data-variant="primary">Open the Ledger Explorer <ArrowRight className="h-4 w-4" aria-hidden /></Link>
         </div>
       </div>
 
-      <form onSubmit={submit} className="card self-start p-5" aria-describedby={error ? 'login-error' : undefined}>
+      <form onSubmit={submit} className="card self-start p-6" aria-describedby={error ? 'login-error' : undefined}>
         <h2 className="text-base font-semibold">Sign in</h2>
         <p className="mt-1 text-sm text-ink-2">Demo logins. Password for all: <span className="mono">Setu@2026</span></p>
         <div className="mt-4 grid gap-2">
@@ -64,9 +64,9 @@ export function LoginForm() {
           ))}
         </div>
         <label className="mt-4 block text-sm font-medium" htmlFor="u">Username</label>
-        <input id="u" className="mt-1 min-h-11 w-full rounded-sm border border-line bg-surface px-3" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        <input id="u" className="mt-1.5 min-h-11 w-full px-3" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         <label className="mt-3 block text-sm font-medium" htmlFor="p">Password</label>
-        <input id="p" type="password" className="mt-1 min-h-11 w-full rounded-sm border border-line bg-surface px-3" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input id="p" type="password" className="mt-1.5 min-h-11 w-full px-3" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         {error && <p id="login-error" role="alert" className="mt-3 text-sm text-danger">{error}</p>}
         <button className="btn mt-4 w-full" data-variant="primary" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
       </form>
