@@ -95,3 +95,35 @@ body {
 .navlink[aria-current="page"] { color: #fff; background: rgb(255 255 255 / 0.13); }
 .brandmark { display: inline-flex; width: 30px; height: 30px; align-items: center; justify-content: center; border-radius: 8px; background: #1B7A78; color: #fff; }
 .kpi-value { font-size: 2.25rem; font-weight: 650; line-height: 1; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
+
+/* Login / landing: full-height two-panel layout, hero on the left, sign-in card on the right. */
+.login-wrap { display: grid; align-items: center; gap: 1.5rem; min-height: calc(100dvh - 11rem); }
+@media (min-width: 1024px) { .login-wrap { grid-template-columns: minmax(0, 1fr) var(--login-card, 24rem); gap: 3rem; } }
+.login-hero {
+  position: relative; overflow: hidden; isolation: isolate;
+  border: 1px solid var(--line); border-radius: var(--radius-xl); padding: 1.5rem;
+  background:
+    radial-gradient(60rem 28rem at 0% 0%, color-mix(in srgb, var(--accent-text) 16%, transparent), transparent 60%),
+    radial-gradient(40rem 24rem at 100% 100%, color-mix(in srgb, var(--accent-text) 10%, transparent), transparent 65%),
+    var(--surface);
+}
+@media (min-width: 640px) { .login-hero { padding: 2.25rem; } }
+.login-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--accent-text) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--accent-text) 9%, transparent) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse at 30% 20%, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at 30% 20%, #000 0%, transparent 75%);
+}
+.login-motif { position: absolute; right: -1rem; bottom: 0.5rem; width: min(26rem, 90%); color: var(--accent-text); opacity: 0.2; z-index: -1; pointer-events: none; }
+.login-points { display: grid; gap: 0.625rem; margin-top: 1.5rem; margin-bottom: 1.5rem; list-style: none; padding: 0; }
+@media (min-width: 640px) { .login-points { grid-template-columns: 1fr 1fr; } }
+.login-point {
+  display: flex; align-items: center; gap: 0.625rem; padding: 0.625rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 28%, var(--line)); border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent-text) 7%, transparent);
+  font-size: 0.875rem; font-weight: 500; line-height: 1.3;
+}
+.login-point svg { flex: none; width: 1.125rem; height: 1.125rem; color: var(--accent-text); }

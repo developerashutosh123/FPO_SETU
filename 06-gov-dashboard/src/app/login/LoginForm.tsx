@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, EyeOff, Gauge, Network, Search } from 'lucide-react';
 import { useAuth, MONITOR_ROLES } from '@/lib/auth';
 import { asApiError } from '@/lib/api';
 import { PageHeader } from '@/components/ui';
@@ -11,6 +11,22 @@ const PERSONAS = [
   { username: 'observer.gov', label: 'District observer', note: 'Regulator org. Reads trace and finance channels; never sees prices.' },
   { username: 'board.fpo', label: 'FPO board member', note: 'FPO org. Monitoring pages plus a link into the FPO console lot page.' },
 ];
+
+const POINTS = [
+  { icon: Search, text: 'Public ledger explorer' },
+  { icon: Network, text: 'Org × channel network' },
+  { icon: Gauge, text: 'KPIs & Month-12 gate' },
+  { icon: EyeOff, text: 'No PII or price on-chain' },
+];
+
+function ChainMotif() {
+  return (
+    <svg aria-hidden className="login-motif" viewBox="0 0 340 110" fill="none" stroke="currentColor" strokeWidth="1.5">
+      {[8, 98, 188, 278].map((x) => (<g key={x}><rect x={x} y="28" width="54" height="54" rx="10" /><path d={`M${x + 12} 46h30M${x + 12} 56h22M${x + 12} 66h28`} strokeLinecap="round" /></g>))}
+      {[62, 152, 242].map((x) => (<path key={x} d={`M${x} 55h36`} strokeDasharray="3 4" />))}
+    </svg>
+  );
+}
 
 /** Only same-site paths, so a crafted ?next= cannot send people elsewhere. */
 const safeNext = (n: string | null) => (n && n.startsWith('/') && !n.startsWith('//') ? n : '/');
@@ -40,11 +56,15 @@ export function LoginForm() {
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-[1fr_24rem]">
-      <div>
+    <div className="login-wrap">
+      <div className="login-hero">
+        <ChainMotif />
         <PageHeader eyebrow="Governance dashboard" title="Is the FPO healthy, is distribution fair, and is the record trustworthy?">
           The monitoring pages are for the district observer and the FPO board. The ledger itself is public.
         </PageHeader>
+        <ul className="login-points">
+          {POINTS.map(({ icon: Icon, text }) => (<li key={text} className="login-point"><Icon aria-hidden />{text}</li>))}
+        </ul>
         <div className="card p-6">
           <h2 className="text-base font-semibold">No sign-in needed to check a proof</h2>
           <p className="mt-1 text-ink-2">Every transaction, block and channel on the Fabric ledger can be opened by anyone with the link.</p>
