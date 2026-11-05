@@ -3,7 +3,7 @@ import { Linking, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Languages, WifiOff, X } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { FOOTER_TEXT, type Commodity } from '../contract/contract';
+import { type Commodity } from '../contract/contract';
 import { LANGS, setLang } from '../i18n';
 import { getConn, subscribeConn } from '../lib/api';
 import { useLive } from '../lib/live';
@@ -91,7 +91,6 @@ export function PortalFooter() {
   const router = useRouter();
   return (
     <View style={{ gap: space.s2, marginTop: space.s5, paddingTop: space.s4, borderTopWidth: 1, borderColor: color.line }} testID="footer">
-      <Txt v="small">{FOOTER_TEXT}</Txt>
       <Row>
         <Pressable onPress={() => router.push('/about')} accessibilityRole="link" style={{ minHeight: MIN_TOUCH, justifyContent: 'center' }}><Txt v="small" style={{ color: color.accent, textDecorationLine: 'underline' }}>{t('about.title')}</Txt></Pressable>
         <Pressable onPress={() => router.push('/credits')} accessibilityRole="link" style={{ minHeight: MIN_TOUCH, justifyContent: 'center' }}><Txt v="small" style={{ color: color.accent, textDecorationLine: 'underline' }}>{t('credits.title')}</Txt></Pressable>

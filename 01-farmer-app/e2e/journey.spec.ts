@@ -27,7 +27,7 @@ test.describe('login and home', () => {
     const card = page.getByTestId(`lot-card-${LOT_CLOSED}`);
     await expect(card).toContainText('₹25,921');
     await expect(card).toContainText('আলু');
-    await expect(page.getByTestId('footer').first()).toContainText('Academic prototype - RD61003');
+    await expect(page.getByTestId('footer').first()).not.toContainText('Academic prototype');
     await expect(page.getByTestId('ledger-pill')).toContainText('1,284');
   });
 
