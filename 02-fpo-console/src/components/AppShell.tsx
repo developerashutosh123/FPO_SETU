@@ -3,7 +3,7 @@ import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Boxes, ClipboardList, FileCheck2, Keyboard, LayoutDashboard, LogIn, LogOut, Scale, Sprout, X, type LucideIcon } from 'lucide-react';
-import { FOOTER_TEXT, type StreamEvent } from '@/contract/contract';
+import { type StreamEvent } from '@/contract/contract';
 import { DATA_SOURCE, api, getConn, resolveBase, subscribeConn, type ConnState } from '@/lib/api';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { navFor, ROLE_LABEL } from '@/lib/access';
@@ -254,9 +254,6 @@ function Inner({ children }: { children: ReactNode }) {
         <div className="flex min-w-0 flex-1 flex-col">
           <Header onShortcuts={() => setHelp(true)} />
           <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8">{children}</main>
-          <footer className="border-t border-line bg-surface">
-            <p className="mx-auto max-w-7xl px-4 py-4 text-xs text-ink-2 sm:px-6">{FOOTER_TEXT}</p>
-          </footer>
         </div>
       </div>
       <ActivityToasts />
