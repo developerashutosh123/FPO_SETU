@@ -1,0 +1,27 @@
+# Production override for the cloud VM (x86_64 or ARM64). Layered on top of network/docker-compose.yaml by fabric-compose.sh:
+#   restart: unless-stopped   every Fabric container (5 CAs, 3 orderers, 4 peers) comes back after a crash or `sudo reboot`
+#   platform: ${FPOSETU_PLATFORM}   linux/amd64 on x86_64, linux/arm64 on aarch64 (arch.sh sets it): fail loudly if an image has no variant
+#                             for this CPU, instead of silently running under qemu emulation
+#   logging                   rotate container logs so a long-lived VM never fills its boot volume
+# All five images (fabric-peer, fabric-orderer, fabric-ca, and the chaincode builder fabric-ccenv and runtime fabric-baseos) are multi-arch
+# tags with linux/amd64 and linux/arm64 variants; check-images.sh proves it against the registry. Ports stay bound to 127.0.0.1: nothing is exposed.
+x-prod: &prod
+  restart: unless-stopped
+  platform: ${FPOSETU_PLATFORM:?run through fabric-compose.sh, which sets FPOSETU_PLATFORM}
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  ca.fpo.setu.local: *prod
+  ca.bank.setu.local: *prod
+  ca.buyer.setu.local: *prod
+  ca.regulator.setu.local: *prod
+  ca.orderer.setu.local: *prod
+  orderer1.setu.local: *prod
+  orderer2.setu.local: *prod
+  orderer3.setu.local: *prod
+  peer0.fpo.setu.local: *prod
+  peer0.bank.setu.local: *prod
+  peer0.buyer.setu.local: *prod
+  peer0.regulator.setu.local: *prod

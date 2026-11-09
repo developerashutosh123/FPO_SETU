@@ -1,0 +1,32 @@
+# FPO-SETU gateway: the Fastify API on :8080 AND the block indexer (they are one process: the gateway starts the indexer itself, and
+# read-after-write depends on it). Rendered by deploy.sh: @USER@ and @GATEWAY_DIR@ are filled in, then it is installed in /etc/systemd/system.
+[Unit]
+Description=FPO-SETU gateway (API + event indexer)
+Documentation=file:@GATEWAY_DIR@/README.md
+# The Fabric containers are restarted by Docker itself (restart: unless-stopped); the gateway only needs Docker up. Peers that are still
+# starting are fine: the gateway and the indexer retry the connection.
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+# never give up restarting
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=@USER@
+WorkingDirectory=@GATEWAY_DIR@
+# DATABASE_URL, JWT_SECRET and the other secrets live only in this gitignored file (mode 600). WALLET_DIR/NETWORK_DIR in it are relative to WorkingDirectory.
+EnvironmentFile=@GATEWAY_DIR@/.env
+Environment=NODE_ENV=production
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStartPre=/usr/bin/test -d @GATEWAY_DIR@/../wallet/FpoOrgMSP
+ExecStart=@GATEWAY_DIR@/node_modules/.bin/tsx src/index.ts
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+SyslogIdentifier=fposetu-gateway
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

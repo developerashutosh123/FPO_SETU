@@ -1,0 +1,26 @@
+# ngrok tunnel: publishes the gateway (localhost:PORT, default 8080) on the reserved static domain, so API_URL never changes and no inbound
+# port is opened. Outbound only. Rendered by deploy.sh: @USER@, @GATEWAY_DIR@ and @NGROK_BIN@ are filled in.
+# The token (NGROK_AUTHTOKEN) and the domain (NGROK_DOMAIN) come from the gitignored gateway/.env. ngrok reads NGROK_AUTHTOKEN from its
+# environment itself, so the token is never on a command line (nothing for `ps` to show) and is never printed by this unit.
+[Unit]
+Description=ngrok tunnel for the FPO-SETU gateway (reserved static domain)
+Wants=network-online.target fposetu-gateway.service
+After=network-online.target fposetu-gateway.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=@USER@
+EnvironmentFile=@GATEWAY_DIR@/.env
+# fail with a clear message (never the values) if either variable is empty
+ExecStartPre=/bin/sh -c 'test -n "$$NGROK_AUTHTOKEN" || { echo "NGROK_AUTHTOKEN is empty in gateway/.env" >&2; exit 1; }; test -n "$$NGROK_DOMAIN" || { echo "NGROK_DOMAIN is empty in gateway/.env" >&2; exit 1; }'
+# NGROK_DOMAIN is accepted with or without https:// and a trailing slash. ngrok 3.16+ calls the flag --url (older v3: --domain).
+ExecStart=/bin/sh -c 'd="$${NGROK_DOMAIN#https://}"; d="$${d%%/}"; if @NGROK_BIN@ http --help 2>&1 | grep -q -- --url; then f="--url=$$d"; else f="--domain=$$d"; fi; exec @NGROK_BIN@ http "$$f" --log=stdout --log-format=logfmt "$${PORT:-8080}"'
+Restart=always
+RestartSec=5
+SyslogIdentifier=fposetu-ngrok
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
